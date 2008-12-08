@@ -1,0 +1,26 @@
+{% extends 'admin/base_site.html' %}
+
+{% block extrahead %}  
+
+<script src="{{MEDIA_URL}}admin/js/jquery.js"></script>  
+<script src="{{MEDIA_URL}}admin/js/jquery-ui-interaction.js"></script>  
+  <script>
+  $(document).ready(function(){
+    $("#category_list").sortable({});
+  });
+  </script>
+{% endblock %}
+{% block content %}
+
+<div>
+<ul id="category_list">
+{% for child in categories%}
+<li id="child_{{child.id}}">{{child.name}}</li>
+{% endfor %}
+</ul>
+<form action="" method="post">
+<input id="id_array" name="array" type="hidden"/> 
+<input type="submit" onclick="$('#id_array').val($('#category_list').sortable('serialize'))">
+</form>
+</div>
+{% endblock %}

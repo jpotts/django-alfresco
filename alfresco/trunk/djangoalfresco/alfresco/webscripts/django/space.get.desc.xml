@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Django Document List</shortname>
+  <description>Document List script</description>
+  <url>/django/space?id={id}</url>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

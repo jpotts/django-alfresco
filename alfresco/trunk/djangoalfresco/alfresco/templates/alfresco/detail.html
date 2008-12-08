@@ -1,0 +1,38 @@
+{% extends 'base.html'%}
+
+{% block title%}{{object.title}}{% endblock %}
+{%block extra-head%}
+<script type="text/javascript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+function doOpen(url, target){
+	var w = window.open(url, target, 'width=320, height=180, scrollbars=yes, resizable=yes');
+	w.focus();
+	return false;
+}
+//-->
+</script>
+{%endblock%}
+
+{% block content %}
+<div id="layoutContainer">
+  <div id="layoutFull">
+    <div id="bodyHeader">
+      <!-- TODO: Create Breadcrumb filter -->
+      <div class="print"><a href="{% url alfresco_print_view object.id %}">Printable Version<img src="{{MEDIA_URL}}img/img_printer.gif" width="16" height="15" alt=""/></a></div>
+      
+      <div class="title">{{object.title}}<br />
+      <span class="mediumColor">Submitted by {{object.author}}</span></div>
+      <div class="summary">
+        <b>Summary:</b> {{object.description}} <br />
+        <b>Published:</b> {{object.modified|date:"m/d/Y"}} by <a href="contact.html" target="contactpopup" onClick="return doOpen(this.href, this.target)">{{object.author}}</a>&nbsp;&nbsp;<br />
+        <b>File Type:</b> {{object.mimetype}}
+      </div>
+    </div>
+         {% load alfresco_tags %}
+		{{object.content|mask_image_tags|safe}}  
+		<br class="clear" />
+      </div>
+{% endblock %}

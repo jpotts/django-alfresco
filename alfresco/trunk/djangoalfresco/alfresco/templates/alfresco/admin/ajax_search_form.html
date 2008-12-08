@@ -1,0 +1,57 @@
+<script type="text/javascript">
+<!--
+var alfresco_id_field = null;
+function doSearch(form) {
+	var url = '{% url alfresco_ajax_search %}?q=' + form.elements[0].value;
+	$.getJSON(url,
+		function(data){
+			$("#results").empty();
+			$.each(data, function(i,item){
+				var li = $("<li>");
+				li.html('<b>Title:</b> <a class="search_a_tag" href="#" onclick="fill_form_field(\''+item.pk+'\'); return false;">' + item.fields.name +'</a>, <b>ID:</b> ' + item.pk);
+            	li.appendTo("#results");
+          });
+		}
+	);
+}
+function fill_form_field(id){
+	if (!alfresco_id_field){
+		$("#help_span").text("Please focus your cursor on the text input you wish to fill with the selected ID");
+	}
+	else{	
+		$("#" + alfresco_id_field).attr("value", id);
+		$("#help_span").text("");
+	}
+}
+function selected_field(input_id){
+	alfresco_id_field = input_id
+}
+$(document).ready(function(){
+	$("a.alfresco_search_link").overlay({close: '#alfresco_search_close'});
+ });
+//-->
+</script>
+<style>
+	#alfresco_search {background-image:url(overlay.png);  width:500; display:none; }
+	#alfresco_search_form {width: 500px; border:1px solid #EEEEEE; margin:10px;}
+	#alfresco_search_form_handle {background-color:#417690; color:#FFF; border-bottom:1px solid #EEEEEE; text-align:center;}
+	#alfresco_search_form_handle a{text-decoration:none; color:#FFF; float:right}
+	#alfresco_search_form_handle_content {background-color:#F0F0F0; padding:0px }
+	.alfrescoImageField{ width:20em; border:1px solid #CCCCCC;}
+</style>
+
+<div id="alfresco_search"> 
+	<div id="alfresco_search_form">
+		<div id="alfresco_search_form_handle"> 
+	            <a href="#" id="alfresco_search_close">[ x ]</a>Alfresco Content Search
+		</div>
+		<div id="alfresco_search_form_handle_content">
+			<form action="" method="GET" onsubmit="doSearch(this); return false;">
+			<input name='q' type="text"/>
+			<input type="submit" value="Search"/>
+			<span id="help_span"></span>
+			</form>
+			<ul id="results"></ul>
+		</div>
+	</div>
+</div>

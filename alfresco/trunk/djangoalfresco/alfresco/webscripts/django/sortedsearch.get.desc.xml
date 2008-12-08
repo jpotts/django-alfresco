@@ -1,0 +1,8 @@
+<webscript>
+  <shortname>Sorted Search</shortname>
+  <description>Use the sorted search apis to sort</description>
+  <url>/django/sortedsearch?q={q?}&amp;sort_by={sort_by?}</url>
+  <format default="xml">argument</format>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

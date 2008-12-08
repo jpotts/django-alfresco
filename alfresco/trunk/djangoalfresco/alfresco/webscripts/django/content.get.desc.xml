@@ -1,0 +1,7 @@
+<webscript>
+  <shortname>Archive Test</shortname>
+  <description>Get a single doc</description>
+  <url>/django/archive</url>
+  <authentication>user</authentication>
+  <transaction>required</transaction>
+</webscript>

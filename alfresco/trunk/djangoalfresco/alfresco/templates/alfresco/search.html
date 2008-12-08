@@ -1,0 +1,59 @@
+{% extends 'base.html'%}
+
+{% block title%}{{object.title}}{% endblock %}
+{%block extra-head%}
+{%endblock%}
+
+
+{% block sidebar-left %}{%endblock%}
+{% block page-class %}full{%endblock%}
+{% block feature %}
+<div id="featureContainer" class="full feature-container-permalink">
+  <h1>
+   Search
+  </h1>
+ </div>
+{% endblock %}
+
+{% block content%}
+<p><a href="/search/node/django" class="active">Search content</a> | <a href="/search/profile/django">Search blogger profile</a></p>
+            			<form action="."  accept-charset="UTF-8" method="get" id="search-form" class="search-form">
+<div><div class="form-item">
+ <label>Enter your keywords: </label>
+ <div class="container-inline"><div class="form-item" id="edit-keys-wrapper">
+ {{form.q}}
+</div>
+<input type="submit" id="edit-submit" value="Search"  class="form-submit" />
+</div>
+</div>
+</div></form>
+<div class="box">
+    <h2 class="title">Search results</h2>    <div class="content">
+    <div class="menuPaging"><span class="barSpaceTitle">Page:</span>
+		{% for p in pages %}
+		<span {% ifequal p page.number%}class="select"{% endifequal %}><a href="{{get_params.page}}page={{p}}">{{p}}</a></span>
+		{% endfor %}
+		{% if page.has_next %}<a href="{{get_params.page}}page={{page.next_page_number}}">&gt;&gt;</a>{% endif %}
+	  </div>
+    <dl class="search-results node-results">
+    
+    {% for object in page.object_list %}
+    <dt class="title">
+  		<a href="{{ object.get_absolute_url }}">{{object.title}}</a>
+	</dt>
+	<dd>
+      <p class="search-snippet">{{object.content|striptags|safe|truncatewords:10}}</p>
+	  <p class="search-info">{{object.mimetype}} - <a href="#" title="View user profilee">{{object.author}}</a> - {{object.modified|date:"m/d/Y"}}</p>
+    </dd>
+    {% endfor %}
+    
+    </dl>
+    <div class="menuPaging"><span class="barSpaceTitle">Page:</span>
+		{% for p in pages %}
+		<span {% ifequal p page.number%}class="select"{% endifequal %}><a href="{{get_params.page}}page={{p}}">{{p}}</a></span>
+		{% endfor %}
+		{% if page.has_next %}<a href="{{get_params.page}}page={{page.next_page_number}}">&gt;&gt;</a>{% endif %}
+	  </div>
+    </div><!-- .content -->
+</div><!-- .box -->
+{% endblock %}

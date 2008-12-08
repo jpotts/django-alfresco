@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+
+{% block title%}{{category.name}}{% endblock%}
+{% block extra-head %}
+<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url rss_feed category.get_rss %}" />
+{% endblock %}
+
+{% block feature %}
+    <div id="featureContainer">
+      <div>
+  <h1>
+    {% for crumb in category.breadcrumbs %}
+  	<a href="{{crumb.url}}" class="active">{{crumb.name}}</a> <span> > </span>
+    {% endfor %}
+     All
+  </h1>
+  </div>
+  </div>
+{% endblock %}
+
+{% block sidebar-left %}
+<div id="title"> Blog Channels</div>
+<ul class="menu">
+<li><a href="{{category.get_absolute_url}}" class="active">All</a></li>
+{% for cat in category.child.all%}
+<li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+{% endfor %}
+</ul>
+ {% endblock %}
+
+{% block content-left %}
+{% for doc in recent_docs %}
+<div class="entry" {% if forloop.first %}id="sticky"{% endif %}><h3><a name="blog-info" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>
+<span class="posted_by">Posted {{doc.modified|date:"j N Y"}} by <a href="/blog/jpotts">Jeff Potts</a> | Tags: <a href="/blog-term/Alfresco" name="blogtag">Alfresco</a>, <a href="/blog-term/Content%20Management" name="blogtag">Content Management</a></span></h3>
+<p>
+{{doc.content|safe|striptags|truncatewords:40}}
+<a class="read_more" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">Read more</a>
+</p>
+</div>
+{% endfor %}
+<div class="clearfix"></div><div class="item-list"><ul class="pager"><li class="pager-current first">1</li>
+<li class="pager-item"><a href="/blog-channel?page=1" title="Go to page 2" class="active">2</a></li>
+<li class="pager-item"><a href="/blog-channel?page=2" title="Go to page 3" class="active">3</a></li>
+<li class="pager-ellipsis">…</li>
+<li class="pager-next"><a href="/blog-channel?page=1" title="Go to next page" class="active">next ›</a></li>
+<li class="pager-last last"><a href="/blog-channel?page=14" title="Go to last page" class="active">last »</a></li>
+</ul></div>
+{% endblock%}

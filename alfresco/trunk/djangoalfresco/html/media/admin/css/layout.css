@@ -1,0 +1,27 @@
+/* PAGE STRUCTURE */
+#container { position:relative; width:100%; min-width:760px; padding:0; }
+#content-main { float:left; width:100%; }
+#content-related { float:right; width:18em; position:relative; margin-right:-19em; }
+
+/*  COLUMN TYPES  */
+.colMS { margin-right:20em !important; }
+.colSM { margin-left:20em !important; }
+.colSM #content-related { float:left; margin-right:0; margin-left:-19em; }
+.colSM #content-main { float:right; }
+.popup .colM { width:95%; }
+.subcol { float:left; width:46%; margin-right:15px; }
+.dashboard #content { width:500px; }
+
+/* SIDEBAR */
+#content-related h3 { font-size:12px; color:#666; margin-bottom:3px; }
+#content-related h4 { font-size:11px; }
+#content-related .module h2 { background:#eee url(../img/nav-bg.gif) bottom left repeat-x; color:#666; }
+
+/* MODULES */
+.module { border:1px solid #ccc; margin-bottom:5px; background:white; }
+.module p, .module ul, .module h3, .module h4, .module dl, .module pre { padding-left:10px; padding-right:10px; }
+.module blockquote { margin-left:12px; }
+.module ul, .module ol { margin-left:1.5em; }
+.module h3 { margin-top:.6em; }
+.module h2, .module caption, .inline-group h2 { margin:0; padding:2px 5px 3px 5px; font-size:11px; text-align:left; font-weight:bold; background:#7CA0C7 url(../img/default-bg.gif) top left repeat-x; color:white; }
+.module table { border-collapse: collapse; }

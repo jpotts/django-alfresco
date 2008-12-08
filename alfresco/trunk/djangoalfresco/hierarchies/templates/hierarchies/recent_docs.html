@@ -1,0 +1,22 @@
+<style type="text/css">
+<!--
+	ul { font-size:9pt; margin-top:0em; margin-bottom:1em; list-style-position:outside; list-style-type:disc; font-weight:normal; line-height:1.1em;}
+	li { margin-top:0em; margin-bottom:0.25em;}
+	#linkList {font-weight:normal; margin:0em 0em 0.75em 0em; padding:0em;}
+	#linkList .title {font-size:0.95em; font-weight:700; margin:0em 0em 0.4em 0em;}
+	#linkList ul {list-style:none; margin:0em; padding:0em;}
+	#linkList ul li {margin:0em 0em 0.4em 0em; padding:0em;}
+	li a {text-decoration:none;}
+	li a:link {text-decoration:none; color:#000099;}
+	li a:visited { text-decoration:none; color:#753375; }
+	li a:hover, a:active { text-decoration:underline; color:#000099;}
+-->
+</style>
+
+<div id="linkList">
+<ul>
+	{% for doc in recent_docs %}
+	<li><a href="{{doc.get_absolute_url}}" target="_parent">{{doc.title}}</a></li>
+	{% endfor %}
+</ul>
+</div>

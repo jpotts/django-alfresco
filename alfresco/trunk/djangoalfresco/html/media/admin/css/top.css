@@ -1,0 +1,53 @@
+
+
+.groupWrapper
+{
+	width: 45%;
+	float: left;
+	margin-right: 1%;
+	min-height: 400px;
+}
+.serializer
+{
+	clear: both;
+}
+.groupItem
+{
+	margin-bottom: 10px;
+}
+.groupItem .itemHeader
+{
+	line-height: 20px;
+	background-color: #7CA0C7;
+	color: #FFF;
+	padding: 0 5px;
+	cursor: move;
+	font-weight: bold;
+	font-size: 12px;
+	height: 22px;
+	position: relative;
+}
+
+.groupItem .itemHeader a
+{
+	position: absolute;
+	right: 10px;
+	top: 0px;
+	font-weight: normal;
+	font-size: 11px;
+	text-decoration: none;
+}
+.sortHelper
+{
+	border: 3px dashed #666;
+	width: auto !important;
+}
+
+.itemContent li
+{
+	list-style-type:none;
+}
+.itemContent ul
+{
+	padding-left: 5px;
+}
