@@ -1,5 +1,6 @@
 from django import template
 from django.db import models
+from alfresco import service
 Category = models.get_model('hierarchies', 'category')
 Hierarchy = models.get_model('hierarchies', 'hierarchy')
 
@@ -124,4 +125,46 @@ def get_top_categories(parser, token):
     if bits[2] != 'as':
         raise template.TemplateSyntaxError, "%s tag requires the the third argument to be 'as'" % token.contents.split()[0]
        
-    return GetTopCategories(bits[1],bits[3],bits[4:]) 
+    return GetTopCategories(bits[1],bits[3],bits[4:])
+
+
+class GetRecentDocs(template.Node):
+    def __init__(self,slug_path, limit, var_name,):
+        self.slug_path = slug_path
+        self.limit = int(limit)
+        self.var_name = var_name 
+  
+    def render(self, context):
+        try:
+            cat_or_hier = Category.objects.get(slug_path=self.slug_path)
+        except:
+            cat_or_hier = Hierarchy.objects.get(slug=self.slug_path)
+        
+        user = template.Variable('user').resolve(context)
+        try:
+            recent_docs = service.generic_search(cat_or_hier.space.q_path_any_below_include(), 
+                                                 '-modified', self.limit, user.ticket, True)
+            context[self.var_name] = recent_docs
+        except(service.AlfrescoException, AttributeError):
+            pass
+        
+        return ''
+
+@register.tag      
+def get_recent_docs(parser, token):
+    """
+    
+    {% get_recent_docs [slug_path] [limit] as [var name] %}
+    
+    """
+    
+    bits = token.contents.split()    
+    
+    if len(bits) < 5:
+        raise template.TemplateSyntaxError, "%s tag requires 3 arguments " % token.contents.split()[0]
+    if bits[3] != 'as':
+        raise template.TemplateSyntaxError, "%s tag requires the the third argument to be 'as'" % token.contents.split()[0]
+       
+    return GetRecentDocs(bits[1],bits[2],bits[4])
+    
+    
