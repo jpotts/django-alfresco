@@ -34,18 +34,18 @@ NS_RE = re.compile('{.*?}')
 ATOM_NAMESPACE = u'http://www.w3.org/2005/Atom'
 CMIS_NAMESPACE = u'http://www.cmis.org/2008/05'
 
+
 class RESTRequest(urllib2.Request):
     """
     Overrides urllib's request default behavior
     """
     def __init__(self, *args, **kwargs):
         self._method = kwargs.pop('method', 'GET')
-        self._ticket = kwargs.pop('ticket', None)
+        self._auth = kwargs.pop('auth', None)
         assert self._method in ['GET', 'POST', 'PUT', 'DELETE']
         urllib2.Request.__init__(self, *args, **kwargs)
-        if self._ticket:
-            # The strip is very important and took 6 hours of my life to fix.
-            self.add_header('Authorization', 'Basic %s' % self._ticket)
+        if self._auth:
+            self.add_header('Authorization', 'Basic %s' % self._auth)
 
     def get_method(self):
         return self._method
@@ -67,8 +67,10 @@ def join(a):
 
 def clean_tag(tag):
     return NS_RE.sub('', tag)
-    
-#Taken from http://code.activestate.com/recipes/573463/
+
+########################################################
+#Taken from http://code.activestate.com/recipes/573463/#
+########################################################
 class XmlDictObject(dict):
     #TODO
     def __init__(self, initdict=None):
@@ -133,6 +135,7 @@ def _ConvertXmlToDictRecurse(node, dictclass):
         
 def ConvertXmlToDict(root, dictclass=XmlDictObject):
     return dictclass({clean_tag(root.tag): _ConvertXmlToDictRecurse(root, dictclass)})
+########################################################
 
 def parse_response(response):
     response_type = response.headers.subtype
@@ -268,10 +271,29 @@ class CMISService(object):
     TODO:
         Error handling.
     """
-    def __init__(self, service_url='http://localhost:8080/', service_root='alfresco/service/api'):
+    def __init__(self, service_url='http://localhost:8080/', service_root='alfresco/service/api', user=None, password=None):
         self.service_url = service_url
         self.service_root = service_root
         self.url = None
+        self.auth =  None
+        #If we get a username and password we assume that it's the default user.
+        if user and password:
+            self.auth = self._authorize(user=user, password=password)
+    
+    def _authorize(self, **kwargs):
+        user = kwargs.pop('user', None)
+        password = kwargs.pop('password', None)
+        ticket = kwargs.pop('ticket', None)
+        #honor the passed in information first
+        if ticket:
+            return base64.encodestring(ticket).strip()
+        elif user and password:
+            return base64.encodestring('%s:%s' % (user, password)).strip()
+        elif self.auth:
+            return self.auth
+        else:
+            #Need CMIS specific Error
+            raise TypeError('need either a ticket or a username and password')
     
     def _build_url(self, *args, **kwargs):
         self.url = join([self.service_url, self.service_root] + list(args))
@@ -280,21 +302,24 @@ class CMISService(object):
             self.url = self.url +'?'+query.replace(' ', '%20')
         print self.url
     
-    def get(self, id , ticket, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def get(self, id, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
-        request = RESTRequest(self.url, method='GET', ticket=ticket)
+        auth = self._authorize( **kwargs)
+        request = RESTRequest(self.url, method='GET', auth=auth)
         request_response = urllib2.urlopen(request)
         return parse_response(request_response)
 
-    def simple(self, ticket, method):
+    def simple(self, method, **kwargs):
         self._build_url(method)
-        request = RESTRequest(self.url, method='GET', ticket=ticket)
+        auth = self._authorize( **kwargs)
+        request = RESTRequest(self.url, method='GET', auth=auth)
         request_response = urllib2.urlopen(request)
         return parse_response(request_response)
     
-    def delete(self, id, ticket, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def delete(self, id, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
-        request = RESTRequest(self.url, method='DELETE', ticket=ticket)
+        auth = self._authorize( **kwargs)
+        request = RESTRequest(self.url, method='DELETE', auth=auth)
         try:
             urllib2.urlopen(request)
         except urllib2.HTTPError, e:
@@ -302,21 +327,23 @@ class CMISService(object):
                 raise e
         return None
     
-    def put(self, id, ticket, params, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def put(self, id, params, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
         doc = CMISDocument()
         doc.setProperties(params)
-        request = RESTRequest(self.url, doc.toxml(), method='PUT', ticket=ticket)
+        auth = self._authorize( **kwargs)
+        request = RESTRequest(self.url, doc.toxml(), method='PUT', auth=auth)
         request.add_header('Content-Type', 'application/atom+xml;type=entry')
         request_response = urllib2.urlopen(request)
         return parse_response(request_response)
     
-    def post(self, id, ticket, params, cmis_params=None, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def post(self, id, params, cmis_params=None, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
         doc = CMISDocument()
         doc.setProperties(params)
         doc.setCMISProperties(cmis_params)
-        request = RESTRequest(self.url, doc.toxml(), method='POST', ticket=ticket)
+        auth = self._authorize( **kwargs)
+        request = RESTRequest(self.url, doc.toxml(), method='POST', auth=auth)
         request.add_header('Content-Type', 'application/atom+xml;type=entry')
         try:
             urllib2.urlopen(request)
@@ -326,7 +353,6 @@ class CMISService(object):
             else:
                 return parse_response(e.read())
 
-
 class Repository(object):
     """
     Main class for a CMIS Repository. Every function is scoped within a Repository.
@@ -334,6 +360,10 @@ class Repository(object):
     The function calls are based off the CMIS Rest protocol binding v.05 not the alfresco implementation
     
     """
+    
+    constants = {'VERSIONING_STATE' : 
+                 {'CHECKED_OUT':'CheckedOut', 'CHECKED_IN_MINOR':'CheckedInMinor', 'CHECKED_IN_MAJOR':'CheckedInMajor'}}
+    
     def __init__(self, data = None, service_url=None, service_root=None, *args, **kwargs):
         self.cmis = CMISService(service_url, service_root)
         self.id = None
@@ -346,27 +376,15 @@ class Repository(object):
             for key, value in data.items():
                 setattr(self, key, value)
 
-    def _authorize(self, **kwargs):
-        user = kwargs.pop('username', None)
-        password = kwargs.pop('password', None)
-        ticket = kwargs.pop('ticket', None)        
-        if ticket:
-            return base64.encodestring(ticket).strip()
-        elif user and password:
-            return base64.encodestring('%s:%s' % (user, password)).strip()
-        else:
-            #Need CMIS specific Error
-            raise TypeError('need either a ticket or a username and password')
-
     #REPOSITORY SERVICES
-    def get_repositories(self):
+    def get_repositories(self, **kwargs):
         """
         GET /alfresco/service/api/repository
         GET /alfresco/service/api/cmis
         """
-        pass
+        return self.cmis.simple('repository', **kwargs)
     
-    def get_repository_info(self):
+    def get_repository_info(self, repositoryId, **kwargs):
         """
         getRepositoryInfo
         This service is used to retrieve information about the CMIS repository and the capabilities
@@ -376,19 +394,44 @@ class Repository(object):
         """
         pass
 
-    def get_types(self, **kwargs):
+    def get_types(self, skipCount=0, maxItems=0, includePropertyDefinition=False, **kwargs):
         """
-        getTypes
-        
+        GET /alfresco/service/api/types?type={type?}&includePropertyDefinitions={includePropertyDefinitions?}&skipCount={skipCount?}&maxItems={maxItems?}
+        ---
         Returns the list of all types in the repository.
-        Headers: CMIS-type (typeId), CMIS-includePropertyDefinitions (Boolean), CMIS –maxItems
-            (Integer), CMIS-skipCount (Integer)
-        HTTP Arguments: type, includePropertyDefinitions, maxItems, skipCount
+        
+        Inputs:
+        
+        (Optional) ID typeId: not set (default)
+        (Optional) Bool returnPropertyDefinitions: False (default)
+        (Optional) int maxItems: 0 = Repository-default number of items (Default)
+        (Optional) int skipCount: 0 = start (Default)
+        
+        Outputs:
+        
+        Result Set - List of types
+        Boolean hasMoreItems
+        The type attributes of each type will be returned
+        The property definitions of each type will be returned if returnPropertyDefinitions is TRUE.
+        
+        Notes:
+        
+        A repository may support a hierarchy of types but CMIS will return them as a flat list.
+        If provided, the input parameter “TypeId” specifies to only return the specific Object Type 
+        and its descendants. If not provided, all Object Types are to be returned.
+        
+        If no “maxItems” value is provided, then the Repository will determine an appropriate number
+        of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
+        
+        If “returnPropertyDefinitions” is False, then the Repository will return only the 
+        “Attributes” of the Object Type Definition as specified in the “Object Type” section of the Data Model.
+        Otherwise, property definitions will also be returned for each object type.
+        ---
         """
-        auth = self._authorize(**kwargs)
-        return self.cmis.simple(auth, 'types').parse_types()
+        return self.cmis.simple('types', skipCount=skipCount, maxItems=maxItems, 
+                                includePropertyDefinition=includePropertyDefinition, **kwargs).parse_types()
     
-    def get_type_definition(self):
+    def get_type_definition(self, type, includePropertyDefinition=False, **kwargs):
         """
         getTypeDefinition
         
@@ -397,10 +440,11 @@ class Repository(object):
         Headers: CMIS-includePropertyDefinitions (Boolean)
         HTTP Arguments: includePropertyDefinitions
         """
-        pass
+        return self.cmis.simple('types', type=type, includePropertyDefinition=includePropertyDefinition)
     
     #NAVIGATION SERVICES
-    def get_descendants(self):
+    def get_descendants(self, id, depth=1, types=None, filter=None, include_allowable_actions=False, 
+                        include_relationships=None, order_by=None, package='node', **kwargs):
         """
         Description 
             Gets the list of document and folder objects contained at one or more levels below the
@@ -455,9 +499,12 @@ class Repository(object):
             If it is set to "none", relationships are not returned.
 
         """
-        pass
+        return self.cmis.get(id=id, method='descendants', package=package, depth=depth, types=types, 
+                      filter=filter, includeAllowableActions=include_allowable_actions, 
+                      includeRelationships=include_relationships, orderBy=order_by, **kwargs)
     
-    def get_children(self):
+    def get_children(self, id, types=None, filter=None, include_allowable_actions=False, 
+                        include_relationships=None, max_items=0, skip_count=0, order_by=None, package='node', **kwargs):
         """
         GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/children?types={types}&filter={filter?}&skipCount={skipCount?}&maxItems={maxItems?}
         GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/children?types={types}&filter={filter?}&skipCount={skipCount?}&maxItems={maxItems?}
@@ -492,7 +539,7 @@ class Repository(object):
         objects or more likely show an object twice (bottom of first page and top of second) when an object is added to the top of the list.
         
         Ordering is repository-specific except the ordering MUST remain consistent across invocations, provided that the repository state has not changed.
-        When returning the results of a call where the caller specified ￢ﾀﾜAny￢ﾀﾝ type, the repository SHOULD return all folder objects first followed by other objects.
+        When returning the results of a call where the caller specified -Any- type, the repository SHOULD return all folder objects first followed by other objects.
         If includeAllowableActions is TRUE, the repository will return the allowable actions for the current user for each child object as part of the output.
         
         "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", 
@@ -503,12 +550,16 @@ class Repository(object):
         How the Repository determines this value is repository-specific and opaque to CMIS.
         ---
         """
-        pass
+        return self.cmis.get(id=id, method='children', package=package, types=types, 
+                      filter=filter, includeAllowableActions=include_allowable_actions, 
+                      includeRelationships=include_relationships,  maxItems=max_items, 
+                      skipCount=skip_count, orderBy=order_by, **kwargs)
     
     def get_folder_parent(self):
         pass
     
-    def get_object_parents(self):
+    def get_object_parents(self, id, filter=None, include_allowable_actions=False, 
+                        include_relationships=None, package='node', **kwargs):
         """
         GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/parents?filter={filter?}
         GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/parents?filter={filter?}
@@ -533,9 +584,12 @@ class Repository(object):
         If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for each parent folder as part of the output.
         "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.     
         """
-        pass
+        return self.cmis.get(id=id, method='parents', package=package,
+              filter=filter, includeAllowableActions=include_allowable_actions, 
+              includeRelationships=include_relationships, **kwargs)
     
-    def get_checked_out_documents(self):
+    def get_checked_out_documents(self, id, filter=None, include_allowable_actions=False, 
+                        include_relationships=None, max_items=0, skip_count=0, **kwargs):
         """
         GET /alfresco/service/api/checkedout?folderId={folderId?}&includeDescendants={includeDescendants?}&filter={filter?}&skipCount={skipCount?}&maxItems={maxItems?}
         ---
@@ -572,12 +626,15 @@ class Repository(object):
         How the Repository determines this value is repository-specific and opaque to CMIS.
 
         """
-        pass
+        return self.cmis.simple(method='checkedout', folderId=id,
+                      filter=filter, includeAllowableActions=include_allowable_actions, 
+                      includeRelationships=include_relationships,  maxItems=max_items, 
+                      skipCount=skip_count, **kwargs)
     
     #OBJECT SERVICES
-    def create_document(self):
+    def create_document(self, id, type, properties, folder_id=None, content_stream=None, versioning_state=None, package='node', **kwargs):
         """
-                POST /alfresco/service/api/node/{store_type}/{store_id}/{id}/children
+        POST /alfresco/service/api/node/{store_type}/{store_id}/{id}/children
         POST /alfresco/service/api/path/{store_type}/{store_id}/{id}/children
         ---
         Creates a document object of the specified type, and optionally adds the document to a folder
@@ -611,6 +668,17 @@ class Repository(object):
         
         Creates a folder object of the specified type
         
+        <?xml version="1.0" encoding="utf-8"?>
+        <entry xmlns="http://www.w3.org/2005/Atom" xmlns:cmis="http://www.cmis.org/2008/05">
+            <title>${NAME}</title>
+            <summary>${NAME} (summary)</summary>
+            <content type="text/html">${CONTENT}</content>
+            <cmis:object>
+                <cmis:properties>
+                    <cmis:propertyString cmis:name="ObjectTypeId"><cmis:value>document</cmis:value></cmis:propertyString>
+                </cmis:properties>
+            </cmis:object>
+        </entry>
         Inputs:
         
         ID typeId: Folder type
@@ -730,7 +798,8 @@ class Repository(object):
         getAllowableActions
         Description
             Returns the list of allowable actions for a document, folder, or relationship object based
-            on thGET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
+            on th
+        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
         GET /alfresco/service/api/path/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
         ---
         Returns the properties of an object, and optionally the operations that the user is allowed to perform on the object
