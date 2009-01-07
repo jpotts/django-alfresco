@@ -9,8 +9,7 @@ TODO: Create a python object around a workspace.
     use:
         from alfresco import cmis
         #login user
-        workspace = cmis.Workspace('http://localhost:8080/alfresco/service/api')
-        workspace = cmis.SingleUserWorkspace('http://localhost:8080/alfresco/service/api', user, password)        
+        repository = cmis.Repository('http://localhost:8080/', 'alfresco/service/api', 'admin', 'admin')     
         #authentication
         ticket = workspace.login('admin', 'admin')
         #children
@@ -154,31 +153,8 @@ class CMISFeedParser(object):
         self.feed = ConvertXmlToDict(ElementTree.fromstring(response.read()))
         
     def parse(self):
-        if self.feed.has_key('service'):
-            return self.parse_service()
-        else:
-            return self.feed
-
-    def parse_service(self):
-        """
-        Make service a little easier to digest.
-        """
-        workspaces = self.feed.service.workspace
-        if isinstance(workspaces, dict):
-            workspaces = [workspaces]
-        temp_list = []
-        for data in workspaces:
-            temp_dict = XmlDictObject()
-            temp_dict.tile = data.title
-            temp_dict.root_folder_id = data.repositoryInfo.rootFolderId
-            temp_dict.vendor_name = data.repositoryInfo.vendorName
-            temp_dict.id = data.repositoryInfo.repositoryId
-            temp_dict.collections = dict([(a.collectionType, a.href) for a in data.collection])
-            temp_dict.capabilities = data.repositoryInfo.capabilities
-            temp_list.append(temp_dict)
-        self.feed.service.workspace = temp_list
         return self.feed
-
+    
     def parse_types(self):
         """
         Types are a pain to navigate in CMIS form. we create a better dict
@@ -310,7 +286,7 @@ class CMISService(object):
         return parse_response(request_response)
 
     def simple(self, method, **kwargs):
-        self._build_url(method)
+        self._build_url(method, **kwargs)
         auth = self._authorize( **kwargs)
         request = RESTRequest(self.url, method='GET', auth=auth)
         request_response = urllib2.urlopen(request)
@@ -327,23 +303,18 @@ class CMISService(object):
                 raise e
         return None
     
-    def put(self, id, params, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def put(self, id, payload, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
-        doc = CMISDocument()
-        doc.setProperties(params)
         auth = self._authorize( **kwargs)
-        request = RESTRequest(self.url, doc.toxml(), method='PUT', auth=auth)
+        request = RESTRequest(self.url, payload, method='PUT', auth=auth)
         request.add_header('Content-Type', 'application/atom+xml;type=entry')
         request_response = urllib2.urlopen(request)
         return parse_response(request_response)
     
-    def post(self, id, params, cmis_params=None, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
+    def post(self, id, payload, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
-        doc = CMISDocument()
-        doc.setProperties(params)
-        doc.setCMISProperties(cmis_params)
         auth = self._authorize( **kwargs)
-        request = RESTRequest(self.url, doc.toxml(), method='POST', auth=auth)
+        request = RESTRequest(self.url, payload, method='POST', auth=auth)
         request.add_header('Content-Type', 'application/atom+xml;type=entry')
         try:
             urllib2.urlopen(request)
@@ -364,17 +335,23 @@ class Repository(object):
     constants = {'VERSIONING_STATE' : 
                  {'CHECKED_OUT':'CheckedOut', 'CHECKED_IN_MINOR':'CheckedInMinor', 'CHECKED_IN_MAJOR':'CheckedInMajor'}}
     
-    def __init__(self, data = None, service_url=None, service_root=None, *args, **kwargs):
-        self.cmis = CMISService(service_url, service_root)
-        self.id = None
-        self.capabilities = {}
-        self.root_folder = None
-        self.collections = {}
-        self.vendor_name = None
-        self.product_name = None
-        if data:
-            for key, value in data.items():
-                setattr(self, key, value)
+    def __init__(self, service_url, service_root, username, password):
+        self.service = CMISService(service_url, service_root, username, password)
+        
+        feed = self.get_repository_info()
+        #Only one workspace in Alfresco Repositories
+        data = feed.service.workspace
+        self.title = data.title
+        self.id = data.repositoryInfo.repositoryId
+        self.name = data.repositoryInfo.repositoryName
+        self.relationship = data.repositoryInfo.repositoryRelationship
+        self.description = data.repositoryInfo.repositoryDescription
+        self.vendor_name = data.repositoryInfo.vendorName
+        self.product_name = data.repositoryInfo.productName
+        self.product_version = data.repositoryInfo.productVersion
+        self.root_folder_id = data.repositoryInfo.rootFolderId
+        self.collections = dict([(a.collectionType, a.href) for a in data.collection])
+        self.capabilities = data.repositoryInfo.capabilities
 
     #REPOSITORY SERVICES
     def get_repositories(self, **kwargs):
@@ -382,9 +359,9 @@ class Repository(object):
         GET /alfresco/service/api/repository
         GET /alfresco/service/api/cmis
         """
-        return self.cmis.simple('repository', **kwargs)
+        raise NotImplementedError("Alfresco doesn't have multiple repositories")
     
-    def get_repository_info(self, repositoryId, **kwargs):
+    def get_repository_info(self, **kwargs):
         """
         getRepositoryInfo
         This service is used to retrieve information about the CMIS repository and the capabilities
@@ -392,7 +369,7 @@ class Repository(object):
         Headers: CMIS-repositoryId
         HTTP Arguments: repositoryId
         """
-        pass
+        return self.service.simple('repository', **kwargs).parse()
 
     def get_types(self, skipCount=0, maxItems=0, includePropertyDefinition=False, **kwargs):
         """
@@ -417,18 +394,18 @@ class Repository(object):
         Notes:
         
         A repository may support a hierarchy of types but CMIS will return them as a flat list.
-        If provided, the input parameter “TypeId” specifies to only return the specific Object Type 
+        If provided, the input parameter "TypeId" specifies to only return the specific Object Type 
         and its descendants. If not provided, all Object Types are to be returned.
         
-        If no “maxItems” value is provided, then the Repository will determine an appropriate number
+        If no "maxItems" value is provided, then the Repository will determine an appropriate number
         of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
         
-        If “returnPropertyDefinitions” is False, then the Repository will return only the 
-        “Attributes” of the Object Type Definition as specified in the “Object Type” section of the Data Model.
+        If "returnPropertyDefinitions" is False, then the Repository will return only the 
+        "Attributes" of the Object Type Definition as specified in the "Object Type" section of the Data Model.
         Otherwise, property definitions will also be returned for each object type.
         ---
         """
-        return self.cmis.simple('types', skipCount=skipCount, maxItems=maxItems, 
+        return self.service.simple('types', skipCount=skipCount, maxItems=maxItems, 
                                 includePropertyDefinition=includePropertyDefinition, **kwargs).parse_types()
     
     def get_type_definition(self, type, includePropertyDefinition=False, **kwargs):
@@ -440,7 +417,7 @@ class Repository(object):
         Headers: CMIS-includePropertyDefinitions (Boolean)
         HTTP Arguments: includePropertyDefinitions
         """
-        return self.cmis.simple('types', type=type, includePropertyDefinition=includePropertyDefinition)
+        return self.service.simple('types', type=type, includePropertyDefinition=includePropertyDefinition)
     
     #NAVIGATION SERVICES
     def get_descendants(self, id, depth=1, types=None, filter=None, include_allowable_actions=False, 
@@ -472,11 +449,11 @@ class Repository(object):
             
             ID folderId
             (Optional) Enum type: Documents, Folders, Policies, Any (default)
-            (Optional) Int depth: 1 this folder only (Default), … N folders deep, -1 for all levels
+            (Optional) Int depth: 1 this folder only (Default), N folders deep, -1 for all levels
             (Optional) String filter: Filter specifying which properties to return.
             (Optional) Boolean includeAllowableActions: False (default)
             (Optional) Enum includeRelationships: none (default), source, target, both
-            (Optional) String orderBy: must be a valid ORDER BY clause from the query grammer excluding ‘ORDER BY’. Example ‘name DESC’.
+            (Optional) String orderBy: must be a valid ORDER BY clause from the query grammer excluding 'ORDER BY'. Example 'name DESC'.
             
             Outputs:
             
@@ -488,9 +465,9 @@ class Repository(object):
             The ordering and tree walk algorithm is repository-specific, but SHOULD be consistent.
             This method will return all objects of the specified type in the specified depth.
             If no type is specified, then objects of all types will be returned.
-            When returning the results of a call where the caller specified “Any” type, the repository SHOULD return, at each nesting level,
+            When returning the results of a call where the caller specified "Any" type, the repository SHOULD return, at each nesting level,
             all folder objects first followed by other objects.
-            If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current 
+            If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current 
             user for each descendant object as part of the output.
             "IncludeRelationships" indicates whether relationships are also returned for each returned object. 
             If it is set to "source" or "target", relationships for which the returned object is a source, 
@@ -499,7 +476,7 @@ class Repository(object):
             If it is set to "none", relationships are not returned.
 
         """
-        return self.cmis.get(id=id, method='descendants', package=package, depth=depth, types=types, 
+        return self.service.get(id=id, method='descendants', package=package, depth=depth, types=types, 
                       filter=filter, includeAllowableActions=include_allowable_actions, 
                       includeRelationships=include_relationships, orderBy=order_by, **kwargs)
     
@@ -550,7 +527,7 @@ class Repository(object):
         How the Repository determines this value is repository-specific and opaque to CMIS.
         ---
         """
-        return self.cmis.get(id=id, method='children', package=package, types=types, 
+        return self.service.get(id=id, method='children', package=package, types=types, 
                       filter=filter, includeAllowableActions=include_allowable_actions, 
                       includeRelationships=include_relationships,  maxItems=max_items, 
                       skipCount=skip_count, orderBy=order_by, **kwargs)
@@ -581,10 +558,10 @@ class Repository(object):
         
         Order is repository-specific
         It is suggested that the parent and the ObjectId properties are included in the filter to allow re-ordering if necessary.
-        If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for each parent folder as part of the output.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each parent folder as part of the output.
         "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.     
         """
-        return self.cmis.get(id=id, method='parents', package=package,
+        return self.service.get(id=id, method='parents', package=package,
               filter=filter, includeAllowableActions=include_allowable_actions, 
               includeRelationships=include_relationships, **kwargs)
     
@@ -616,17 +593,17 @@ class Repository(object):
         The repository may include checked-out objects that the calling user has access to, but did not check out.
         If folderId is specified, then the results MUST include only the children of that folder, NOT other descendants of the folder 
         nor documents outside this tree.
-        If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for each document as part of the output.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each document as part of the output.
         
         "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", 
         relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
         relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
         
-        If no “maxItems” value is provided, then the Repository will determine an appropriate number of items to return. 
+        If no "maxItems" value is provided, then the Repository will determine an appropriate number of items to return. 
         How the Repository determines this value is repository-specific and opaque to CMIS.
 
         """
-        return self.cmis.simple(method='checkedout', folderId=id,
+        return self.service.simple(method='checkedout', folderId=id,
                       filter=filter, includeAllowableActions=include_allowable_actions, 
                       includeRelationships=include_relationships,  maxItems=max_items, 
                       skipCount=skip_count, **kwargs)
@@ -655,13 +632,13 @@ class Repository(object):
         or as a checked-in major version. If created in a checked-out state, the object is a PWC and there is no corresponding 
         "checked out document". (See the "Versioning" section.)
         
-        If the Document’s Object Type does not allow content-stream and a content-stream is provided, or if content-stream is 
+        If the Document's Object Type does not allow content-stream and a content-stream is provided, or if content-stream is 
         required and a content-stream is not provided, throw ConstraintViolationException.
-        If a Folder is specified, and the Document’s Object Type is not one of the “Allowed_Child_Object_Types” for this Folder, 
+        If a Folder is specified, and the Document's Object Type is not one of the "Allowed_Child_Object_Types" for this Folder, 
         throw ConstraintViolationException.
         If unfiling is not supported and a Folder is not specified, throw FolderNotValidException.
         Repositories MAY reject the createDocument request (by throwing ConstaintViolationException) 
-        if any of the Required properties specified in the Document’s Object Type are not set.
+        if any of the Required properties specified in the Document's Object Type are not set.
         However, iF the repository does NOT reject the createDocument request in this case, the repository MUST leave 
         the newly-created Document in a checked-out state, and MUST ensure that all required properties are set 
         before the Document is checked in.
@@ -690,7 +667,7 @@ class Repository(object):
         ID objectId: Id of the created folder object
         
         Notes:
-        If the to-be-created Folder’s Object Type is not one of the “Allowed_Child_Object_Types” for the parent Folder, throw ConstraintViolationException.
+        If the to-be-created Folder's Object Type is not one of the "Allowed_Child_Object_Types" for the parent Folder, throw ConstraintViolationException.
         Root folder can not be created using this service.
         """
         pass
@@ -718,13 +695,13 @@ class Repository(object):
         or as a checked-in major version. If created in a checked-out state, the object is a PWC and there is no corresponding 
         "checked out document". (See the "Versioning" section.)
         
-        If the Document’s Object Type does not allow content-stream and a content-stream is provided, or if content-stream is 
+        If the Document's Object Type does not allow content-stream and a content-stream is provided, or if content-stream is 
         required and a content-stream is not provided, throw ConstraintViolationException.
-        If a Folder is specified, and the Document’s Object Type is not one of the “Allowed_Child_Object_Types” for this Folder, 
+        If a Folder is specified, and the Document's Object Type is not one of the "Allowed_Child_Object_Types" for this Folder, 
         throw ConstraintViolationException.
         If unfiling is not supported and a Folder is not specified, throw FolderNotValidException.
         Repositories MAY reject the createDocument request (by throwing ConstaintViolationException) 
-        if any of the Required properties specified in the Document’s Object Type are not set.
+        if any of the Required properties specified in the Document's Object Type are not set.
         However, iF the repository does NOT reject the createDocument request in this case, the repository MUST leave 
         the newly-created Document in a checked-out state, and MUST ensure that all required properties are set 
         before the Document is checked in.
@@ -742,7 +719,7 @@ class Repository(object):
         ID objectId: Id of the created folder object
         
         Notes:
-        If the to-be-created Folder’s Object Type is not one of the “Allowed_Child_Object_Types” for the parent Folder, throw ConstraintViolationException.
+        If the to-be-created Folder's Object Type is not one of the "Allowed_Child_Object_Types" for the parent Folder, throw ConstraintViolationException.
         Root folder can not be created using this service.
         """
         pass
@@ -781,7 +758,7 @@ class Repository(object):
         
         Notes:
         
-        If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
         
         "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
         relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
@@ -789,7 +766,7 @@ class Repository(object):
         
         Does not return the content-stream of a document
         PropertyCollection includes changeToken (if applicable to repository)
-        e current user’s context.
+        e current user's context.
         """
         pass
     
@@ -819,7 +796,7 @@ class Repository(object):
         
         Notes:
         
-        If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
         
         "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
         relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
@@ -827,7 +804,7 @@ class Repository(object):
         
         Does not return the content-stream of a document
         PropertyCollection includes changeToken (if applicable to repository)
-        e current user’s context.
+        e current user's context.
         """
         pass
     
@@ -853,7 +830,7 @@ class Repository(object):
         
         Notes:
         
-        Some CMIS protocol bindings MAY choose not to explicitly implement a “getContentStream” method, in cases where the protocol itself provides built-in mechanisms for retrieving byte streams. (E.g. in the ATOM/REST binding, content streams may be retrieved via standard HTTP gets on an “edit-media” URL, rather than a CMIS-specific “getContentStream” URL). See Part II of the CMIS specification for additional details.
+        Some CMIS protocol bindings MAY choose not to explicitly implement a "getContentStream" method, in cases where the protocol itself provides built-in mechanisms for retrieving byte streams. (E.g. in the ATOM/REST binding, content streams may be retrieved via standard HTTP gets on an "edit-media" URL, rather than a CMIS-specific "getContentStream" URL). See Part II of the CMIS specification for additional details.
         Each CMIS protocol binding will provide a way for fetching a sub-range within a content stream, in a manner appropriate to that protocol.
         ---
         """
@@ -886,7 +863,7 @@ class Repository(object):
         For Multi-Value properties, the whole list of values MUST be provided on every update.
         Use getAllowableActions to identify whether older version specified by ID is updatable.
         If this is a private working copy, some repositories may not support updates.
-        Because repositories MAY automatically create new Document Versions on a user’s behalf, the objectId returned may not match the one provided as an input to this method.
+        Because repositories MAY automatically create new Document Versions on a user's behalf, the objectId returned may not match the one provided as an input to this method.
         """
         pass
     
@@ -938,9 +915,9 @@ class Repository(object):
         
         ID folderId
         Enum unfileNonfolderObjects:
-        o Unfile – unfile all non-folder objects from folders in this tree. They may remain filed in other folders, or may become unfiled.
-        o DeleteSingleFiled – delete non-folder objects filed only in this tree, and unfile the others so they remain filed in other folders.
-        o Delete – delete all non-folder objects in this tree (Default)
+        o Unfile -- unfile all non-folder objects from folders in this tree. They may remain filed in other folders, or may become unfiled.
+        o DeleteSingleFiled -- delete non-folder objects filed only in this tree, and unfile the others so they remain filed in other folders.
+        o Delete -- delete all non-folder objects in this tree (Default)
         (Optional) Bool continueOnFailure: False (Default)
         
         Outputs:
@@ -950,7 +927,7 @@ class Repository(object):
         Notes:
         
         If a non-folder object is removed from the last folder it is filed in, it can continue to survive outside of the folder 
-        structure if the repository supports the “Unfiling” capabiliity.
+        structure if the repository supports the "Unfiling" capabiliity.
         If the specified folder is the Root Folder, throw OperationNotSupportedException.
         If unfiling is not supported, throw OperationNotSupportedException if deleteTree is called with Unfile.
         For repositories that support version-specific filing, this may delete some versions of a document but not necessarily 
@@ -1008,7 +985,7 @@ class Repository(object):
         To remove the document from all folders: post it to the Unfiled collection.
         
         To remove the document from a particular folder: post an entry for the document to a folder in which you want
-        the document to be filed, including the http header “CMIS-removeFrom” with the value set to the folder from
+        the document to be filed, including the http header "CMIS-removeFrom" with the value set to the folder from
         which you want to unfile the document. (If the document is already in the folder to which you are posting, the
         document will be removed from the specified folder, but NOT doubly filed into the target folder.)
         """
@@ -1044,10 +1021,10 @@ class Repository(object):
         
         If SearchAllVersions is True, and CONTAINS() is used in the query, OperationNotSupported will be thrown if full-text search is not supported or if the repository does not have previous versions in the full-text index.
         Returns set of objects from (skipCount, maxItems+skipCount)
-        If no “maxItems” value is provided, then the Repository will determine an appropriate number of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
-        If “includeAllowableActions” is TRUE, the repository will return the allowable actions for the current user for each result object in the output table as an additional multi-valued column containing computed values of type string, provided that each row in the output table indeed corresponds to one object (which is true for a CMIS SQL 1.0 query without JOIN).
-        If each row in the output table does not correspond to a specific object and “includeAllowableActions” is TRUE, then InvalidArgumentException will be thrown.
-        It is recommended that “includeAllowableActions” be used with query statements without JOIN, and that the Object ID property or “*” be included in the SELECT list.
+        If no "maxItems" value is provided, then the Repository will determine an appropriate number of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each result object in the output table as an additional multi-valued column containing computed values of type string, provided that each row in the output table indeed corresponds to one object (which is true for a CMIS SQL 1.0 query without JOIN).
+        If each row in the output table does not correspond to a specific object and "includeAllowableActions" is TRUE, then InvalidArgumentException will be thrown.
+        It is recommended that "includeAllowableActions" be used with query statements without JOIN, and that the Object ID property or "*" be included in the SELECT list.
         "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
         ---
         """
@@ -1121,7 +1098,7 @@ class Repository(object):
         CheckinComment is persisted if specified.
         For repositories that do not support updating private working copies, all updates MUST be set on the check-in service.
         If Document is not checked out, throw OperationNotSupportedException.
-        If the Document has “Content_Stream_Allowed” set to FALSE, and a call is made to checkIn that includes a content-stream, throw ConstraintViolationException.
+        If the Document has "Content_Stream_Allowed" set to FALSE, and a call is made to checkIn that includes a content-stream, throw ConstraintViolationException.
         ---
         """
         pass
@@ -1136,7 +1113,7 @@ class Repository(object):
             Headers: CMIS-filter (Boolean), CMIS- majorVersion (Boolean)
             HTTP Arguments: filter, majorVersion
         
-        This method is accessed by following the link of type ‘cmis -latestversion’ on any entry. The inputs will be HTTP
+        This method is accessed by following the link of type 'cmis -latestversion' on any entry. The inputs will be HTTP
         header tags on the GET request.
     
         SEE getProperties
@@ -1158,8 +1135,8 @@ class Repository(object):
         """
         deleteAllVersions
         Description
-            Deletes all documents in the version series specified by a member’s ObjectId.
-        This method will be invoked by calling DELETE on link ‘cmis -allversions’ resource.
+            Deletes all documents in the version series specified by a member's ObjectId.
+        This method will be invoked by calling DELETE on link 'cmis -allversions' resource.
         """
         pass
     
@@ -1177,27 +1154,3 @@ class Repository(object):
                 skipCount, direction (target, s ource, all) , includeAllowableActions
         """
         raise NotImplementedError("Alfresco doesn't have this yet")
-    
-class Service(object):
-    
-    def __init__(self, service_url, service_root, user, password):
-        self.service_url = service_url
-        self.service_root = service_root
-        self.cmis = CMISService(service_url, service_root)
-        self.auth = base64.encodestring('%s:%s' % (user, password)).strip()
-        self.repositories = self.get_repositories(self.auth)
-    
-    def get_repositories(self, auth):
-        r = self.cmis.simple(auth, 'repository').parse_service()
-        if isinstance(r.service.workspace,dict):
-            return [Repository(r.service.workspace, service_url=self.service_url, service_root=self.service_root)]
-        else:
-            temp = []
-            for w in r.service.workspace:
-                temp.append(Repository(w, service_url=self.service_url, service_root=self.service_root))
-            return temp
-        
-if __name__ == '__main__':
-    s = Service('http://localhost:8080/','alfresco/service/api', 'admin', 'admin')
-    h = s.repositories[0]
-    h.get_types(username='admin', password='admin')
