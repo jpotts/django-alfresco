@@ -273,7 +273,7 @@ class CMISService(object):
     
     def _build_url(self, *args, **kwargs):
         self.url = join([self.service_url, self.service_root] + list(args))
-        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items()])
+        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items() if value])
         if query:
             self.url = self.url +'?'+query.replace(' ', '%20')
         print self.url
