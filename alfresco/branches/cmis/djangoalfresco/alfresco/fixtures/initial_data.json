@@ -1,0 +1,38 @@
+[
+    {
+        "pk": "955de82b-2c76-4ce6-b6ce-555814244faf", 
+        "model": "alfresco.space", 
+        "fields": {
+            "path": "/Company Home/News", 
+            "name": "Blog", 
+            "qname": "/app:company_home/cm:News/cm:Blog"
+        }
+    }, 
+    {
+        "pk": "0a0d2b51-5805-4d02-8aee-1f788b82dd26", 
+        "model": "alfresco.space", 
+        "fields": {
+            "path": "/Company Home/News/Blog", 
+            "name": "Ecommerce", 
+            "qname": "/app:company_home/cm:News/cm:Blog/cm:Ecommerce"
+        }
+    }, 
+    {
+        "pk": "ef815d88-620d-44d7-a186-9fa3aacc7dcf", 
+        "model": "alfresco.space", 
+        "fields": {
+            "path": "/Company Home/News/Blog", 
+            "name": "Media", 
+            "qname": "/app:company_home/cm:News/cm:Blog/cm:Media"
+        }
+    }, 
+    {
+        "pk": "4ab84a65-b37a-416b-8121-e9f4fc57be7c", 
+        "model": "alfresco.space", 
+        "fields": {
+            "path": "/Company Home/News/Blog", 
+            "name": "Open Source", 
+            "qname": "/app:company_home/cm:News/cm:Blog/cm:Open_x0020_Source"
+        }
+    }
+]

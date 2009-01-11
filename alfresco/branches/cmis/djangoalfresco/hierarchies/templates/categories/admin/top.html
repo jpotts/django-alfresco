@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block extra-head %}
+<script type="text/javascript" src="{{MEDIA_URL}}admin/js/interface.js" ></script>
+<link rel="stylesheet" href="{{MEDIA_URL}}admin/css/top.css" type="text/css" />
+<script type="text/javascript">
+$(document).ready(
+	function () {
+		$('a.closeEl').bind('click', toggleContent);
+		$('div.groupWrapper').Sortable(
+			{
+				accept: 'groupItem',
+				helperclass: 'sortHelper',
+				activeclass : 	'sortableactive',
+				hoverclass : 	'sortablehover',
+				handle: 'div.itemHeader',
+				tolerance: 'pointer',
+				onChange : function(ser)
+				{
+				},
+				onStart : function()
+				{
+					$.iAutoscroller.start(this, document.getElementsByTagName('body'));
+				},
+				onStop : function()
+				{
+					$.iAutoscroller.stop();
+					serial = $.SortSerialize('top');
+					$('#id_sequence').attr('value',serial.hash);
+				}
+			}
+		);
+	}
+);
+var toggleContent = function(e)
+{
+	var targetContent = $('div.itemContent', this.parentNode.parentNode);
+	if (targetContent.css('display') == 'none') {
+		targetContent.slideDown(300);
+		$(this).html('[-]');
+	} else {
+		targetContent.slideUp(300);
+		$(this).html('[+]');
+	}
+	return false;
+};
+function serialize(s)
+{
+	serial = $.SortSerialize(s);
+	alert(serial.hash);
+};
+</script>
+
+
+{% endblock %}
+
+
+
+{% block content%}
+
+<div class="titlebar5">
+  <div class="pre"></div>
+
+  <div class="title">{{category.name}} Top Stories </div>
+  <div class="clear"></div>
+  <div class="post"></div>
+  <div class="clear"></div>
+</div>
+<div>
+  <p class="linkTrail">
+  {% for crumb in category.breadcrumbs %}
+  <a href="{{crumb.url}}">{{crumb.name}}</a> &gt;
+  {% endfor %}
+  Top Stories
+  </p>
+</div>
+<div class="browse25x75">
+<div id="content-main" style="margin-top:20px">
+<div id="all" class="groupWrapper">
+	<h2>All News</h2>
+	{% for all in all_list%}
+	<div id="{{all.id}}" class="groupItem">
+		<div class="itemHeader">{{all.name}}<a href="#" class="closeEl">[-]</a></div>
+		<div class="itemContent">
+			<ul>
+				<li>{{all.content|striptags|safe|truncatewords:20}}</li>
+			</ul>
+		</div>
+	</div>
+	{% endfor %}
+	<p>&nbsp;</p>
+</div>
+<div id="top" class="groupWrapper" style="float:right">
+	<h2>Top News</h2>
+	{% for top in top_list%}
+	<div id="{{top.id}}" class="groupItem">
+		<div class="itemHeader">{{top.name}}<a href="#" class="closeEl">[-]</a></div>
+		<div class="itemContent">
+			<ul>
+				<li>{{top.content|striptags|safe|truncatewords:20}}</li>
+			</ul>
+		</div>
+	</div>
+	{% endfor %}
+	<p>&nbsp;</p>
+</div>
+<div style="clear:both">
+<form action="." method="post">
+{{form}}
+<input type="submit" value="Save Top Stories"/>
+</form>
+</div>
+</div>
+</div>
+{% endblock %}

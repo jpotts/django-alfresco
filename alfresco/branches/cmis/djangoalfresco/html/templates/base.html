@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>{% block title%}Blog | All{% endblock %}</title>
+  <meta name="description" content="Web applications assembled from open source software for business agility" />
+  <meta name="keywords" content="open source, open source software, ecommerce software, ecommerce solution, media widget, ecommerce consulting, ecommerce marketing strategy, content syndication, open source ecommerce, online advertising, advertising online" />  
+ <link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/reset.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/global.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/tabs.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/style.css?B" />
+    <!--[if IE 6]>
+    <link rel="stylesheet" type="text/css" href="/sites/all/themes/optaros/iespecific.css" />
+  <![endif]-->
+{% block extra-head %}
+{% endblock %}
+</head>
+<body>
+<div id="utilsNavContainer">
+    <div id="utils">
+        <div class="f-left">
+            <ul>
+                <li><a href="/" class="selected">optaros.com</a></li>
+                <li><a href="http://labs.optaros.com" target="_blank">Labs</a></li>
+                <li><a href="http://code.optaros.com" target="_blank">Code</a></li>
+
+                <li><a href="http://www.eosdirectory.com" target="_blank">EOS Directory</a></li>
+            </ul>
+        </div><!-- .f-left -->
+        <div class="f-right">
+            <ul>
+            	<li><div id="language"><ul><li><a class="selected" href=http://optaros.com/blog-channel>English</a></li><li class="last"><a href=http://www.optaros.de/blog-channel>Deutsch</a></li></ul></div></li>
+                <li><a href="/blog-channel/all/feed" id="rss" onclick="pageTracker._trackPageview('/tracking/feed');">RSS</a></li>
+
+                <li><div id="login"></div></li>
+            </ul>    
+        </div><!-- .f-right -->
+    </div><!-- #utils -->
+</div><!--  #utilsNavContainer -->
+<div id="pageContainer">
+	{% block header %}
+  <div id="mh">
+        <div id="mhLeft">
+      <a href="/"><img src="http://www.optaros.com/files/logo.gif" alt="Home" /></a>
+    </div>
+
+    <div id="mhRight">
+      <div id="navContainer">
+        <div class="navColumn one">
+          <h2>Solutions</h2>
+          <ul class="menu">
+<li><a href="/clients" title="">Clients</a></li>
+<li><a href="/clients/swisscom-labs">Case Studies</a></li>
+<li><a href="/industry-solutions">Industry Solutions</a></li>
+
+</ul>        </div>
+        <div class="navColumn two">
+          <h2>Approach</h2>
+          <ul class="menu">
+<li><a href="/user-experience/our-approach">User Experience</a></li>
+<li><a href="/assembly-methodology/optam">Assembly Methodology</a></li>
+</ul>        </div>
+        <div class="navColumn three">
+
+          <h2>Expertise</h2>
+          <ul class="menu">
+<li><a href="/next-generation-internet">Next Generation Internet</a></li>
+<li><a href="/open-source/partners">Open Source/Partners</a></li>
+<li><a href="/blog-channel" title="" class="active">More...</a></li>
+</ul>        </div>
+        <div class="navColumn four">
+          <h2>Company</h2>
+
+          <ul class="menu">
+<li><a href="/people-careers">People &amp; Careers</a></li>
+<li><a href="/about-us">About Us</a></li>
+<li><a href="/news/white-papers-reports">News, Events &amp; Pubs</a></li>
+</ul>        </div>
+        <div class="navColumn five">
+          <h2>Search</h2>
+
+          <div id="top_search"><form action="/alfresco/search"  accept-charset="UTF-8" method="get" id="search-theme-form">
+<div><div class="form-item" id="edit-search-theme-form-1-wrapper">
+ <input type="text" maxlength="128" name="q" id="edit-search-theme-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
+ <input type="submit" id="edit-submit" value="Go" />
+</div>
+</div></form>
+</div>
+          <span class="contact_menu_item"><a href="/offices/us-corporate-headquarters">Locations</a></span><span> | </span><span class="contact_menu_item"><a href="/customer_registration?contact" title="">Contact</a></span>        </div>
+
+      <div class="clearfix"></div>
+      </div>
+      <div class="clearfix"></div>
+    </div><!-- #mhRight -->
+    <div class="clearfix"></div>  </div>
+  <!-- #mh -->{% endblock %}
+  <div id="bdPage" class="{% block page-class %}channels_headline{% endblock %}">
+  {% block feature %}
+    <div id="featureContainer">
+      <div>
+        <h1><a href="/blog-channel" class="active">Blog</a><span> > </span>All</h1>
+      </div>
+    </div>
+    {% endblock %}
+    <div class="clearfix"></div>
+    
+    <div id="featureContent">
+      <div id="featureFooter">
+
+        <div id="sidebar-left">
+          {% block sidebar-left %}
+          <div id="title"> Blog Channels</div>
+      	  	<ul class="menu">
+ 			<li><a href="/blog/" class="active">All</a></li>
+ 			<li><a href="/blog/ecommerce/">Ecommerce</a></li>
+ 			<li><a href="/blog/media/">Media</a></li>
+ 			<li><a href="/blog/open-source/">Open Source</a></li>
+			</ul>
+		  {% endblock %}
+			<div class="clearfix"></div>
+        </div>
+        <div id="mainContent" >
+          <div class="bottom-content">
+          {% block content%}
+            <div class="content-left">
+              {% block content-left %}
+<div class="entry" id="sticky"><h3><a name="blog-info" href="/blogs/alfresco-developer-guide-released" title="Posted 29 Oct 2008 by Jeff Potts">Alfresco Developer Guide released</a><br/>
+                      <span class="posted_by">Posted 29 Oct 2008 by <a href="/blog/jpotts">Jeff Potts</a> | Tags: <a href="/blog-term/Alfresco" name="blogtag">Alfresco</a>, <a href="/blog-term/Content%20Management" name="blogtag">Content Management</a></span></h3>
+
+                      <p>
+                      	I can finally answer the question, "When is the book coming out?". The answer: Today. The Alfresco Developer Guide is now available for immediate shipping from Packt's web site (also, download a free Bonus chapter of the Alfresco Developer Guide). 
+                      	<a class="read_more" href="/blogs/alfresco-developer-guide-released" title="Posted 29 Oct 2008 by Jeff Potts">Read more ...</a>
+                      </p>
+    			</div><div class="clearfix"></div><div class="item-list"><ul class="pager"><li class="pager-current first">1</li>
+<li class="pager-item"><a href="/blog-channel?page=1" title="Go to page 2" class="active">2</a></li>
+<li class="pager-item"><a href="/blog-channel?page=2" title="Go to page 3" class="active">3</a></li>
+<li class="pager-ellipsis">…</li>
+<li class="pager-next"><a href="/blog-channel?page=1" title="Go to next page" class="active">next ›</a></li>
+<li class="pager-last last"><a href="/blog-channel?page=14" title="Go to last page" class="active">last »</a></li>
+</ul></div>   	
+			{% endblock %}
+            </div>
+
+            <div class="content-right">
+            	<div class="clearfix"></div>
+            	{% block content-right %}
+            	<a href="/blog-channel/all/feed">
+					<img title="Subscribe to Optaros RSS feed" alt="Subscribe to Optaros RSS feed" src="http://www.optaros.com/sites/all/themes/optaros/images/icon_rss.gif"/>
+					Subscribe to All RSS feed			  	</a>
+			  	<div id="hr"></div>
+			  	<span class="box_title">Recent posts on</span>
+				  			  <ul id="box_splited">
+				  			  <li class="breadcrumb"><a href="/blog/" class="active">Blog</a><span> > </span>All :
+							  {% load hierarchies %}
+							  {% get_recent_docs blog 5 as recent_docs %}
+							  {% for doc in recent_docs %}
+							  <li><a href="{{doc.get_absolute_url}}">{{doc.title}}</a></li>
+							  {% endfor %}
+				  			  </ul>
+			    {% endblock %}
+            </div>
+           {% endblock %}
+          </div>
+          <!-- #bottom-content -->
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <!-- #node content -->
+
+  </div>
+  <!-- #mainContent -->
+  <div class="clearfix"></div>
+</div><!-- #page-container -->
+
+{% block footer %}
+<div id="ft">
+<ul class="footerText"><li><a href="/sitemap" class="link">Site map</a></li><li>|</li>
+<li><a href="/terms" class="link">Terms of Use</a></li><li>|</li>
+<li><a href="/privacy" class="link">Privacy Policy</a></li><li class="floatR">&copy; Copyright 2008 Optaros, Inc. All Rights Reserved.</li>
+</div>
+{% endblock %}
+</body>
+</html>

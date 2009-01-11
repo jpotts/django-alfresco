@@ -1,0 +1,9 @@
+<webscript>
+	<shortname>Django Simple Search</shortname>
+	<description>Simple search for given search term</description>
+	<url>/django/search?q={query}</url>
+	<url>/django/s?q={query}</url>
+	<format default="xml">argument</format>
+	<authentication>user</authentication>
+	<transaction>required</transaction>
+</webscript>

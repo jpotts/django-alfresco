@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+		<object pk="cf9eaabe-d386-4000-832d-98d063c758ef" model="alfresco.content">
+		<field type="CharField" name="name"> Alfresco Developer Guide released</field>
+		<field type="CharField" name="space">0a0d2b51-5805-4d02-8aee-1f788b82dd26</field>
+		<field type="CharField" name="mimetype">text/html</field>
+		<field type="CharField" name="size">2,102</field>
+		<field type="CharField" name="description"> </field>
+		<field type="CharField" name="title"> Alfresco Developer Guide released</field>
+		<field type="CharField" name="author"> Jeff Potts</field>
+		<field type="TextField" name="content"><![CDATA[<p>I can finally answer the question, &quot;When is the book coming out?&quot;. The answer: Today. The <a href="http://www.optaros.com/campaigns/alfresco-developer-guide-bonus-chapter">Alfresco Developer Guide</a> is now available for immediate shipping from <a href="http://www.packtpub.com" target="_blank">Packt</a>&#39;s web site (also, <a href="http://www.optaros.com/campaigns/alfresco-developer-guide-bonus-chapter">download a free Bonus chapter</a> of the Alfresco Developer Guide).<br /><br />There are a lot of people who made this thing happen including an awesome team of colleagues at <a href="http://www.optaros.com" target="_blank">Optaros</a>, the entire <a href="http://www.alfresco.com" target="_blank">Alfresco</a> crew, the Packt team, and the support of my family. I&#39;ve expressed my thanks individually in the acknowledgments and I hope I haven&#39;t left anyone out.<br /><br />I&#39;m pretty excited how the book turned out. One of my roles as the Director of the ECM Practice is to get our consultants and our clients up to speed on open source CMS technology like Alfresco. I tried to organize the book in the same way I cover these topics in-person so the book flows just like it would if you and I were sitting in a room and you said, &quot;I&#39;ve been poking around with Alfresco on my own but now I&#39;m ready to really start to do something with it.&quot; I start with core fundamentals (content modeling, actions, behaviors, extractors) and gradually work &quot;outward&quot; through web client customizations, web scripts, advanced workflow, WCM, and security. <br /><br />The book&#39;s title has &quot;developer guide&quot; in it for a reason: It is more of a tutorial than it is an exhaustive reference. I figured with resources available like the wiki, the forums, and the source code, it was more important and helpful to step you through real-world examples.<br /><br />My hope is that this book flattens the learning curve for everyone. And maybe in some way it will encourage companies that feel stuck in their currently legacy CMS to explore options.</p>]]></field>
+		<field type="DateField" name="created">2008-12-07</field>
+		<field type="DateField" name="modified">2008-12-07</field>
+		<field type="CharField" name="url">/alfresco/service/api/node/content/workspace/SpacesStore/cf9eaabe-d386-4000-832d-98d063c758ef/Alfresco%20Developer%20Guide%20released</field>
+	</object>
+	<object pk="c0ac793c-85d4-4c42-8b19-f4ce23c707e4" model="alfresco.content">
+		<field type="CharField" name="name"> Open Source for Enterprises</field>
+		<field type="CharField" name="space">0a0d2b51-5805-4d02-8aee-1f788b82dd26</field>
+		<field type="CharField" name="mimetype">text/html</field>
+		<field type="CharField" name="size">900</field>
+		<field type="CharField" name="description"> </field>
+		<field type="CharField" name="title"> Open Source Catalogue 2009 generates high interest and confirms the relevance of Open Source for Enterprises</field>
+		<field type="CharField" name="author"> Bruno von Rotz</field>
+		<field type="TextField" name="content"><![CDATA[One week ago we published the <strong>&quot;<a href="http://www.optaros.de/nachrichten/white-papers-reports#open-source-katalog-2009" target="_blank">Open Source Katalog 2009</a>&quot;</strong> for our German language audiences. And we are really excited about the enormous echo that this offline version of our online resource &quot;<a href="http://www.eosdirectory.com/" target="_blank"><strong>Enterprise Open Source Directory</strong></a>&quot; (EOS) generated. In few days almost 5&#39;000 copies were downloaded and the press in both Switzerland and Germany was &quot;speaking&quot; about the new version of the catalogue. We are publishing the catalogue since 2006, but the continuous interest shows that Open Source is more relevant than ever. This also of course motivates us to continue working on the Enterprise Open Source Directory and investing in analyzing the open source landscape.  ]]></field>
+		<field type="DateField" name="created">2008-12-07</field>
+		<field type="DateField" name="modified">2008-12-07</field>
+		<field type="CharField" name="url">/alfresco/service/api/node/content/workspace/SpacesStore/c0ac793c-85d4-4c42-8b19-f4ce23c707e4/Open%20Source%20for%20Enterprises</field>
+	</object>
+</django-objects>
