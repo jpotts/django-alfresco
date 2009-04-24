@@ -32,7 +32,7 @@ class AlfrescoContentManager(models.Manager):
         #handles the Related Manager case.
         kwargs.update(getattr(self, 'core_filters', {}))
         
-        ws = service.WebScript('django/', 'content')
+        ws = service.WebScript('django/', 'archive')
         try:
             if kwargs.has_key('space__id'):
                 web_script_list = ws.get_by_space(*args, **kwargs)
