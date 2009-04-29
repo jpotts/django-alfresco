@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div>
+	{% block detail%}
+	
+	{% endblock %}
+</div>
+<div>
+	<ul>
+	{% load hierarchies %}
+	{% get_category the-paper as paper_category %}
+	{% if paper_category.child.all %}
+		<h2>Sub Categories</h2>
+	{% endif %}
+	{% for cat in paper_category.child.all%}
+		<li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}
