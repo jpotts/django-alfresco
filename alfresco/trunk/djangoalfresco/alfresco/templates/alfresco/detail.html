@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title%}{{object.title}}{% endblock %}
+{% block title%}det{{object.title}}{% endblock %}
 {%block extra-head%}
 <script type="text/javascript">
 <!--
@@ -16,6 +16,10 @@ function doOpen(url, target){
 </script>
 {%endblock%}
 
+{% block header %}
+    {% include 'alfresco/nav.html' %}
+{% endblock %}
+
 {% block content %}
 <div id="layoutContainer">
   <div id="layoutFull">
@@ -24,7 +28,7 @@ function doOpen(url, target){
       <div class="print"><a href="{% url alfresco_print_view object.id %}">Printable Version<img src="{{MEDIA_URL}}img/img_printer.gif" width="16" height="15" alt=""/></a></div>
       
       <div class="title">{{object.title}}<br />
-      <span class="mediumColor">Submitted by {{object.author}}</span></div>
+        <span class="mediumColor">Submitted by {{object.author}}</span></div>
       <div class="summary">
         <b>Summary:</b> {{object.description}} <br />
         <b>Published:</b> {{object.modified|date:"m/d/Y"}} by <a href="contact.html" target="contactpopup" onClick="return doOpen(this.href, this.target)">{{object.author}}</a>&nbsp;&nbsp;<br />
@@ -34,5 +38,6 @@ function doOpen(url, target){
          {% load alfresco_tags %}
 		{{object.content|mask_image_tags|safe}}  
 		<br class="clear" />
-      </div>
+  </div>
+</div>
 {% endblock %}

@@ -25,6 +25,26 @@
 </ul>
  {% endblock %}
 
+{% block solutions_menu %}
+{% load alfresco_tags %}
+{% get_content solutions %}
+{% endblock %}
+
+{% block approach_menu %}
+{% load alfresco_tags %}
+{% get_content approach %}
+{% endblock %}
+
+{% block expertise_menu %}
+{% load alfresco_tags %}
+{% get_content expertise %}
+{% endblock %}
+
+{% block company_menu %}
+{% load alfresco_tags %}
+{% get_content company %}
+{% endblock %}
+
 {% block content-left %}
 {% for doc in recent_docs %}
 <div class="entry" {% if forloop.first %}id="sticky"{% endif %}><h3><a name="blog-info" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>

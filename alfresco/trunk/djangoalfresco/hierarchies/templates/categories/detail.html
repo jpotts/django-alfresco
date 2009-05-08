@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title%}{{category.name}}{% endblock%}
+{% block title%}hdet{{category.name}}{% endblock%}
 {% block extra-head %}
 <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url rss_feed category.get_rss %}" />
 {% endblock %}
@@ -27,6 +27,10 @@
 {% endfor %}
 </ul>
  {% endblock %}
+
+{% block header %}
+    {% include 'alfresco/nav.html' %}
+{% endblock %}
 
 {% block content-left %}
 {% for doc in recent_docs %}
