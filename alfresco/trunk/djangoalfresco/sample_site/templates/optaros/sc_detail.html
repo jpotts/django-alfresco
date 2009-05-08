@@ -1,0 +1,66 @@
+{% extends 'base.html'%}
+
+{%block extra-head%}
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/theme_Normal.css" src="theme_Normal.css" />
+
+{%block title}OPT S S SC_DETAIL{% endblock %}
+    
+<style type="text/css">
+<!--
+.listThumbnail { border: 1px solid #000000; }
+.listIcon { font-size:8pt; margin:0em 0em 0.2em 1em; text-align:center; width:24px; float:right;}
+
+#cmListTable {width:100%; margin-bottom:1em;}
+#cmListTable tr.odd {background-color:#FFFFFF;}
+#cmListTable tr.even { background-color:#FFFAEB; }
+#cmListTable td {vertical-align:top; padding:3px; border-bottom: 1px solid #999999;}
+#cmListTable td.thumb {text-align:center; width:70px;}
+#cmListTable td.thumb img {border:1px solid #333333;}
+#cmListTable td.content {text-align:left; font-size:9pt;}
+#cmListTable td.content .summary {font-size:0.9em;}
+#cmListTable td.icon {text-align:center; vertical-align:top; font-size:8pt; padding-left:5px;}
+.style6 {color: #333333}
+-->
+</style>
+<script type="text/javascript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+function doOpen(url, target){
+	var w = window.open(url, target, 'width=320, height=180, scrollbars=yes, resizable=yes');
+	w.focus();
+	return false;
+}
+function MM_goToURL() { //v3.0
+  var i, args=MM_goToURL.arguments; document.MM_returnValue = false;
+  for (i=0; i<(args.length-1); i+=2) eval(args[i]+".location='"+args[i+1]+"'");
+}
+//-->
+</script>
+{%endblock%}
+
+{% block header %}
+    {% include 'optaros/nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="layoutContainer">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    
+          <img src="{{MEDIA_URL}}img/dot_clear.gif" width="10" height="1" /></td>
+    </tr>
+    <tr>
+      <td><table width="100%"  border="0" cellspacing="0" cellpadding="6">
+        <tr>
+          <td>
+          		{% load alfresco_tags %}
+				{{object.content|mask_image_tags|safe}}  
+            </td>
+        </tr>
+      </table>
+          <br />
+          <img src="{{MEDIA_URL}}img/dot_clear.gif" width="5" height="1" /> </td>
+    </tr>
+  </table>
+{% endblock %}

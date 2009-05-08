@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_default.css' src='django_default.css'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_cascade.css' src='django_cascade.csss'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_layout.css' src='django_layout.css'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/niftyCorners.css' src='niftyCorners.css'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/favorites.css' src='favorites.css'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_mynmg.css' src='django_mynmg.css'/>
+	<script type="text/javascript" src="{{MEDIA_URL}}admin/js/jquery.js""></script>
+	<script type="text/javascript">
+	<!--
+	function MM_openBrWindow(theURL,winName,features) { //v2.0
+	  window.open(theURL,winName,features);
+	}
+	function doOpen(url, target){
+		var w = window.open(url, target, 'width=320, height=180, scrollbars=yes, resizable=yes');
+		w.focus();
+		return false;
+	}
+	//-->
+	</script>
+	{% load alfresco_tags %}
+	<title>{% block title %} {{object.title}} {% endblock %}</title>
+</head>
+
+<body>
+{% block content %}
+<div id="layoutContainer">
+  <div id="layoutFull">
+    <div id="bodyHeader">
+      <div class="title">{{object.title}}<br />
+      <span class="mediumColor">Submitted by {{object.author}}</span></div>
+    </div>
+         {% load alfresco_tags %}
+		{{object.content|mask_image_tags|safe}}  
+		<br class="clear" />
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div id="footer">
+  <div id="block">
+	<div class="copyright">Copyright 2009, Optaros, Inc. All Rights Reserved.</div>
+  </div>
+</div>
+{% endblock %}
+
+</body>
+</html>
