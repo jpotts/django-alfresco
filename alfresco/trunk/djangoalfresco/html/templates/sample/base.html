@@ -4,10 +4,10 @@
   <title>{% block title%}Blog | All{% endblock %}</title>
   <meta name="description" content="Web applications assembled from open source software for business agility" />
   <meta name="keywords" content="open source, open source software, ecommerce software, ecommerce solution, media widget, ecommerce consulting, ecommerce marketing strategy, content syndication, open source ecommerce, online advertising, advertising online" />  
- <link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/reset.css?B" />
-<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/global.css?B" />
-<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/tabs.css?B" />
-<link type="text/css" rel="stylesheet" media="all" href="http://www.optaros.com/sites/all/themes/optaros/style.css?B" />
+ <link type="text/css" rel="stylesheet" media="all" href="/site_media/css/reset.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="/site_media/css/global.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="/site_media/css/tabs.css?B" />
+<link type="text/css" rel="stylesheet" media="all" href="/site_media/css/style.css?B" />
     <!--[if IE 6]>
     <link rel="stylesheet" type="text/css" href="/sites/all/themes/optaros/iespecific.css" />
   <![endif]-->
@@ -40,7 +40,7 @@
 	{% block header %}
   <div id="mh">
         <div id="mhLeft">
-      <a href="/"><img src="http://www.optaros.com/files/logo.gif" alt="Home" /></a>
+      <a href="/"><img src="/site_media/img/logo.gif" alt="Home" /></a>
     </div>
 
     <div id="mhRight">
@@ -48,43 +48,51 @@
         <div class="navColumn one">
           <h2>Solutions</h2>
           <ul class="menu">
-<li><a href="/clients" title="">Clients</a></li>
-<li><a href="/clients/swisscom-labs">Case Studies</a></li>
-<li><a href="/industry-solutions">Industry Solutions</a></li>
-
-</ul>        </div>
+            {% block solutions_menu %}
+            <li><a href="/clients" title="">Clients</a></li>
+            <li><a href="/clients/swisscom-labs">Case Studies</a></li>
+            <li><a href="/industry-solutions">Industry Solutions</a></li>
+            {% endblock %}
+          </ul>
+        </div>
         <div class="navColumn two">
           <h2>Approach</h2>
           <ul class="menu">
-<li><a href="/user-experience/our-approach">User Experience</a></li>
-<li><a href="/assembly-methodology/optam">Assembly Methodology</a></li>
-</ul>        </div>
-        <div class="navColumn three">
-
+            {% block approach_menu %}
+            <li><a href="/user-experience/our-approach">User Experience</a></li>
+            <li><a href="/assembly-methodology/optam">Assembly Methodology</a></li>
+            {% endblock %}
+            </ul>
+         </div>
+         <div class="navColumn three">
           <h2>Expertise</h2>
           <ul class="menu">
-<li><a href="/next-generation-internet">Next Generation Internet</a></li>
-<li><a href="/open-source/partners">Open Source/Partners</a></li>
-<li><a href="/blog-channel" title="" class="active">More...</a></li>
-</ul>        </div>
+            {% block expertise_menu %}
+            <li><a href="/next-generation-internet">Next Generation Internet</a></li>
+            <li><a href="/open-source/partners">Open Source/Partners</a></li>
+            <li><a href="/blog-channel" title="" class="active">More...</a></li>
+            {% endblock %}
+            </ul>
+         </div>
         <div class="navColumn four">
           <h2>Company</h2>
-
           <ul class="menu">
-<li><a href="/people-careers">People &amp; Careers</a></li>
-<li><a href="/about-us">About Us</a></li>
-<li><a href="/news/white-papers-reports">News, Events &amp; Pubs</a></li>
-</ul>        </div>
-        <div class="navColumn five">
+            {% block company_menu %}          
+            <li><a href="/people-careers">People &amp; Careers</a></li>
+            <li><a href="/about-us">About Us</a></li>
+            <li><a href="/news/white-papers-reports">News, Events &amp; Pubs</a></li>
+            {% endblock %}
+            </ul>
+        </div>
+         <div class="navColumn five">
           <h2>Search</h2>
-
           <div id="top_search"><form action="/alfresco/search"  accept-charset="UTF-8" method="get" id="search-theme-form">
-<div><div class="form-item" id="edit-search-theme-form-1-wrapper">
- <input type="text" maxlength="128" name="q" id="edit-search-theme-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
- <input type="submit" id="edit-submit" value="Go" />
-</div>
-</div></form>
-</div>
+          <div><div class="form-item" id="edit-search-theme-form-1-wrapper">
+          <input type="text" maxlength="128" name="q" id="edit-search-theme-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
+          <input type="submit" id="edit-submit" value="Go" />
+          </div>
+          </div></form>
+          </div>
           <span class="contact_menu_item"><a href="/offices/us-corporate-headquarters">Locations</a></span><span> | </span><span class="contact_menu_item"><a href="/customer_registration?contact" title="">Contact</a></span>        </div>
 
       <div class="clearfix"></div>
@@ -97,7 +105,7 @@
   {% block feature %}
     <div id="featureContainer">
       <div>
-        <h1><a href="/blog-channel" class="active">Blog</a><span> > </span>All</h1>
+        <h1><a href="/blog" class="active">Blog</a><span> > </span>All</h1>
       </div>
     </div>
     {% endblock %}

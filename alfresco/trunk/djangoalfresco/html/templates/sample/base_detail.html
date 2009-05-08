@@ -1,5 +1,25 @@
 {% extends 'base.html' %}
 
+{% block solutions_menu %}
+{% load alfresco_tags %}
+{% get_content solutions %}
+{% endblock %}
+
+{% block approach_menu %}
+{% load alfresco_tags %}
+{% get_content approach %}
+{% endblock %}
+
+{% block expertise_menu %}
+{% load alfresco_tags %}
+{% get_content expertise %}
+{% endblock %}
+
+{% block company_menu %}
+{% load alfresco_tags %}
+{% get_content company %}
+{% endblock %}
+
 {% block content%}
 <div class="span-15 left">
 	{% block detail%}
