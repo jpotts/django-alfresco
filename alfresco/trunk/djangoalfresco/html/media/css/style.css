@@ -1,0 +1,172 @@
+div#bd { background:none; padding-top:0;}
+
+#sidebar-left {
+  padding: 0px 0px 0px 10px;
+  width: 130px;
+  /* padding in px not ex because IE messes up 100% width tables otherwise */
+  /*background-color: #fff; */
+  /*padding: 10px;*/  
+  vertical-align: top;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+#sidebar-left .title {
+  margin: 3pt;
+}
+
+#sidebar-left a:link, #sidebar-left a:visited {
+  color: #000;
+}
+
+#sidebar-left a:hover {
+  color: #39c;
+}
+
+#sidebar-left h2 {
+  font-size: 11px;
+  font-weight: normal;
+}
+
+#sidebar-left .content{
+  margin-left:4px;
+}
+
+#sidebar-left li {
+  background: url(/site_media/img/bg_block_middle.gif) repeat-y top;
+  margin: 0pt 0pt 0pt 10pt; 
+  padding: 0;
+}
+
+#sidebar-left li a {
+  display:block;
+  text-decoration:none;
+}
+
+#sidebar-left li a.active {
+  display:block;
+}
+
+#sidebar-left li.collapsed {
+	list-style-image:url(/site_media/img/menu-collapsed.gif);
+	list-style-type:disc;
+}
+
+#sidebar-left li.leaf {
+	list-style-image:url(/site_media/img/menu-leaf.gif);
+	list-style-type:square;
+}
+
+/* right sidebar - CONTENT CONTAINER */
+
+
+div.sidebarContainerTop,
+div.sidebarContainerTop div,
+div.sidebarContainerBottom,
+div.sidebarContainerBottom div {
+  background: transparent url(/site_media/img/bg-sidebar-content-caps.gif) no-repeat;
+  height:4px;
+  overflow:hidden;
+}
+
+div.sidebarContainerTop {
+  background-position: 2px -2px;
+}
+
+div.sidebarContainerTop div {
+  background-position: -1px -18px;
+}
+
+div.sidebarContainerMiddle {
+  background: transparent url(/site_media/img/bg-sidebar-content-middle.gif) repeat-y;
+  border: 1px solid #DFDFDF;
+  border-width: 0 1px 0 1px;
+}
+
+div.sidebarContainerMiddle div{
+  padding: 7px;
+}
+
+div.sidebarContainerMiddle h3{
+  background: url(/site_media/img/bg-sidebar-h3-bot-border.gif) repeat-x bottom;
+  color: #1472BC;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0 0 5px 0;
+  width: 100%;
+  margin: 0 0 0 7px;
+}
+
+div.sidebarContainerBottom {
+  background-position: 2px -10px;
+  margin: 0 0 15px 0;
+}
+
+div.sidebarContainerBottom div {
+  background-position: -1px -26px;
+}
+
+/* elements *************************************************************/
+
+input#submitSearch {
+  background: transparent url(/site_media/img/bg-search-button.gif) no-repeat bottom;
+  border: none;
+  color: #F06122;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  height: 21px;
+  margin: 0 0 1px 0;
+  padding: 0 0 3px 0;
+  width: 69px;
+}
+
+
+/* contact offices styles ************************************************/
+
+div#map {
+		margin: 0 0 10px 0;
+		height: 400px;
+		width: 550px;
+}
+
+div#officeLeft {
+		float: left;
+		padding: 10px;
+}
+
+div#officeRight {
+		float: left;
+		padding: 5px;
+}
+
+div#officeAddress {
+		float: left;
+}
+
+div#officePhoneNumbers {
+		float: left;
+		margin: 0 0 0 20px;
+}
+
+h2#officePrimaryContacts {
+		font-size: 130%;
+}
+
+#top_search #edit-search_theme_form_keys input{
+  color: #7e7e7e; 
+  width: 100px;
+  background:#fff url(/site_media/img/bg-search-bar.gif) repeat-x top left !important;
+  border: 1px solid #c6c6c6;
+}
+
+
+#top_search input{
+  background: transparent url(/site_media/img/bg-search-button-2.gif) no-repeat bottom right;
+  border-style: none;
+  padding:2px !important;
+  height:29px;
+  width: 35px;
+  cursor:pointer;
+ }
+ 
