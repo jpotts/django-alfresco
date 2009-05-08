@@ -80,7 +80,7 @@ class Content(models.Model):
             return reverse('category_content_detail',args=[self.space.category.slug_path, self.id])
         except:
             #Safety. Doesn't do breadcrumbs.
-            return reverse('alfresco_content_detail',args=[self.id])
+            return reverse('content_detail',args=[self.id])
 
 class AlfrescoUser(User):
     """
@@ -119,4 +119,4 @@ class StaticContent(models.Model):
         return u'%s' % (self.name)
     
     def get_absolute_url(self):
-        return reverse('alfresco_content_detail',args=[self.doc_id])
+        return reverse('content_detail',args=[self.doc_id])

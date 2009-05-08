@@ -12,7 +12,6 @@ from alfresco.decorators import ticket_required
 from alfresco.service import generic_search
 from alfresco import utils
 
-
 def make_get_urls(**kwargs):
     """
     Useful Helper to keep track of the get params.
@@ -34,94 +33,6 @@ def make_get_urls(**kwargs):
         if len(r[k]) is not 1:
             r[k] += '&'
     return r
-
-@ticket_required
-def category_detail(request, path, **kwargs):
-    cat = get_object_or_404(Category, slug_path=path)
-    ticket = request.user.ticket
-    recent_docs = []
-    if cat.space:
-        recent_docs = cat.space.contents.filter(limit=20, order_by='-modified', alf_ticket=ticket)
-    return render_to_response(cat.get_templates(), {'recent_docs': recent_docs,
-                                              'category': cat},context_instance=RequestContext(request) )
-    
-@ticket_required
-def category_content_detail(request, path, id):
-    """
-    Category dependent view of a piece of alfresco content
-    
-    Allows for news/the-paper/taking-root/content/cd496430-a789-11dd-943d-7dc58b4e9440/
-    """
-    category = get_object_or_404(Category, slug_path=path)
-    ticket = request.user.ticket
-    try:
-        content = category.space.contents.get(id=id, alf_ticket=ticket)
-    except Content.DoesNotExist:
-        raise Http404
-    return render_to_response('categories/content_detail.html', 
-                              {'category': category,
-                                'object': content},
-                              context_instance=RequestContext(request))
-
-@ticket_required
-def category_index(request, path):
-    """
-    The Content Browser.
-    
-    --Usage:
-        Paginate
-        TODO: Sort
-    """
-    category = get_object_or_404(Category, slug_path=path)
-    ticket = request.user.ticket
-    
-    page = int(request.GET.get('page', 1))
-    page_size = int(request.GET.get('page_size', 10))
-    order_by = request.GET.get('order_by', '-modified')
-    
-    paginator = category.space.contents.paginate(alf_ticket=ticket, \
-                                             order_by=order_by, page=page, page_size=page_size)
-    
-    return render_to_response('categories/index.html', 
-                              {'page' : paginator.page,
-                               'pages' : paginator.pages(),
-                               'category': category,
-                               'order_by': order_by,
-                               'get_params' : make_get_urls(page=page, page_size=page_size, order_by=order_by)}, 
-                                context_instance=RequestContext(request))
-
-@ticket_required
-def hierarchy_detail(request, slug, **kwargs):
-    hierarchy = get_object_or_404(Hierarchy, slug=slug)
-    recent_docs = []
-    space = hierarchy.space
-    if space:
-        recent_docs = generic_search(space.q_path_any_below_include(), '-modified', 20, request.user.ticket, True)
-    return render_to_response(hierarchy.get_templates(), 
-                              {'hierarchy': hierarchy, 
-                               'categories':hierarchy.categories.filter(parent=None), 
-                               'recent_docs' :recent_docs}
-                              ,context_instance=RequestContext(request) )
-
-def external_category_recent_documents(request, path):
-    try:
-        cat_or_hier = get_object_or_404(Hierarchy, slug=path)
-    except:
-        cat_or_hier = get_object_or_404(Category, slug_path=path)
-    limit = int(request.GET.get('limit', 10))
-    order_by = request.GET.get('order_by', '-modified')
-    ticket = utils.get_external_user_ticket()
-    recent_docs = []
-    if cat_or_hier.space:
-        q = "PATH:\"" + cat_or_hier.space.qname +"//*\" AND PATH:\"//cm:Published//*\""
-        recent_docs = generic_search(q, order_by, limit, ticket, True)
-    return render_to_response('hierarchies/recent_docs.html', 
-                              {'recent_docs' :recent_docs}
-                              ,context_instance=RequestContext(request))
-
-@ticket_required
-def home(request):
-    return render_to_response('home.html', context_instance=RequestContext(request))
 
 @ticket_required
 def top(request, path):

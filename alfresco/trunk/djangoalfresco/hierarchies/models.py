@@ -27,14 +27,6 @@ class Hierarchy(models.Model):
 
     def get_parent_categories(self):
         return self.categories.filter(parent=None)
-
-    def get_templates(self):
-        """
-        Used by the layout congfig mostly
-        ['hierarchies/news/detail.html',
-         'hierarchies/detail.html']
-        """
-        return ['hierarchies/%s/detail.html' % self.slug, 'hierarchies/detail.html']
     
 class Category(models.Model):
     hierarchy = models.ForeignKey('Hierarchy', blank=True, null=True, help_text="Must be explicitly selected if there is no parent category.", related_name='categories')
@@ -130,26 +122,7 @@ class Category(models.Model):
         children_list = self._recurse_for_children(self)
         flat_list = self._flatten(children_list[1:])
         return flat_list
-    
-    def get_templates(self):
-        """
-        Used by the layout congfig mostly
-        Example the-paper/technology
-        
-        ['categories/the-paper/technology/detail.html',
-         'categories/the-paper/detail.html'
-         'categories/detail.html']
-        
-        """
-        base = 'categories/%s' % self.slug_path
-        bits = base.split('/')
-        templates = []
-        rng = range(1, len(bits)+1)
-        rng.reverse()
-        for num in rng:
-            templates.append('/'.join(bits[:num]) + '/detail.html')
-        return templates
-         
+            
     def get_top_content(self):
         key = '__'.join([self._meta.app_label, self._meta.module_name, str(self.id)])
         xml = file_cache.get(key, True)
