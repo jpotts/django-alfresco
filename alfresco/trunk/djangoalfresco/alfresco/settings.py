@@ -26,18 +26,6 @@ ALFRESCO_DEFAULT_USER_PASSWORD = getattr(settings, 'ALFRESCO_DEFAULT_USER_PASSWO
 
 ALFRESCO_AUTO_LOGIN_ATTEMPTS = getattr(settings, 'ALFRESCO_AUTO_LOGIN_ATTEMPTS', 3)
 
-# Key Value Pairs for the Alfresco Organizations
-# The value is the display name
-ALFRESCO_ORGANIZATIONS = SortedDict({
-    "Bergdorf Goodman": {"display_name" : "Bergdorf Goodman", "slug" : "bergdorf-goodman" } , 
-    "CUSP": {"display_name" :"CUSP", "slug" : "cusp"},
-    "Horchow" : {"display_name" :"Horchow", "slug" : "horchow"},
-    "NM Last Call" :  {"display_name" :"Last Call", "slug" : "last-call"},
-    "Neiman Marcus Group" :  {"display_name" :"Neiman Marcus Group", "slug" : "nmg"},
-    "NM Direct" :  {"display_name" :"NM Direct", "slug" : "nm-direct"},
-    "NM Stores" : {"display_name" :"NM Stores", "slug" : "nm-stores"} 
-})
-
 #Thumbnailing defaults from : /alfresco-trunk/HEAD/root/projects/repository/config/alfresco/thumbnail-service-context.xml
 ALFRESCO_THUMBNAIL_SIZES = ('medium', 'imgpreview', 'avatar', 'doclib',)
 ALFRESCO_LOCAL_THUMBNAIL_URL = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_URL', settings.MEDIA_URL +'alfresco/images/thumbnails/')

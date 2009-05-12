@@ -63,29 +63,3 @@ def get_content(parser, token):
         raise template.TemplateSyntaxError, "%s tag requires only 2 arguments" % token.contents.split()[0]   
     
     return GetContent(bits[1])
-
-class GetOrganizations(template.Node):
-    def __init__(self,var_name):
-        self.var_name = var_name
-  
-    def render(self, context):
-        object_list = utils.get_organizations().values()
-        context[self.var_name] = object_list
-        return ''
-
-@register.tag
-def get_organizations(parser, token):
-    """
-    Gets a list of all the organizations
-    
-    usage::
-        {% get_organizations as [var name] %}
-    
-    """
-    bits = token.contents.split()
-    if len(bits) is not 3:
-        raise template.TemplateSyntaxError, "%s tag requires 3 arguements" % token.contents.split()[0]
-    if bits[1] != 'as':
-        raise template.TemplateSyntaxError, "%s tag requires the second arguement to be 'as'" % token.contents.split()[0]
-    return GetOrganizations(bits[2])
-    
