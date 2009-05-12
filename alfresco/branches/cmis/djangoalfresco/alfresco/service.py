@@ -403,3 +403,4 @@ def _recurse_ul(node_list):
             str += '<ul>%s</ul>' % _recurse_ul(child['children'])
         str += '</li>'
     return str
+

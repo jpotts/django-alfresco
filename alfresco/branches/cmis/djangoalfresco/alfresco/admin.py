@@ -1,7 +1,7 @@
 from django.contrib import admin
-from alfresco.models import Space, StaticContent
+from alfresco.models import Node
 
-class SpaceAdmin(admin.ModelAdmin):
+class NodeAdmin(admin.ModelAdmin):
     class Media:
         js = (
               'admin/js/jquery.treeview.js',
@@ -10,10 +10,4 @@ class SpaceAdmin(admin.ModelAdmin):
             "all": ("admin/css/jquery.treeview.css",)
         }
 
-class ContentAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-    search_fields = ['name']
-
-        
-admin.site.register(Space, SpaceAdmin)
-admin.site.register(StaticContent, ContentAdmin)
+admin.site.register(Node, NodeAdmin)

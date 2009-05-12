@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from hierarchies import utils
 from hierarchies.managers import CategoryManager
 
-from alfresco.models import Space
+from alfresco.models import Node
 from alfresco.cache import file_cache
 
 class Hierarchy(models.Model):
@@ -13,7 +13,7 @@ class Hierarchy(models.Model):
     slug = models.SlugField(help_text='A "Slug" is a unique URL-friendly title for an object.')
     order = models.PositiveIntegerField(default=0, editable=False)
     image = models.ImageField(upload_to='hierarchy/images/%m/%d/%Y/',  blank=True, null=True,)
-    space = models.OneToOneField(Space, blank=True, null=True,)
+    node = models.OneToOneField(Node, blank=True, null=True,)
     
     class Meta:
         verbose_name_plural = 'Hierarchies'
@@ -52,7 +52,7 @@ class Category(models.Model):
     image = models.ImageField(upload_to='category/images/%m/%d/%Y/',  blank=True, null=True,)
 
     order = models.PositiveIntegerField(default=0, editable=False)
-    space = models.OneToOneField(Space, blank=True, null=True,)
+    node = models.OneToOneField(Node, blank=True, null=True,)
     
     objects = CategoryManager()
     

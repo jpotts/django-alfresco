@@ -26,12 +26,35 @@ import base64
 from xml.dom import minidom
 from xml.etree import ElementTree
 import re
+from  datetime import datetime
+from time import strptime
 
 NS_RE = re.compile('{.*?}')
 
 ATOM_NAMESPACE = u'http://www.w3.org/2005/Atom'
 CMIS_NAMESPACE = u'http://www.cmis.org/2008/05'
 
+#Place holder for now.
+ENUMS = {
+'enumDecimalPrecision' :[ 32, 64],
+'enumContentStreamAllowed ' : ['notallowed', 'allowed', 'required'],
+'enumCardinality' : ['single',' multi'],
+'enumUpdateability' : ['readonly', 'readwrite', 'whencheckedout'],
+'enumPropertyType' : ['Boolean', 'id', 'integer', 'datetime', 'decimal','html', 'uri', 'xml'],
+'enumCollectionType' : ['root-children', 'root-descendants', 'unfiled', \
+                        'checkedout', 'types-children', 'types-descendants', 'query'],
+'enumObjectType' : ['document', 'folder', 'relationship', 'policy'],
+'enumCapabilityQuery' : ['none', 'metadataonly', 'fulltextonly', 'both'],
+'enumCapabilityJoin' : ['nojoin', 'inneronly', 'innerandouter'],
+'enumCapabilityFullText' : ['none', 'fulltextonly', 'fulltextandstructured'],
+'enumRepositoryRelationship' : ['self', 'replica', 'peer', 'parent', 'child', 'archive'],
+'enumTypesOfFileableObjects' : ['documents', 'folders,' 'policies', 'any'],
+'enumVersioningState' : ['checkedout', 'minor', 'major'],
+'enumReturnVersion' : ['this', 'latest', 'latestmajor'],
+'enumUnfileNonfolderObjects' : ['unfile', 'deletesinglefiled', 'delete'],
+'enumRelationshipDirection' : ['source', 'target', 'both'],
+'enumIncludeRelationships' : ['none', 'source', 'target', 'both'],
+}
 
 class RESTRequest(urllib2.Request):
     """
@@ -65,6 +88,9 @@ def join(a):
 
 def clean_tag(tag):
     return NS_RE.sub('', tag)
+
+def to_date_time(value):
+    return datetime(*strptime(value[:-10], "%Y-%m-%dT%H:%M:%S")[0:6])
 
 ########################################################
 #Taken from http://code.activestate.com/recipes/573463/#
@@ -135,24 +161,68 @@ def ConvertXmlToDict(root, dictclass=XmlDictObject):
     return dictclass({clean_tag(root.tag): _ConvertXmlToDictRecurse(root, dictclass)})
 ########################################################
 
-def parse_response(response):
-    response_type = response.headers.subtype
+class Links(dict):
+    def __init__(self, initlist, repository):
+        initdict = {'_repository': repository}
+        for item in initlist:
+            key = item['rel'].replace('-', '_')
+            initdict[key] = item['href']
+        dict.__init__(self, initdict)
     
-    if response_type == 'atom+xml':
-        return CMISFeedParser(response)
-    else:
-        return response.read()
+    def __getattr__(self, item):
+        href = self.__getitem__(item)
+        request = RESTRequest(href, method='GET', auth=self['_repository'].service.auth)
+        response = urllib2.urlopen(request)
+        return CMISFeedParser(response, self['_repository']).parse()
+    
+    def __setattr__(self, item, value):
+        self.__setitem__(item, value)
+    
+    def __delattr__(self, item):
+        self.__delitem__(item)
+    
+    
+
+class Node(object):
+    """
+    Representation of Alfresco Node
+    """
+    def __init__(self, entry, repository, *args, **kwargs):
+        self.repository = repository;
+        self.author = entry.author
+        self.content = entry.content
+        self.edited = to_date_time(entry.edited)
+        self.icon = entry.icon
+        self.id = entry.id
+        self.published = to_date_time(entry.published)
+        self.summary = entry.summary
+        self.terminator = entry.terminator
+        self.title = entry.title
+        self.updated = to_date_time(entry.updated)
+        self.links = Links(entry.link, repository)
+        self.object = entry.object
 
 class CMISFeedParser(object):
     """
     Couple of different feeds here. Service and Feed, we care mostly about feed.     
     """
-    def __init__(self, response):
+    def __init__(self, response, repository):
         self.headers = response.headers
         self.feed = ConvertXmlToDict(ElementTree.fromstring(response.read()))
-        
+        self.repository = repository
     def parse(self):
-        return self.feed
+        """
+        Turns the Feed into a listing of Nodes
+        """
+        if self.feed.has_key('feed') and self.feed.feed.has_key('entry'):
+            nodes = []
+            for entry in self.feed.feed.entry:
+                nodes.append(Node(entry, self.repository))
+            return nodes
+        elif self.feed.has_key('entry'):
+            return Node(self.feed.entry, self.repository)
+        else:
+            return self.feed
     
     def parse_types(self):
         """
@@ -240,7 +310,7 @@ class CMISService(object):
     """
     Does makes the acutally request to CMIS
     
-        c = CMISWebScript()
+        c = CMISService()
         c.put('d47304b8-29f5-4379-9b52-0ae26cc665ca', 'TICKET_45fff4a178006140bc9f5c30a78b91ec092ad279', {'title': 'new folder 4'},)
         
         c.simple('TICKET_45fff4a178006140bc9f5c30a78b91ec092ad279', 'repository')
@@ -285,14 +355,14 @@ class CMISService(object):
         auth = self._authorize( **kwargs)
         request = RESTRequest(self.url, method='GET', auth=auth)
         request_response = urllib2.urlopen(request)
-        return parse_response(request_response)
+        return request_response
 
     def simple(self, method, **kwargs):
         self._build_url(method, **kwargs)
         auth = self._authorize( **kwargs)
         request = RESTRequest(self.url, method='GET', auth=auth)
         request_response = urllib2.urlopen(request)
-        return parse_response(request_response)
+        return request_response
     
     def delete(self, id, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
@@ -311,7 +381,7 @@ class CMISService(object):
         request = RESTRequest(self.url, payload, method='PUT', auth=auth)
         request.add_header('Content-Type', 'application/atom+xml;type=entry')
         request_response = urllib2.urlopen(request)
-        return parse_response(request_response)
+        return request_response
     
     def post(self, id, payload, method=None, package='node', store_type='workspace', store_id='SpacesStore', **kwargs):
         self._build_url(package, store_type, store_id, id, method, **kwargs)
@@ -324,7 +394,7 @@ class CMISService(object):
             if e.code is not 201:
                 raise e
             else:
-                return parse_response(e.read())
+                return e.read()
 
 class Repository(object):
     """
@@ -340,7 +410,6 @@ class Repository(object):
     
     def __init__(self, service_url, service_root, username, password):
         self.service = CMISService(service_url, service_root, username, password)
-        
         feed = self.get_repository_info()
         #Only one workspace in Alfresco Repositories
         data = feed.service.workspace
@@ -355,6 +424,22 @@ class Repository(object):
         self.root_folder_id = data.repositoryInfo.rootFolderId
         self.collections = dict([(a.collectionType, a.href) for a in data.collection])
         self.capabilities = data.repositoryInfo.capabilities
+
+
+    def execute(self, http_method, *args, **kwargs):
+        """
+        Executes Methods. Handles the parse and everything fun about it. 
+        """
+
+        func = getattr(self.service, http_method.lower())        
+        response = func(*args, **kwargs)
+        
+        response_type = response.headers.subtype
+        
+        if response_type == 'atom+xml':
+            return CMISFeedParser(response, self)
+        else:
+            return response.read()
 
     #REPOSITORY SERVICES
     def get_repositories(self, **kwargs):
@@ -372,7 +457,7 @@ class Repository(object):
         Headers: CMIS-repositoryId
         HTTP Arguments: repositoryId
         """
-        return self.service.simple('repository', **kwargs).parse()
+        return self.execute('simple', method='repository', **kwargs).feed
 
     def get_types(self, skipCount=0, maxItems=0, includePropertyDefinition=False, **kwargs):
         """
@@ -408,7 +493,7 @@ class Repository(object):
         Otherwise, property definitions will also be returned for each object type.
         ---
         """
-        return self.service.simple('types', skipCount=skipCount, maxItems=maxItems, 
+        return self.execute('simple', method='types', skipCount=skipCount, maxItems=maxItems, 
                                 includePropertyDefinition=includePropertyDefinition, **kwargs).parse_types()
     
     def get_type_definition(self, type, includePropertyDefinition=False, **kwargs):
@@ -420,10 +505,266 @@ class Repository(object):
         Headers: CMIS-includePropertyDefinitions (Boolean)
         HTTP Arguments: includePropertyDefinitions
         """
-        return self.service.simple('types', type=type, includePropertyDefinition=includePropertyDefinition)
+        return self.execute('simple', method='types', type=type, 
+                            includePropertyDefinition=includePropertyDefinition).parse_types()
     
-    #NAVIGATION SERVICES
-    def get_descendants(self, id, depth=1, types=None, filter=None, include_allowable_actions=False, 
+    def get_allowable_actions(self):
+        """
+        getAllowableActions
+        Description
+            Returns the list of allowable actions for a document, folder, or relationship object based
+            on thGET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
+        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
+        ---
+        Returns the properties of an object, and optionally the operations that the user is allowed to perform on the object
+        
+        Inputs:
+        
+        ID objectId
+        (Optional) Enum returnVersion: This (Default), Latest, LatestMajor
+        (Optional) String filter: Filter for properties to be returned
+        (Optional) Boolean includeAllowableActions: False (default)
+        (Optional) Enum includeRelationships: none (default), source, target, both
+        
+        Outputs:
+        
+        Collection propertyCollection
+        Collection allowableActionCollection
+        
+        Notes:
+        
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
+        
+        "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
+        relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
+        relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
+        
+        Does not return the content-stream of a document
+        PropertyCollection includes changeToken (if applicable to repository)
+        e current user's context.
+        """
+        pass
+    
+    def get_properties(self):
+        """
+        getAllowableActions
+        Description
+            Returns the list of allowable actions for a document, folder, or relationship object based
+            on th
+        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
+        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
+        ---
+        Returns the properties of an object, and optionally the operations that the user is allowed to perform on the object
+        
+        Inputs:
+        
+        ID objectId
+        (Optional) Enum returnVersion: This (Default), Latest, LatestMajor
+        (Optional) String filter: Filter for properties to be returned
+        (Optional) Boolean includeAllowableActions: False (default)
+        (Optional) Enum includeRelationships: none (default), source, target, both
+        
+        Outputs:
+        
+        Collection propertyCollection
+        Collection allowableActionCollection
+        
+        Notes:
+        
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
+        
+        "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
+        relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
+        relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
+        
+        Does not return the content-stream of a document
+        PropertyCollection includes changeToken (if applicable to repository)
+        e current user's context.
+        """
+        pass
+        
+    def update_properties(self):
+        """
+        PUT /alfresco/service/api/node/{store_type}/{store_id}/{id}
+        PUT /alfresco/service/api/path/{store_type}/{store_id}/{id}
+        ---
+        This service updates properties of the specified object. As per the data model, content-streams are not properties
+        
+        Inputs:
+        
+        ID objectId
+        (Optional) String changeToken
+        Collection propertyCollection - Subset list of Properties to update
+        
+        Outputs:
+        
+        ID objectId
+        
+        Notes:
+        
+        Preserves the ID of the object
+        Subset of properties: Properties not specified in this list are not changed
+        To remove a property, specify property with no value
+        If an attempt is made to update a read-only property, throw ConstraintViolationException.
+        If a ChangeToken is provided by the repository when the object is retrieved, the change token MUST be included as-is when calling updateProperties.
+        For Multi-Value properties, the whole list of values MUST be provided on every update.
+        Use getAllowableActions to identify whether older version specified by ID is updatable.
+        If this is a private working copy, some repositories may not support updates.
+        Because repositories MAY automatically create new Document Versions on a user's behalf, the objectId returned may not match the one provided as an input to this method.
+        """
+        pass
+    
+    def delete_object(self):
+        """
+        DELETE /alfresco/service/api/node/{store_type}/{store_id}/{id}?includeChildren={includeChildren?}
+        DELETE /alfresco/service/api/path/{store_type}/{store_id}/{id}?includeChildren={includeChildren?}
+        ---
+        Deletes specified object
+        
+        Inputs:
+        
+        ID objectId
+        
+        Notes:
+        
+        If the object is a Folder with at least one child, throw ConstraintViolationException.
+        If the object is the Root Folder, throw OperationNotSupportedException.
+        When a filed object is deleted, it is removed from all folders it is filed in.
+        This service deletes a specific version of a document object. To delete all versions, use deleteAllVersions()
+        Deletion of a private working copy (checked out version) is the same as to cancel checkout.
+        ---
+        """
+        pass
+    
+    #FUNCTIONS THAT HAVE NOT BEEN CONFIRMED TO WORK
+    def move_object(self):
+        """
+        Description
+            Moves specified folder or document to new location
+        Arguments
+            Headers: CMIS-removeFrom (String)
+            HTTP Arguments: removeFrom
+        
+        Post an entry doc to the new collection location.
+        Header CMIS-removeFrom: folderId.
+        Note: For repositories that do not support multi -filing, the item will always be removed from the previous folder,
+        even if the header is not specified.
+        """
+        pass        
+    def set_content_stream(self):
+        """
+        Description
+            Sets (creates or replaces) the content stream for the version specified of a document
+            object.
+        This method follows the Atom Publishing model where the media (content stream) is PUT at the edit-media or
+        stream link.
+        
+        TODO: No alfresco impl
+        """
+        raise NotImplementedError("Alfresco doesn't have this yet")
+    
+    def delete_content_stream(self):
+        """
+        Description 
+            Deletes the content stream of the specified document Id. This does not delete properties.
+            If there are other versions this does not affect them, their properties or content.
+            This does not change the ID of the document.
+        TODO: No alfresco impl
+        """
+        raise NotImplementedError("Alfresco doesn't have this yet")
+    
+    def add_document_to_folder(self):
+        """
+        Description 
+            Adds an existing document object to a folder. This may fail based on repository rules such
+            as multi-filing not being supported, documents only being allowed to be filed once in any
+            folder, etc.
+        Arguments   
+            Headers: CMIS-removeFrom (String), CMIS-thisVersion (Boolean)
+            HTTP Arguments: removeFrom, thisVersion
+        """
+        pass
+    
+    def remove_document_from_folder(self):
+        """
+        Description 
+            Removes document from a folder. This does not delete the document and does not
+            change the ID of the document.
+        
+        To remove the document from all folders: post it to the Unfiled collection.
+        
+        To remove the document from a particular folder: post an entry for the document to a folder in which you want
+        the document to be filed, including the http header "CMIS-removeFrom" with the value set to the folder from
+        which you want to unfile the document. (If the document is already in the folder to which you are posting, the
+        document will be removed from the specified folder, but NOT doubly filed into the target folder.)
+        """
+        pass
+    
+    #VERSIONING SERVICES
+    
+    def get_properties_of_latest_version(self):
+        """
+        Description
+            Returns the properties of the latest version, or the latest major version, of the specified
+            version series
+        Arguments
+            Headers: CMIS-filter (Boolean), CMIS- majorVersion (Boolean)
+            HTTP Arguments: filter, majorVersion
+        
+        This method is accessed by following the link of type 'cmis -latestversion' on any entry. The inputs will be HTTP
+        header tags on the GET request.
+    
+        SEE getProperties
+        """
+        pass
+    
+    def get_all_versions(self):
+        """
+        Description 
+            Returns the list of all members of the version series for the specified document, sorted by
+            CREATION_DATE descending.
+        Arguments   
+            Headers: CMIS-filter (String)
+            HTTP Arguments: filter
+        """
+        pass
+    
+    def delete_all_versions(self):
+        """
+        deleteAllVersions
+        Description
+            Deletes all documents in the version series specified by a member's ObjectId.
+        This method will be invoked by calling DELETE on link 'cmis -allversions' resource.
+        """
+        pass
+    
+    def get_relationships(self):
+        """
+        Description 
+            Returns a list of relationships associated with the object.
+        Arguments
+            Headers:
+                CMIS-relationshipType (String), CMIS-includeSubRelationshipTypes (Boolean),
+                CMIS-filter (String), CMIS-maxItems (Integer), CMIS-skipCount (Integer), CMIS-direction
+                (enumRelationshipDirection), CMIS-includeAllowableActions (Boolean)
+            HTTP Arguments: 
+                relationshipType, includeSubRelationshipTypes, filter, maxResults,
+                skipCount, direction (target, s ource, all) , includeAllowableActions
+        """
+        raise NotImplementedError("Alfresco doesn't have this yet")
+ 
+    def create_relationship(self):
+        """
+        Description             
+            Creates the object of the specified type
+            This method follows the Atom Publishing model where the entry document is posted to the root or any other CMIS
+            collection.
+        """
+        raise NotImplementedError("Alfresco doesn't have this yet")
+
+
+        #NAVIGATION SERVICES
+    def get_descendants(self, id=None, depth=1, types=None, filter=None, include_allowable_actions=False, 
                         include_relationships=None, order_by=None, package='node', **kwargs):
         """
         Description 
@@ -479,11 +820,12 @@ class Repository(object):
             If it is set to "none", relationships are not returned.
 
         """
-        return self.service.get(id=id, method='descendants', package=package, depth=depth, types=types, 
+        
+        return self.execute('get', id=id, method='descendants', package=package, depth=depth, types=types, 
                       filter=filter, includeAllowableActions=include_allowable_actions, 
-                      includeRelationships=include_relationships, orderBy=order_by, **kwargs)
+                      includeRelationships=include_relationships, orderBy=order_by, **kwargs).parse()
     
-    def get_children(self, id, types=None, filter=None, include_allowable_actions=False, 
+    def get_children(self, id=None, types=None, filter=None, include_allowable_actions=False, 
                         include_relationships=None, max_items=0, skip_count=0, order_by=None, package='node', **kwargs):
         """
         GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/children?types={types}&filter={filter?}&skipCount={skipCount?}&maxItems={maxItems?}
@@ -530,43 +872,16 @@ class Repository(object):
         How the Repository determines this value is repository-specific and opaque to CMIS.
         ---
         """
-        return self.service.get(id=id, method='children', package=package, types=types, 
+        
+        
+        return self.execute('get', id=id, method='children', package=package, types=types, 
                       filter=filter, includeAllowableActions=include_allowable_actions, 
                       includeRelationships=include_relationships,  maxItems=max_items, 
-                      skipCount=skip_count, orderBy=order_by, **kwargs)
+                      skipCount=skip_count, orderBy=order_by, **kwargs).parse()
+
     
     def get_folder_parent(self):
         pass
-    
-    def get_object_parents(self, id, filter=None, include_allowable_actions=False, 
-                        include_relationships=None, package='node', **kwargs):
-        """
-        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/parents?filter={filter?}
-        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/parents?filter={filter?}
-        ---
-        Returns the parent folders for the specified non-folder, fileable object
-        
-        Inputs:
-        
-        ID objectId: ID of a non-folder, fileable object.
-        (Optional) String filter: filter specifying which properties to return.
-        (Optional) Boolean includeAllowableActions: False (default)
-        (Optional) Enum includeRelationships: none (default), source, target, both
-        
-        Outputs:
-        
-        ResultSet resultSet - Set of folders containing the object.
-        
-        Notes:
-        
-        Order is repository-specific
-        It is suggested that the parent and the ObjectId properties are included in the filter to allow re-ordering if necessary.
-        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each parent folder as part of the output.
-        "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.     
-        """
-        return self.service.get(id=id, method='parents', package=package,
-              filter=filter, includeAllowableActions=include_allowable_actions, 
-              includeRelationships=include_relationships, **kwargs)
     
     def get_checked_out_documents(self, id, filter=None, include_allowable_actions=False, 
                         include_relationships=None, max_items=0, skip_count=0, **kwargs):
@@ -726,187 +1041,7 @@ class Repository(object):
         Root folder can not be created using this service.
         """
         pass
-    
-    def create_relationship(self):
-        """
-        Description             
-            Creates the object of the specified type
-            This method follows the Atom Publishing model where the entry document is posted to the root or any other CMIS
-            collection.
-        """
-        raise NotImplementedError("Alfresco doesn't have this yet")
-    
-    def get_allowable_actions(self):
-        """
-        getAllowableActions
-        Description
-            Returns the list of allowable actions for a document, folder, or relationship object based
-            on thGET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
-        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
-        ---
-        Returns the properties of an object, and optionally the operations that the user is allowed to perform on the object
-        
-        Inputs:
-        
-        ID objectId
-        (Optional) Enum returnVersion: This (Default), Latest, LatestMajor
-        (Optional) String filter: Filter for properties to be returned
-        (Optional) Boolean includeAllowableActions: False (default)
-        (Optional) Enum includeRelationships: none (default), source, target, both
-        
-        Outputs:
-        
-        Collection propertyCollection
-        Collection allowableActionCollection
-        
-        Notes:
-        
-        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
-        
-        "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
-        relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
-        relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
-        
-        Does not return the content-stream of a document
-        PropertyCollection includes changeToken (if applicable to repository)
-        e current user's context.
-        """
-        pass
-    
-    def get_properties(self):
-        """
-        getAllowableActions
-        Description
-            Returns the list of allowable actions for a document, folder, or relationship object based
-            on th
-        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
-        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}?filter={filter?}&returnVersion={returnVersion?}
-        ---
-        Returns the properties of an object, and optionally the operations that the user is allowed to perform on the object
-        
-        Inputs:
-        
-        ID objectId
-        (Optional) Enum returnVersion: This (Default), Latest, LatestMajor
-        (Optional) String filter: Filter for properties to be returned
-        (Optional) Boolean includeAllowableActions: False (default)
-        (Optional) Enum includeRelationships: none (default), source, target, both
-        
-        Outputs:
-        
-        Collection propertyCollection
-        Collection allowableActionCollection
-        
-        Notes:
-        
-        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for the object as part of the output.
-        
-        "IncludeRelationships" indicates whether relationships are also returned for the object. If it is set to "source" or "target", 
-        relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", 
-        relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
-        
-        Does not return the content-stream of a document
-        PropertyCollection includes changeToken (if applicable to repository)
-        e current user's context.
-        """
-        pass
-    
-    def get_content_stream(self):
-        """
-        GET /alfresco/service/api/node/content{property}/{store_type}/{store_id}/{id}?a={attach?}
-        GET /alfresco/service/api/path/content{property}/{store_type}/{store_id}/{id}?a={attach?}
-        GET /alfresco/service/api/avmpath/content{property}/{store_id}/{id}?a={attach?}
-        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/content{property}?a={attach?}
-        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/content{property}?a={attach?}
-        ---
-        The service returns the content-stream for a document. This is the only service that returns content-stream.
-        
-        Inputs:
-        
-        ID documentId: Document to return the content-stream
-        (Optional) Integer offset:
-        (Optional) Integer length:
-        
-        Outputs:
-        
-        Byte[] stream
-        
-        Notes:
-        
-        Some CMIS protocol bindings MAY choose not to explicitly implement a "getContentStream" method, in cases where the protocol itself provides built-in mechanisms for retrieving byte streams. (E.g. in the ATOM/REST binding, content streams may be retrieved via standard HTTP gets on an "edit-media" URL, rather than a CMIS-specific "getContentStream" URL). See Part II of the CMIS specification for additional details.
-        Each CMIS protocol binding will provide a way for fetching a sub-range within a content stream, in a manner appropriate to that protocol.
-        ---
-        """
-        pass
-    
-    def update_properties(self):
-        """
-        PUT /alfresco/service/api/node/{store_type}/{store_id}/{id}
-        PUT /alfresco/service/api/path/{store_type}/{store_id}/{id}
-        ---
-        This service updates properties of the specified object. As per the data model, content-streams are not properties
-        
-        Inputs:
-        
-        ID objectId
-        (Optional) String changeToken
-        Collection propertyCollection - Subset list of Properties to update
-        
-        Outputs:
-        
-        ID objectId
-        
-        Notes:
-        
-        Preserves the ID of the object
-        Subset of properties: Properties not specified in this list are not changed
-        To remove a property, specify property with no value
-        If an attempt is made to update a read-only property, throw ConstraintViolationException.
-        If a ChangeToken is provided by the repository when the object is retrieved, the change token MUST be included as-is when calling updateProperties.
-        For Multi-Value properties, the whole list of values MUST be provided on every update.
-        Use getAllowableActions to identify whether older version specified by ID is updatable.
-        If this is a private working copy, some repositories may not support updates.
-        Because repositories MAY automatically create new Document Versions on a user's behalf, the objectId returned may not match the one provided as an input to this method.
-        """
-        pass
-    
-    def move_object(self):
-        """
-        Description
-            Moves specified folder or document to new location
-        Arguments
-            Headers: CMIS-removeFrom (String)
-            HTTP Arguments: removeFrom
-        
-        Post an entry doc to the new collection location.
-        Header CMIS-removeFrom: folderId.
-        Note: For repositories that do not support multi -filing, the item will always be removed from the previous folder,
-        even if the header is not specified.
-        """
-        pass
-    
-    def delete_object(self):
-        """
-        DELETE /alfresco/service/api/node/{store_type}/{store_id}/{id}?includeChildren={includeChildren?}
-        DELETE /alfresco/service/api/path/{store_type}/{store_id}/{id}?includeChildren={includeChildren?}
-        ---
-        Deletes specified object
-        
-        Inputs:
-        
-        ID objectId
-        
-        Notes:
-        
-        If the object is a Folder with at least one child, throw ConstraintViolationException.
-        If the object is the Root Folder, throw OperationNotSupportedException.
-        When a filed object is deleted, it is removed from all folders it is filed in.
-        This service deletes a specific version of a document object. To delete all versions, use deleteAllVersions()
-        Deletion of a private working copy (checked out version) is the same as to cancel checkout.
-        ---
-        """
-        pass
-    
+
     def delete_tree(self):
         """
         DELETE /alfresco/service/api/node/{store_type}/{store_id}/{id}/descendants?continueOnFailure={continueOnFailure?}&unfileMultiFiledDocuments={unfileMultiFiledDocuments}
@@ -944,121 +1079,36 @@ class Repository(object):
         ---
         """
         pass
-    
-    def set_content_stream(self):
+
+    def get_object_parents(self, id=None, filter=None, include_allowable_actions=False, 
+                        include_relationships=None, package='node', **kwargs):
         """
-        Description
-            Sets (creates or replaces) the content stream for the version specified of a document
-            object.
-        This method follows the Atom Publishing model where the media (content stream) is PUT at the edit-media or
-        stream link.
-        
-        TODO: No alfresco impl
-        """
-        pass
-    
-    def delete_content_stream(self):
-        """
-        Description 
-            Deletes the content stream of the specified document Id. This does not delete properties.
-            If there are other versions this does not affect them, their properties or content.
-            This does not change the ID of the document.
-        TODO: No alfresco impl
-        """
-        pass
-    
-    def add_document_to_folder(self):
-        """
-        Description 
-            Adds an existing document object to a folder. This may fail based on repository rules such
-            as multi-filing not being supported, documents only being allowed to be filed once in any
-            folder, etc.
-        Arguments   
-            Headers: CMIS-removeFrom (String), CMIS-thisVersion (Boolean)
-            HTTP Arguments: removeFrom, thisVersion
-        """
-        pass
-    
-    def remove_document_from_folder(self):
-        """
-        Description 
-            Removes document from a folder. This does not delete the document and does not
-            change the ID of the document.
-        
-        To remove the document from all folders: post it to the Unfiled collection.
-        
-        To remove the document from a particular folder: post an entry for the document to a folder in which you want
-        the document to be filed, including the http header "CMIS-removeFrom" with the value set to the folder from
-        which you want to unfile the document. (If the document is already in the folder to which you are posting, the
-        document will be removed from the specified folder, but NOT doubly filed into the target folder.)
-        """
-        pass
-    
-    #DISCOVERY SERVICES
-    def query(self):
-        """
-        Description 
-            Queries the repository for folders and content based on properties or an optional full text
-            string. Query returns version that matches the constraints of a content object and does
-            not search relationship objects. The content stream is not returned as part of query.
-        
-        POST /alfresco/service/api/query
+        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/parents?filter={filter?}
+        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/parents?filter={filter?}
         ---
-        Queries the repository for queryable object based on properties or an optional full-text string. Relationship objects are not queryable. Content-streams are not returned as part of query.
+        Returns the parent folders for the specified non-folder, fileable object
         
         Inputs:
         
-        String statement: Query statement
-        (Optional) Bool searchAllVersions: False (Default)
+        ID objectId: ID of a non-folder, fileable object.
+        (Optional) String filter: filter specifying which properties to return.
         (Optional) Boolean includeAllowableActions: False (default)
         (Optional) Enum includeRelationships: none (default), source, target, both
-        (Optional) int maxItems: 0 = Repository-default number of items (Default)
-        (Optional) int skipCount: 0 = Start at first position (Default)
         
         Outputs:
         
-        Collection objectCollection - this collection represents a result table produced by the query statement. Typically each row of this table corresponds to an object, and each column corresponds to a property or a computed value as specified by the SELECT clause of the query statement. A CMIS SQL 1.0 query without JOIN always produces one object per row.
-        Bool hasMoreItems
+        ResultSet resultSet - Set of folders containing the object.
         
         Notes:
         
-        If SearchAllVersions is True, and CONTAINS() is used in the query, OperationNotSupported will be thrown if full-text search is not supported or if the repository does not have previous versions in the full-text index.
-        Returns set of objects from (skipCount, maxItems+skipCount)
-        If no "maxItems" value is provided, then the Repository will determine an appropriate number of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
-        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each result object in the output table as an additional multi-valued column containing computed values of type string, provided that each row in the output table indeed corresponds to one object (which is true for a CMIS SQL 1.0 query without JOIN).
-        If each row in the output table does not correspond to a specific object and "includeAllowableActions" is TRUE, then InvalidArgumentException will be thrown.
-        It is recommended that "includeAllowableActions" be used with query statements without JOIN, and that the Object ID property or "*" be included in the SELECT list.
-        "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
-        ---
+        Order is repository-specific
+        It is suggested that the parent and the ObjectId properties are included in the filter to allow re-ordering if necessary.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each parent folder as part of the output.
+        "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.     
         """
-        pass
-    #VERSIONING SERVICES
-    def checkout(self):
-        """
-        POST /alfresco/service/api/checkedout
-        ---
-        Create a private working copy of the object, copies the metadata and optionally content. It is up to the repository to determine if updates to the current version (not PWC) and prior versions are allowed if checked-out.
-        
-        Inputs:
-        
-        ID documentId: ObjectID of Doc Version to checkout
-        
-        Outputs:
-        
-        ID documentId: ObjectID of Private Working Copy
-        Bool contentCopied
-        
-        Notes:
-        
-        It is repository-specific to determine the scope of visibility to the private working copy.
-        Other users not in the scope of checkout will see the public (pre-checkout) version while those in scope will be able to work on the checked-out version.
-        Copying content on checkout or not is repository-specific.
-        CheckOut() may remove update permission on prior versions.
-        CheckOut() on a non-document object will throw OperationNotSupportedException.
-        Some repositories may not support updating of private working copies and the updates MUST be supplied via checkIn().
-        ---
-        """
-        pass
+        return self.service.get(id=id, method='parents', package=package,
+              filter=filter, includeAllowableActions=include_allowable_actions, 
+              includeRelationships=include_relationships, **kwargs)
     
     def cancel_check_out(self):
         """
@@ -1106,54 +1156,69 @@ class Repository(object):
         """
         pass
     
-    
-    def get_properties_of_latest_version(self):
+    def get_content_stream(self):
         """
-        Description
-            Returns the properties of the latest version, or the latest major version, of the specified
-            version series
-        Arguments
-            Headers: CMIS-filter (Boolean), CMIS- majorVersion (Boolean)
-            HTTP Arguments: filter, majorVersion
+        GET /alfresco/service/api/node/content{property}/{store_type}/{store_id}/{id}?a={attach?}
+        GET /alfresco/service/api/path/content{property}/{store_type}/{store_id}/{id}?a={attach?}
+        GET /alfresco/service/api/avmpath/content{property}/{store_id}/{id}?a={attach?}
+        GET /alfresco/service/api/node/{store_type}/{store_id}/{id}/content{property}?a={attach?}
+        GET /alfresco/service/api/path/{store_type}/{store_id}/{id}/content{property}?a={attach?}
+        ---
+        The service returns the content-stream for a document. This is the only service that returns content-stream.
         
-        This method is accessed by following the link of type 'cmis -latestversion' on any entry. The inputs will be HTTP
-        header tags on the GET request.
-    
-        SEE getProperties
+        Inputs:
+        
+        ID documentId: Document to return the content-stream
+        (Optional) Integer offset:
+        (Optional) Integer length:
+        
+        Outputs:
+        
+        Byte[] stream
+        
+        Notes:
+        
+        Some CMIS protocol bindings MAY choose not to explicitly implement a "getContentStream" method, in cases where the protocol itself provides built-in mechanisms for retrieving byte streams. (E.g. in the ATOM/REST binding, content streams may be retrieved via standard HTTP gets on an "edit-media" URL, rather than a CMIS-specific "getContentStream" URL). See Part II of the CMIS specification for additional details.
+        Each CMIS protocol binding will provide a way for fetching a sub-range within a content stream, in a manner appropriate to that protocol.
+        ---
         """
         pass
     
-    def get_all_versions(self):
+        #DISCOVERY SERVICES
+    def query(self):
         """
         Description 
-            Returns the list of all members of the version series for the specified document, sorted by
-            CREATION_DATE descending.
-        Arguments   
-            Headers: CMIS-filter (String)
-            HTTP Arguments: filter
+            Queries the repository for folders and content based on properties or an optional full text
+            string. Query returns version that matches the constraints of a content object and does
+            not search relationship objects. The content stream is not returned as part of query.
+        
+        POST /alfresco/service/api/query
+        ---
+        Queries the repository for queryable object based on properties or an optional full-text string. Relationship objects are not queryable. Content-streams are not returned as part of query.
+        
+        Inputs:
+        
+        String statement: Query statement
+        (Optional) Bool searchAllVersions: False (Default)
+        (Optional) Boolean includeAllowableActions: False (default)
+        (Optional) Enum includeRelationships: none (default), source, target, both
+        (Optional) int maxItems: 0 = Repository-default number of items (Default)
+        (Optional) int skipCount: 0 = Start at first position (Default)
+        
+        Outputs:
+        
+        Collection objectCollection - this collection represents a result table produced by the query statement. Typically each row of this table corresponds to an object, and each column corresponds to a property or a computed value as specified by the SELECT clause of the query statement. A CMIS SQL 1.0 query without JOIN always produces one object per row.
+        Bool hasMoreItems
+        
+        Notes:
+        
+        If SearchAllVersions is True, and CONTAINS() is used in the query, OperationNotSupported will be thrown if full-text search is not supported or if the repository does not have previous versions in the full-text index.
+        Returns set of objects from (skipCount, maxItems+skipCount)
+        If no "maxItems" value is provided, then the Repository will determine an appropriate number of items to return. How the Repository determines this value is repository-specific and opaque to CMIS.
+        If "includeAllowableActions" is TRUE, the repository will return the allowable actions for the current user for each result object in the output table as an additional multi-valued column containing computed values of type string, provided that each row in the output table indeed corresponds to one object (which is true for a CMIS SQL 1.0 query without JOIN).
+        If each row in the output table does not correspond to a specific object and "includeAllowableActions" is TRUE, then InvalidArgumentException will be thrown.
+        It is recommended that "includeAllowableActions" be used with query statements without JOIN, and that the Object ID property or "*" be included in the SELECT list.
+        "IncludeRelationships" indicates whether relationships are also returned for each returned object. If it is set to "source" or "target", relationships for which the returned object is a source, or respectively a target, will also be returned. If it is set to "both", relationships for which the returned object is either a source or a target will be returned. If it is set to "none", relationships are not returned.
+        ---
         """
         pass
-    
-    def delete_all_versions(self):
-        """
-        deleteAllVersions
-        Description
-            Deletes all documents in the version series specified by a member's ObjectId.
-        This method will be invoked by calling DELETE on link 'cmis -allversions' resource.
-        """
-        pass
-    
-    def get_relationships(self):
-        """
-        Description 
-            Returns a list of relationships associated with the object.
-        Arguments
-            Headers:
-                CMIS-relationshipType (String), CMIS-includeSubRelationshipTypes (Boolean),
-                CMIS-filter (String), CMIS-maxItems (Integer), CMIS-skipCount (Integer), CMIS-direction
-                (enumRelationshipDirection), CMIS-includeAllowableActions (Boolean)
-            HTTP Arguments: 
-                relationshipType, includeSubRelationshipTypes, filter, maxResults,
-                skipCount, direction (target, s ource, all) , includeAllowableActions
-        """
-        raise NotImplementedError("Alfresco doesn't have this yet")

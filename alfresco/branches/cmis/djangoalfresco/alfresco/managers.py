@@ -5,6 +5,9 @@ from django.db import models
 from alfresco import  service
 from alfresco.paginator import AlfrescoSearchPaginator
 from log.loggers import logger
+from alfresco import cmis
+from django.core.cache import cache
+
 
 def order_by_helper(order_by, object_list):
     if order_by:
@@ -20,6 +23,19 @@ def order_by_helper(order_by, object_list):
         object_list = [t[1] for t in decorated_list]
     return object_list
 
+
+"""
+Repositories
+
+Only need one instance of each repository. 
+"""
+class RepositoryManger(models.Manager):
+    
+    def get(self):
+        pass
+    def types(self, *args, **kwargs):
+        pass
+        
 class AlfrescoContentManager(models.Manager):
     
     # Forces the manager to be used for related content.
