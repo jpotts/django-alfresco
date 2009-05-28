@@ -78,6 +78,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     DIRNAME + "/html/templates/sample/",
     DIRNAME + "/html/templates/base/",
+    DIRNAME + "/sample_site/templates",
 )
 
 INSTALLED_APPS = (

@@ -12,11 +12,16 @@ else
    results = []
    for (i=0; i < nodes.length; i =i+1){
 		if(nodes[i].isDocument){
-			results[i] = nodes[i];
+			results[i] = new Result(nodes[i], nodes[i].tags);
 		}
 	}
    
    model.resultset = results;
    
    
+}
+
+function Result(doc, tags) {
+	this.doc = doc;
+	this.tags = tags;
 }

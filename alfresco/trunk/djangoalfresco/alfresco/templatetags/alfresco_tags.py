@@ -1,3 +1,4 @@
+from django.template import TemplateSyntaxError
 from alfresco import utils
 from alfresco.models import Content, StaticContent
 from alfresco.service import get_navigation_ul, AlfrescoException
@@ -44,7 +45,7 @@ class GetContent(AlfrescoTemplateNode):
     def __init__(self, slug):
         self.slug = slug
     
-    def deliver(self, context):  
+    def render(self, context):  
         try:
             user = Variable('user').resolve(context)
             sc_item = StaticContent.objects.get(slug=self.slug)
@@ -63,3 +64,39 @@ def get_content(parser, token):
         raise template.TemplateSyntaxError, "%s tag requires only 2 arguments" % token.contents.split()[0]   
     
     return GetContent(bits[1])
+
+class FormatTags(template.Node):
+    """
+    For a given set of list-separated tags, format a linked list of the tags in the list
+    usage::
+        {% format_tags [tags] %}   
+        
+    """
+
+    def __init__(self, tag_var):
+        self.tag_var = tag_var
+        
+    def render(self, context):
+        tag_list_csv = Variable(self.tag_var).resolve(context)
+        
+        if (tag_list_csv is None):
+            return None
+            
+        tag_list = tag_list_csv.split(',')
+            
+        #markup = ""
+        #for tag in tag_list:
+        #    markup += '<a href="/blog-term/%s" name="blogtag">%s</a>' % (tag, tag)
+            # what is the "has next" syntax in an iterator in python
+        markup = ', '.join(['<a href="/sample_site/tag_search?q=%s" name="blogtag">%s</a>' % (tag, tag) for tag in tag_list])
+
+        return markup
+    
+@register.tag(name="format_tags")
+def format_tags(parser, token):
+    bits = token.contents.split()
+    
+    if len(bits) is not 2:
+        raise template.TemplateSyntaxError, "%s tag requires 2 arguments" % token.contents.split()[0]
+    
+    return FormatTags(bits[1])    

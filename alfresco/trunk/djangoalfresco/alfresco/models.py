@@ -68,6 +68,7 @@ class Content(models.Model):
     created = models.DateField()
     modified = models.DateField()
     url = models.CharField(max_length=255, blank=True, null=True)
+    tags = models.CharField(max_length=1024, blank=True, null=True)
   
     objects = AlfrescoContentManager()
     

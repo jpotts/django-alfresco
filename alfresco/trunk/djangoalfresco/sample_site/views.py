@@ -188,6 +188,20 @@ def create_search_string(get={}):
             values.append(value)
     return ' AND '.join(values).replace(' ', '%20')
 
+def create_tag_search_string(get={}):
+    values = []
+    for key, value in get.items():
+        if not value or key in ['page', 'order_by', 'page_size']:
+            continue
+        if key == 'q':
+            if value.startswith('+PATH'):
+                values.append(value)
+            else:                    
+                values.append('+PATH:"/cm:taggable/cm:%s/member"' % value)
+        else:
+            values.append(value)
+    return ' AND '.join(values).replace(' ', '%20')
+
 def clean_q(params):
     """
     This keeps the form and the pagination working.
@@ -232,6 +246,35 @@ def search(request):
              'get_params' : make_get_urls(page=page, page_size=page_size, order_by=order_by, q=search_term)}, 
              context_instance=RequestContext(request))
     
+@ticket_required
+def tag_search(request):
+    """
+    Alfresco Tag Search.
+    """
+    # Get pagination and sorting stuff
+    page = request.GET.get('page',1)
+    page_size = int(request.GET.get('page_size', 10))
+    order_by = request.GET.get('order_by', 'title')
+    query = request.GET.get('q')
+     
+    # Make the search term
+    search_term = create_tag_search_string(request.GET)
         
+    #Search
+    paginator = AlfrescoSearchPaginator(q=search_term, order_by=order_by, page=page, page_size=page_size, alf_ticket=request.user.ticket)
+
+    #Search Form
+    form = SearchForm(initial=clean_q(request.GET))
+    
+    return render_to_response('optaros/tag_search.html',
+            {'page' : paginator.page,
+             'pages': paginator.pages(),
+             'search_term': search_term,
+             'query': query,
+             'order_by' : order_by,
+             'form' : form,
+             'get_params' : make_get_urls(page=page, page_size=page_size, order_by=order_by, q=search_term)}, 
+             context_instance=RequestContext(request))    
+
     
     

@@ -12,5 +12,6 @@
 		<field type="DateField" name="created"><#if doc.properties['created']?exists>${doc.properties['created']?string("yyyy-MM-dd")}</#if></field>
 		<field type="DateField" name="modified"><#if doc.properties['modified']?exists>${doc.properties['modified']?string("yyyy-MM-dd")}</#if></field>
 		<field type="CharField" name="url">${url.serviceContext}/api/node/content/${doc.nodeRef.storeRef.protocol}/${doc.nodeRef.storeRef.identifier}/${doc.nodeRef.id}/${doc.name?url}</field>
+		<field type="CharField" name="tags"><#list tags as tag>${tag}<#if tag_has_next>,</#if></#list></field>
 	</object>
 </django-objects>

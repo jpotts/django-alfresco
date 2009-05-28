@@ -25,8 +25,7 @@ class AlfrescoSearchPage(object):
 
     def previous_page_number(self):
         return self.number - 1
-
-
+    
 class AlfrescoSearchPaginator(object):
     """
     Very different from the Django Paginator.

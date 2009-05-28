@@ -18,13 +18,18 @@ else{
 	//model: An empty associative array which may be populated by the JavaScript. Values placed 
 	//into this array are available as root objects in web script response templates.
 	
-	var docs = [];
+	var results = [];
 	var length =path_node.children.length
 	if(num_entries){length = num_entries;}
 	for (i=0; i < length; i =i+1){
 		if(path_node.children[i].isDocument){
-			docs[i] = path_node.children[i];
+			results[i] = new Result(path_node.children[i], path_node.children[i].tags);
 		}
 	}
-	model.docs = docs
+	model.results = results
+}
+
+function Result(doc, tags) {
+	this.doc = doc;
+	this.tags = tags;
 }

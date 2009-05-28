@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title%}OPT S S DETAIL{{object.title}}{% endblock %}
+{% block title%}{{object.title}}{% endblock %}
 {%block extra-head%}
 <script type="text/javascript">
 <!--
@@ -32,7 +32,8 @@ function doOpen(url, target){
       <div class="summary">
         <b>Summary:</b> {{object.description}} <br />
         <b>Published:</b> {{object.modified|date:"m/d/Y"}} by <a href="contact.html" target="contactpopup" onClick="return doOpen(this.href, this.target)">{{object.author}}</a>&nbsp;&nbsp;<br />
-        <b>File Type:</b> {{object.mimetype}}
+        <b>File Type:</b> {{object.mimetype}}<br />
+        <b>Tags:</b> {% load alfresco_tags %}{% format_tags object.tags %}
       </div>
     </div>
          {% load alfresco_tags %}

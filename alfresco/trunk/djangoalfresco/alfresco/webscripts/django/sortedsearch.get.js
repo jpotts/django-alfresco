@@ -28,7 +28,7 @@ else{
 	// Actual Search
 	var script_nodes = search.luceneSearch(q, '@cm:' + sort_by , sort_order) 
 	
-	var docs = [];
+	var results = [];
 	var start = 0;
 	var stop = script_nodes.length;
 	var num_results = script_nodes.length;
@@ -48,7 +48,7 @@ else{
 	
 	//Get Docs
 	for( i= start; i < stop; i = i+1){
-		docs[i] = script_nodes[i];
+		results[i] = new Result(script_nodes[i], script_nodes[i].tags);
 	}
 	
 	model.q = q;
@@ -63,5 +63,10 @@ else{
 		num_pages = num_pages +1;
 	}
 	model.num_pages = num_pages;
-	model.resultset = docs;
+	model.resultset = results;
+}
+
+function Result(doc, tags) {
+	this.doc = doc;
+	this.tags = tags;
 }

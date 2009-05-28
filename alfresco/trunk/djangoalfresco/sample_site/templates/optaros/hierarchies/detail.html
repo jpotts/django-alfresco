@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 
-{% block title%}opt hier detail{{hierarchy.name}}{% endblock%}
+{% block title%}{{hierarchy.name}}{% endblock%}
 {% block extra-head %}
 <link rel="alternate" type="application/rss+xml" title="RSS" href="{% url rss_feed hierarchy.get_rss %}" />
 {% endblock %}
@@ -32,7 +32,7 @@
 {% block content-left %}
 {% for doc in recent_docs %}
 <div class="entry" {% if forloop.first %}id="sticky"{% endif %}><h3><a name="blog-info" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>
-<span class="posted_by">Posted {{doc.modified|date:"j N Y"}} by <a href="/blog/jpotts">Jeff Potts</a> | Tags: <a href="/blog-term/Alfresco" name="blogtag">Alfresco</a>, <a href="/blog-term/Content%20Management" name="blogtag">Content Management</a></span></h3>
+<span class="posted_by">Posted {{doc.modified|date:"j N Y"}} by <a href="/blog/jpotts">{{ doc.author }}</a>{% if doc.tags %} | Tags: {% load alfresco_tags %}{% format_tags doc.tags %}{% endif %}</span></h3>
 <p>
 {{doc.content|safe|striptags|truncatewords:50}}
 <a class="read_more" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">Read more </a>

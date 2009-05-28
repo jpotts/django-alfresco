@@ -6,4 +6,5 @@ urlpatterns = patterns('',
     url(r'^static/(?P<id>[-\w]+)/$', 'sample_site.views.static_content', name='static_detail'),
     url(r'^images/(?P<path>.*)',   'sample_site.views.photo', name='image'),
     url(r'^search/$',   'sample_site.views.search', name='search'),
+    url(r'^tag_search/$',   'sample_site.views.tag_search', name='tag_search'),
 )

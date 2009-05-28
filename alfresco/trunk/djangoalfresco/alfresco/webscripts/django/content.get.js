@@ -11,4 +11,5 @@ if (doc == undefined)
 } 
 else {
 	model.doc = doc;
+	model.tags = doc.tags;
 }
