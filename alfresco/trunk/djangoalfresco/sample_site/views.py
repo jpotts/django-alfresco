@@ -194,10 +194,10 @@ def create_tag_search_string(get={}):
         if not value or key in ['page', 'order_by', 'page_size']:
             continue
         if key == 'q':
-            if value.startswith('+PATH'):
+            if value.startswith('PATH'):
                 values.append(value)
             else:                    
-                values.append('+PATH:"/cm:taggable/cm:%s/member"' % value)
+                values.append('PATH:"/cm:taggable/cm:%s/member"' % value)
         else:
             values.append(value)
     return ' AND '.join(values).replace(' ', '%20')
