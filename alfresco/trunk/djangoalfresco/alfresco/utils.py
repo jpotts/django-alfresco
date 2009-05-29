@@ -1,5 +1,5 @@
 from xml.dom import minidom
-from alfresco.settings import ALFRESCO_CUSTOM_MODEL_PATH, ALFRESCO_DEFAULT_USER, ALFRESCO_DEFAULT_USER_PASSWORD, ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT
+from alfresco.settings import ALFRESCO_DEFAULT_USER, ALFRESCO_DEFAULT_USER_PASSWORD, ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT
 from django.core.cache import cache
 
 from alfresco.service import login, AlfrescoException
@@ -16,37 +16,6 @@ def get_constraints(xml, namespace, constraint, name):
             break
     
     return values
-
-def parse_custom_model(fields=[]):
-    result_dict = {}
-    
-    try:
-        xml = minidom.parse(ALFRESCO_CUSTOM_MODEL_PATH)
-    except IOError:
-        return result_dict
-    
-    aspect = None
-    for a in xml.getElementsByTagName('aspect'):
-        if a.getAttribute('name') == 'nmgcore:NeimanDetails':
-            aspect = a
-            break
-    
-    if not aspect:
-        return result_dict
-    
-    namespace = xml.getElementsByTagName('namespace')[0].getAttribute('uri')
-    
-    property_list = aspect.getElementsByTagName('property')
-    
-    for property in property_list:
-        name = property.getAttribute('name').split(':')[-1]
-        if fields and name not in fields:
-            continue
-        constraint = property.getElementsByTagName('constraint')[0].getAttribute('ref')
-        values = get_constraints(xml, namespace, constraint, name)
-        result_dict[name] = values
-        
-    return result_dict
 
 def get_external_user_ticket():
     """

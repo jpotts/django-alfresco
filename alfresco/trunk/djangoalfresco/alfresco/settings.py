@@ -5,7 +5,6 @@ ALFRESCO_URL =  getattr(settings, 'ALFRESCO_URL', 'http://localhost:8080/')
 ALFRESCO_SERVICE_URL = ALFRESCO_URL + 'alfresco/service/'
 ALFRESCO_SPACE_STORE_URL =   ALFRESCO_URL +'alfresco/download/attach/workspace/SpacesStore/'
 ALFRESCO_CONTENT_SUB_URL = ALFRESCO_URL + 'alfresco/service/news/upload'
-ALFRESCO_CUSTOM_MODEL_PATH = getattr(settings, 'ALFRESCO_CUSTOM_MODEL_PATH', getattr(settings, 'DIRNAME') + '/alfresco/conf/nmgcoreModel.xml' )
 
 # Set this to the Alfresco ID of the root space from which to build the space navigation
 # Setting this to none will generate a tree based on the entire Alfresco spacestore

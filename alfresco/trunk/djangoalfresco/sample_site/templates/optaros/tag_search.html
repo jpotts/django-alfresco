@@ -17,7 +17,7 @@
 	</dt>
 	<dd>
       <p class="search-snippet">{{object.content|striptags|safe|truncatewords:10}}</p>
-	  <p class="search-info">{{object.mimetype}} - <a href="#" title="View user profilee">{{object.author}}</a> - {{object.modified|date:"m/d/Y"}}</p>
+	  <p class="search-info">{{object.mimetype}} - {% load alfresco_tags %}{% format_user_link object.author %} - {{object.modified|date:"m/d/Y"}}</p>
     </dd>
     {% endfor %}
     

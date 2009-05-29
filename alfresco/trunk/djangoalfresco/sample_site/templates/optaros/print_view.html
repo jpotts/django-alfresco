@@ -6,8 +6,7 @@
 	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_cascade.css' src='django_cascade.csss'/>
 	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_layout.css' src='django_layout.css'/>
 	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/niftyCorners.css' src='niftyCorners.css'/>
-	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/favorites.css' src='favorites.css'/>
-	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/django_mynmg.css' src='django_mynmg.css'/>
+	<link rel="stylesheet" type="text/css" href='{{MEDIA_URL}}css/favorites.css' src='favorites.css'/>	
 	<script type="text/javascript" src="{{MEDIA_URL}}admin/js/jquery.js""></script>
 	<script type="text/javascript">
 	<!--
@@ -31,7 +30,7 @@
   <div id="layoutFull">
     <div id="bodyHeader">
       <div class="title">{{object.title}}<br />
-      <span class="mediumColor">Submitted by {{object.author}}</span></div>
+      <span class="mediumColor">Submitted by {% load alfresco_tags %}{% format_user_link object.author %}</span></div>
     </div>
          {% load alfresco_tags %}
 		{{object.content|mask_image_tags|safe}}  

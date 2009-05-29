@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block content-left%}
-<span class="posted_by">Posted {{object.modified|date:"j N Y"}} by {{object.author}}</span>
+<span class="posted_by">Posted {{object.modified|date:"j N Y"}} by {% load alfresco_tags %}{% format_user_link object.author %}</span>
                                                                                 
 <div class="blog-permalink-entry show-url">
 {{object.content|safe}}

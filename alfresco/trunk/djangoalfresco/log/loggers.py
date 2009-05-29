@@ -25,7 +25,7 @@ class LogWrapper(object):
                 print 'ERROR: Could not configure logging'
     
     def __getattr__(self, name):
-        log_name = 'nmg'
+        log_name = 'opt'
         try:
             frame = inspect.currentframe().f_back
             st = frame.f_code.co_filename
@@ -33,7 +33,7 @@ class LogWrapper(object):
             if st.find('djangoalfresco') > -1:
                 st = st[st.rfind('djangoalfresco')+15:]
                 st = st[:st.find('/')]
-                log_name = 'nmg.' + st
+                log_name = 'opt.' + st
         except:
             pass
         return getattr(logging.getLogger(log_name), name)

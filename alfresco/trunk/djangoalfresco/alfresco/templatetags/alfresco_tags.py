@@ -1,7 +1,7 @@
 from django.template import TemplateSyntaxError
 from alfresco import utils
 from alfresco.models import Content, StaticContent
-from alfresco.service import get_navigation_ul, AlfrescoException
+from alfresco.service import get_navigation_ul, AlfrescoException, get_person
 from alfresco.template import AlfrescoTemplateNode
 
 from django import template
@@ -99,4 +99,39 @@ def format_tags(parser, token):
     if len(bits) is not 2:
         raise template.TemplateSyntaxError, "%s tag requires 2 arguments" % token.contents.split()[0]
     
-    return FormatTags(bits[1])    
+    return FormatTags(bits[1])
+
+class FormatUserLink(template.Node):
+    """
+    For a given username, format a mailto link that points to the user's email address as retrieved from Alfresco.
+    usage::
+        {% format_user_link [user_name] %}   
+        
+    """
+
+    def __init__(self, user_name):
+        self.user_name = user_name
+        
+    def render(self, context):
+        user = Variable('user').resolve(context)
+        user_name_string = Variable(self.user_name).resolve(context)
+        try:
+            user_props = get_person(user_name_string, user.ticket)
+        except:
+            user_props = None
+        
+        if (user_props is None):
+            markup = user_name_string
+        else:
+            markup = '<a href="mailto:%s" name="user_link">%s %s</a>' % (user_props['email'], user_props['firstName'], user_props['lastName'])       
+        
+        return markup
+    
+@register.tag(name="format_user_link")
+def format_user_link(parser, token):
+    bits = token.contents.split()
+    
+    if len(bits) is not 2:
+        raise template.TemplateSyntaxError, "%s tag requires 2 arguments" % token.contents.split()[0]
+    
+    return FormatUserLink(bits[1])

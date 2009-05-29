@@ -105,8 +105,6 @@ class AlfrescoUser(User):
         self.save()
         return ticket
 
-### NMG Specific ###
-
 class StaticContent(models.Model):
     """
     Acts as a easily referenceable pointer to Alfresco Content

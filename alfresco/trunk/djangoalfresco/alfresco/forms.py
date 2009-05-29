@@ -44,10 +44,7 @@ class SearchForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', [])
-        fields_dict = utils.parse_custom_model(fields)
         self.base_fields['q'] = forms.CharField(label="Key Words", max_length=100)
-        for key, value in fields_dict.items():
-            self.base_fields[key] = forms.ChoiceField(choices=[('', '---ALL---'),] + value)
         super(SearchForm, self).__init__(*args, **kwargs)
         
 

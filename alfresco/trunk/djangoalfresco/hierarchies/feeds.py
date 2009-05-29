@@ -9,7 +9,7 @@ class CategoryFeed(Feed):
         return Category.objects.get(slug_path='/'.join(bits))
 
     def title(self, obj):
-        return "Mynmg: Top Stories for %s" % obj.name
+        return "Top Stories for %s" % obj.name
 
     def link(self, obj):
         if not obj:
