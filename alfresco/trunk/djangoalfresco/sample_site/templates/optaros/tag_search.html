@@ -2,6 +2,7 @@
 
 {% block content%}
 <div class="box">
+    {% if pages %}
     <h2 class="title">Tag search results for '{{ query }}'</h2>    <div class="content">
     <div class="menuPaging"><span class="barSpaceTitle">Page:</span>
 		{% for p in pages %}
@@ -29,5 +30,8 @@
 		{% if page.has_next %}<a href="{{get_params.page}}page={{page.next_page_number}}">&gt;&gt;</a>{% endif %}
 	  </div>
     </div><!-- .content -->
+    {% else %}
+        <h2 class="title">No results with that tag found</h2>
+    {% endif %}
 </div><!-- .box -->
 {% endblock %}
