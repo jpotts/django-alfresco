@@ -29,3 +29,9 @@
 {{object.content|safe}}
 </div>
 {% endblock %}
+
+{% block rss-feed %}
+<a href="/sample_site/feeds/{{ category.get_rss }}">
+  <img title="Subscribe to Optaros RSS feed" alt="Subscribe to Optaros RSS feed" src="/site_media/img/icon_rss.gif"/>
+                    Subscribe to {{ category.name }} RSS feed</a>
+{% endblock %}

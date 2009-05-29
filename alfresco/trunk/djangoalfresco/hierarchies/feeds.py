@@ -1,6 +1,6 @@
 from django.contrib.syndication.feeds import Feed, FeedDoesNotExist
 from hierarchies.models import Category
-
+from alfresco import service
 
 class CategoryFeed(Feed):
     def get_object(self, bits):
@@ -20,7 +20,15 @@ class CategoryFeed(Feed):
         return "Top stories from %s" % obj.name
 
     def items(self, obj):
-        return obj.get_top_content()
+        
+        user = self.request.user
+        try:
+            recent_docs = service.generic_search(obj.space.q_path_any_below_include(), 
+                                                 '-modified', 5, user.ticket, True)            
+        except(service.AlfrescoException, AttributeError):
+            pass
+        #return obj.get_top_content()
+        return recent_docs
     
     def item_author_name(self, item):
         return item.author

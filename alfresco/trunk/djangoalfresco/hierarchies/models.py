@@ -124,7 +124,8 @@ class Category(models.Model):
         return flat_list
             
     def get_top_content(self):
-        key = '__'.join([self._meta.app_label, self._meta.module_name, str(self.id)])
+        #key = '__'.join([self._meta.app_label, self._meta.module_name, str(self.id)])
+        key = str(self.space_id)
         xml = file_cache.get(key, True)
         if not xml:
             return []

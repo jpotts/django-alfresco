@@ -151,9 +151,11 @@
             <div class="content-right">
             	<div class="clearfix"></div>
             	{% block content-right %}
-            	<a href="/blog-channel/all/feed">
-					<img title="Subscribe to Optaros RSS feed" alt="Subscribe to Optaros RSS feed" src="http://www.optaros.com/sites/all/themes/optaros/images/icon_rss.gif"/>
-					Subscribe to All RSS feed			  	</a>
+                {% block rss-feed %}
+            	<a href="/sample_site/feeds/all">
+					<img title="Subscribe to Optaros RSS feed" alt="Subscribe to Optaros RSS feed" src="/site_media/img/icon_rss.gif"/>
+					Subscribe to All RSS feed</a>
+                {% endblock %}
 			  	<div id="hr"></div>
 			  	<span class="box_title">Recent posts on</span>
 				  			  <ul id="box_splited">

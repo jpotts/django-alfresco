@@ -1,6 +1,12 @@
 from django.conf.urls.defaults import *
+from hierarchies.feeds import CategoryFeed
+
+feeds = {
+    'categories': CategoryFeed,
+}
 
 urlpatterns = patterns('',
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
     url(r'^content/(?P<id>[-\w]+)/$',   'sample_site.views.content', name='content_detail'),
     url(r'^content/print_view/(?P<id>[-\w]+)/$',   'sample_site.views.print_view', name='print_view'),
     url(r'^static/(?P<id>[-\w]+)/$', 'sample_site.views.static_content', name='static_detail'),
