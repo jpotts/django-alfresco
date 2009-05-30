@@ -12,9 +12,10 @@ import re
 
 register = template.Library()
 
+#TODO: This is a problem because it depends on sample site
 def mask_image_tags(value):
     d = re.compile('alfresco[^}]*SpacesStore')
-    return d.sub('alfresco/images', value)
+    return d.sub('sample_site/image/id', value)
 
 register.filter(mask_image_tags)
 

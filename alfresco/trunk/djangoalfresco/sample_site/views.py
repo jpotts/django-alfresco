@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
 
 from alfresco import utils
-from alfresco.models import Content
+from alfresco.models import Content, StaticContent
 from alfresco.decorators import ticket_required
 from alfresco import service
 from alfresco.forms import LoginForm, ContentSubmissionForm, SearchForm, CacheForm
@@ -167,10 +167,23 @@ def photo(request, path):
     This is the pass through for images inserted into html via the Alfresco GUI
     """
     ticket = request.user.ticket
+    
+#    if (slug):
+#        sc = StaticContent.objects.get(slug=slug)
+#        path = sc.doc_id
+    
+    if path.find('id/') is 0:
+        path = path.split('id/')[1]
+    else:
+        slug = path
+        sc = StaticContent.objects.get(slug=slug)
+        path = sc.doc_id
+              
     if path.find('.') is -1:
         ss = service.SpaceStore(ticket, id=path)
     else:
         ss = service.SpaceStore(ticket, path=path)
+            
     url = ss.get()
     return HttpResponseRedirect(url)
 

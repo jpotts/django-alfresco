@@ -1,10 +1,9 @@
 {% extends 'base.html'%}
+{%block title%}OPT S S SC_DETAIL {{object.title}}{% endblock %}
 
 {%block extra-head%}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/theme_Normal.css" src="theme_Normal.css" />
-
-{%block title%}OPT S S SC_DETAIL{% endblock %}
-    
+   
 <style type="text/css">
 <!--
 .listThumbnail { border: 1px solid #000000; }
@@ -45,6 +44,8 @@ function MM_goToURL() { //v3.0
 {% endblock %}
 
 {% block content %}
+<div class="print"><a href="{% url print_view object.id %}">Printable Version<img src="{{MEDIA_URL}}img/img_printer.gif" width="16" height="15" alt=""/></a></div>
+      
 <div id="layoutContainer">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     
@@ -63,4 +64,5 @@ function MM_goToURL() { //v3.0
           <img src="{{MEDIA_URL}}img/dot_clear.gif" width="5" height="1" /> </td>
     </tr>
   </table>
+  </div>
 {% endblock %}

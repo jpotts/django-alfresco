@@ -33,7 +33,7 @@ function doOpen(url, target){
         <b>Summary:</b> {{object.description}} <br />
         <b>Published:</b> {{object.modified|date:"m/d/Y"}} by {% format_user_link object.author %}&nbsp;&nbsp;<br />
         <b>File Type:</b> {{object.mimetype}}<br />
-        <b>Tags:</b> {% load alfresco_tags %}{% format_tags object.tags %}
+        {% if object.tags %}<b>Tags:</b> {% load alfresco_tags %}{% format_tags object.tags %}{% endif %}
       </div>
     </div>
          {% load alfresco_tags %}
