@@ -135,7 +135,7 @@ def external_category_recent_documents(request, path):
 
 @ticket_required
 def home(request):
-    return render_to_response('home.html', context_instance=RequestContext(request))
+    return render_to_response('optaros/home.html', context_instance=RequestContext(request))
 
 @ticket_required
 def content(request, id):
