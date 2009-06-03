@@ -6,10 +6,6 @@ from django.conf import settings
 
 admin.autodiscover()
 
-feeds = {
-    'categories': CategoryFeed,
-}
-
 urlpatterns = patterns('',
     # Uncomment the next line to enable admin documentation:
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -23,11 +19,6 @@ urlpatterns = patterns('',
         'template' : 'site_map.html' }, name='site_map'),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^$', 'sample_site.views.home', name='home'),
-    url(r'top/(?P<path>.*)/', 'hierarchies.views.top', {}, "category_top_stories"),
-    url(r'index/(?P<path>.*)/', 'sample_site.views.category_index', {}, "category-index"),
-    url(r'external/(?P<path>.*)/', 'sample_site.views.external_category_recent_documents', {}, "external_category_recent_documents"),
-    url(r'^rss/(?P<url>.*)/$', 'django.contrib.syndication.views.feed',
-        {'feed_dict': feeds}, name='rss_feed'),
     url(r'^(?P<slug>[-\w]+)/$','sample_site.views.hierarchy_detail', 
         {'queryset' : Hierarchy.objects.all(), 'slug_field' : 'slug'}, name='hierarchy_detail'),
     url(r'^(?P<path>.*)/content/(?P<id>[-\w]+)/$$', 'sample_site.views.category_content_detail', name='category_content_detail'),

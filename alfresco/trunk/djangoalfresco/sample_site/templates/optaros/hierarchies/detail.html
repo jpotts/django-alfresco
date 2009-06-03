@@ -1,9 +1,10 @@
 {% extends 'base.html'%}
+<!--
+    This template is used to produce the detail for a specific hierarchy.
+    Example url: /blog/
+-->
+{% block title%}Hierarchy Detail | {{hierarchy.name}}{% endblock%}
 
-{% block title%}{{hierarchy.name}}{% endblock%}
-{% block extra-head %}
-<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url rss_feed hierarchy.get_rss %}" />
-{% endblock %}
 
 {% block feature %}
     <div id="featureContainer">

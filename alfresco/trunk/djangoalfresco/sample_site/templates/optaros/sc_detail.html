@@ -1,5 +1,9 @@
 {% extends 'base.html'%}
-{%block title%}OPT S S SC_DETAIL {{object.title}}{% endblock %}
+<!--
+    This template is used when a static piece of content is displayed.
+    Example URL: /sample_site/static/91d99a53-bd18-420a-8979-17a423bcf2d8/
+-->
+{%block title%}Static Content Detail | {{object.title}}{% endblock %}
 
 {%block extra-head%}
 <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/theme_Normal.css" src="theme_Normal.css" />

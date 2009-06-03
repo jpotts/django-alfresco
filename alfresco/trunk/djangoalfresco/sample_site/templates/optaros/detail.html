@@ -1,6 +1,9 @@
 {% extends 'base.html'%}
-
-{% block title%}{{object.title}}{% endblock %}
+<!--
+    This template displays content detail when no category is provided as part of the URL.
+    Example URL: /sample_site/content/274e4c2f-b82b-44e8-a5a0-972b8f316b00/
+-->
+{% block title%}Content Detail | {{object.title}}{% endblock %}
 {%block extra-head%}
 <script type="text/javascript">
 <!--
