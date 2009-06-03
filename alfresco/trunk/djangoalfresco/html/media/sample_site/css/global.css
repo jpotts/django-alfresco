@@ -16,7 +16,7 @@ body {
 }
 
 body#home {
-	background: #FFFFFF url(/site_media/img/optaros_homepage_greyTwill.png) repeat-x scroll top center;
+	background: #FFFFFF url(/site_media/sample_site/img/optaros_homepage_greyTwill.png) repeat-x scroll top center;
 }
 
 a:link, a:visited, a:active, a.active {
@@ -162,13 +162,13 @@ div#mhLeft * {
 }
 
 div#bdPage {
-    background: url(/site_media/img/bg-feature-middle.gif) repeat-y top;
+    background: url(/site_media/sample_site/img/bg-feature-middle.gif) repeat-y top;
     width: 980px;
     position: relative;
 }
 
 div#bdPage.full {
-    background: url(/site_media/img/bg-feature-middle-full.gif) repeat-y top;
+    background: url(/site_media/sample_site/img/bg-feature-middle-full.gif) repeat-y top;
 }
 
 div#bd {
@@ -258,7 +258,7 @@ div#utils .f-right ul li a:hover {
 
 div#utils .f-right ul li a#rss,
 div#utils .f-right ul li a#rss:visited {
-    background: url(/site_media/img/icon_rss.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_rss.gif) no-repeat left;
     margin: .3em 0 0 0;
     padding: .3em 1.5em .4em 1.5em;
 }
@@ -274,7 +274,7 @@ div#utils .f-right ul#lang-bar li div a:visited {
 
 div#utils .f-right ul li a#lang,
 div#utils .f-right ul li a#lang:visited {
-    background: url(/site_media/img/arrow-down.gif) no-repeat right;
+    background: url(/site_media/sample_site/img/arrow-down.gif) no-repeat right;
     margin: .3em 0 0 0;
     padding: .3em 2em .4em 1.5em;
 }
@@ -337,12 +337,12 @@ div#mhRight div#navContainer {
     width: 100px;
     margin: 0 0 0 0;
     height:15px;
-    background:#fff url(/site_media/img/bg-search-bar.gif) repeat-x top left;
+    background:#fff url(/site_media/sample_site/img/bg-search-bar.gif) repeat-x top left;
     border: 1px solid #c6c6c6;
 }
 
 #mhRight .form-submit {
-    background: transparent url(/site_media/img/bg-search-button-2.gif) no-repeat bottom right;
+    background: transparent url(/site_media/sample_site/img/bg-search-button-2.gif) no-repeat bottom right;
     border-style: none;
     height: 23px;
     margin: 0 0 1px 0;
@@ -578,7 +578,7 @@ a.more-link {
     text-decoration: none;
     font-weight: bold;
     text-align: left;
-    background: transparent url(/site_media/img/icon_arrows.gif) no-repeat right center;
+    background: transparent url(/site_media/sample_site/img/icon_arrows.gif) no-repeat right center;
     padding: 0px 15px 0px 12px;
 }
 
@@ -588,7 +588,7 @@ a.more-link:hover {
     text-decoration: none;
     font-weight: bold;
     text-align: left;
-    background: transparent url(/site_media/img/icon_arrows.gif) no-repeat right center;
+    background: transparent url(/site_media/sample_site/img/icon_arrows.gif) no-repeat right center;
     padding: 0px 15px 0px 12px;
 }
 
@@ -601,7 +601,7 @@ a.more-link:hover {
 }
 
 #optaros table {
-    /* background: transparent url(/site_media/img/bg_tabs.gif) no-repeat left top; */
+    /* background: transparent url(/site_media/sample_site/img/bg_tabs.gif) no-repeat left top; */
 }
 
 #optaros th {
@@ -793,7 +793,7 @@ a.more-link:hover {
 }
 
 #blog-post .node-content>.links {
-    background: transparent url(/site_media/img/bg-blog-comments.gif) no-repeat top left;
+    background: transparent url(/site_media/sample_site/img/bg-blog-comments.gif) no-repeat top left;
     height: 59px;
     border: 0;
 }
@@ -805,7 +805,7 @@ div#blog-post p {
 
 /*  Comments **********************************/
 #comments{
-    /*background: #fff url(/site_media/img/bg-blog-comments.gif) no-repeat left top;*/
+    /*background: #fff url(/site_media/sample_site/img/bg-blog-comments.gif) no-repeat left top;*/
 }
 
 .comment {
@@ -885,7 +885,7 @@ div#blog-post p {
 /*  Archives Drop Down  *************************************/
 div.archive-dropdown {
     margin: 0 15px 15px 0;
-    background: #fff url(/site_media/img/bg-double-grey.gif) repeat-x top left;
+    background: #fff url(/site_media/sample_site/img/bg-double-grey.gif) repeat-x top left;
     padding: 12px 0px 8px 0px;
     border-bottom: 1px solid #d8d8d8;
 }
@@ -906,7 +906,7 @@ div.archive-dropdown h3 {
 /*** Pagination ***/
 .pager {
     clear: both;
-    background: #fff url(/site_media/img/bg-double-grey.gif) repeat-x top left;
+    background: #fff url(/site_media/sample_site/img/bg-double-grey.gif) repeat-x top left;
     padding:12px 0px 8px 0px;
     font: normal 20px "Arial Narrow", Arial, Helvetica, sans-serif;
 }
@@ -931,21 +931,21 @@ div.archive-dropdown h3 {
 
 a#leftMenuDownload,
 a#leftMenuDownload:visited {
-    background: url(/site_media/img/icon_menu_download.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_menu_download.gif) no-repeat left;
     margin: .3em 0 0 0.4em;
     padding: .0em 0.2em .4em 1.8em;
 }
 
 a#leftMenuRss,
 a#leftMenuRss:visited {
-    background: url(/site_media/img/icon_menu_rss.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_menu_rss.gif) no-repeat left;
     margin: .3em 0 0 0.4em;
     padding: .0em 0.2em .4em 1.8em;
 }
 
 a#leftMenuAudio,
 a#leftMenuAudio:visited {
-    background: url(/site_media/img/icon_menu_audio.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_menu_audio.gif) no-repeat left;
     margin: .3em 0 0 0.4em;
     padding: .0em 0.2em .4em 1.8em;
 }
@@ -968,22 +968,22 @@ div#featureContainer {
     padding: 0 0 10px 0;
     margin: 0;
     position: relative;
-    background: url(/site_media/img/bg-feature-top.gif) no-repeat center top;
+    background: url(/site_media/sample_site/img/bg-feature-top.gif) no-repeat center top;
 }
 
 div#featureContainer.full {
-    background: url(/site_media/img/bg-feature-top-full.gif) no-repeat center top;
+    background: url(/site_media/sample_site/img/bg-feature-top-full.gif) no-repeat center top;
 }
 
 div#featureFooter {
-    background:transparent url(/site_media/img/bg-feature-bottom.gif) no-repeat bottom;
+    background:transparent url(/site_media/sample_site/img/bg-feature-bottom.gif) no-repeat bottom;
     padding: 0 0px 25px 0;
     margin: 0 auto;
     text-align: left;
 }
 
 div#featureFooter.full {
-    background: url(/site_media/img/bg-feature-bottom-full.gif) no-repeat center bottom;
+    background: url(/site_media/sample_site/img/bg-feature-bottom-full.gif) no-repeat center bottom;
 }
 
 div#featureContainer div {
@@ -1032,29 +1032,29 @@ div#featureContainer a:hover {
 }
 
 a.csTopDownloadOthers {
-    background: url(/site_media/img/file_document.png) no-repeat left;
+    background: url(/site_media/sample_site/img/file_document.png) no-repeat left;
 }
 
 a.csTopDownloadOthers:hover {
-    background: url(/site_media/img/file_document.png) no-repeat left;
+    background: url(/site_media/sample_site/img/file_document.png) no-repeat left;
 }
 
 a.csTopDownloadAudio {
-    background: url(/site_media/img/icon_podcasts_off.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_podcasts_off.gif) no-repeat left;
 }
 
 a.csTopDownloadAudio:hover {
-    background: url(/site_media/img/icon_podcasts_on.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_podcasts_on.gif) no-repeat left;
 }
 
 a.caseStudyPdf,
 a.caseStudyPdf:visited {
-    background: url(/site_media/img/icon_pdf_off.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_pdf_off.gif) no-repeat left;
 }
  
 a.caseStudyPdf:hover {
     color:#39C;
-    background: url(/site_media/img/icon_pdf.gif) no-repeat left;
+    background: url(/site_media/sample_site/img/icon_pdf.gif) no-repeat left;
 }
 
 div#featureContainer h1 {
@@ -1139,7 +1139,7 @@ div#featureContainer h1 {
 div#sidebar-left ul.menu {
     border: none;
     margin: 0;
-    background: transparent url(/site_media/img/bg-leftnav-tab-bottom.gif) repeat-x bottom;
+    background: transparent url(/site_media/sample_site/img/bg-leftnav-tab-bottom.gif) repeat-x bottom;
     padding-bottom: 9px;
 }
 
@@ -1163,7 +1163,7 @@ div#sidebar-left ul li a {
     padding: 8px 0px 5px 7px;
     color: #8e8e8e;
     font: normal 14px "Arial Narrow", Arial, Helvetica, sans-serif;
-    background: transparent url(/site_media/img/bg-leftnav-tab1-bottom.gif) repeat-x left top;
+    background: transparent url(/site_media/sample_site/img/bg-leftnav-tab1-bottom.gif) repeat-x left top;
 }
 
 html>body div#sidebar-left ul li a {
@@ -1172,7 +1172,7 @@ html>body div#sidebar-left ul li a {
 
 div#sidebar-left ul li a.active {
     padding: 13px 0px 9px 7px;
-    background: #fff url(/site_media/img/bg-leftnav-tab-top.gif) no-repeat top right;
+    background: #fff url(/site_media/sample_site/img/bg-leftnav-tab-top.gif) no-repeat top right;
     color: #000;
     text-decoration: none;
 }
@@ -1228,7 +1228,7 @@ p.overview {
 /* Grey feature block *******************************************************************/
 div.feature {
     font-size: 11px;
-    background: #fff url(/site_media/img/bg-feature-fade.gif) no-repeat bottom left;
+    background: #fff url(/site_media/sample_site/img/bg-feature-fade.gif) no-repeat bottom left;
     margin: 0 0 10px 0;
     padding-bottom: 20px;
     float: right;
@@ -1262,23 +1262,23 @@ div.feature .feature-right {
 }
 
 .full div.feature {  /*  full-width pages, (pages with no leftnav) have a different style  */
-    background: transparent url(/site_media/img/bg-feature-blogs.gif) no-repeat center bottom;
+    background: transparent url(/site_media/sample_site/img/bg-feature-blogs.gif) no-repeat center bottom;
     padding-bottom: 22px;
     margin: 0 0 0 10px;
     width: 949px;
 }
 
 .full div.feature-campaign {
-    /*background: transparent url(/site_media/img/bg-feature-campaign.gif) no-repeat center bottom;*/
+    /*background: transparent url(/site_media/sample_site/img/bg-feature-campaign.gif) no-repeat center bottom;*/
     background: none;
 } 
 
 .clients div.feature {  /*  the clients page has two arrows coming out of the feature area instead of the usual 1  */
-    background: transparent url(/site_media/img/bg-feature-clients.gif) no-repeat center bottom;
+    background: transparent url(/site_media/sample_site/img/bg-feature-clients.gif) no-repeat center bottom;
 }
 
 .people div.feature {
-    background: transparent url(/site_media/img/bg-bottom-fade-arrow.gif) no-repeat center bottom;
+    background: transparent url(/site_media/sample_site/img/bg-bottom-fade-arrow.gif) no-repeat center bottom;
     padding-bottom: 20px;
 }
 
@@ -1291,7 +1291,7 @@ div.feature .feature-right {
 }
 
 .industry div.feature {
-    background: #fff url(/site_media/img/bg-bottom-fade-arrow-12.gif) no-repeat left bottom;
+    background: #fff url(/site_media/sample_site/img/bg-bottom-fade-arrow-12.gif) no-repeat left bottom;
     padding-bottom: 20px;
 }
 
@@ -1306,14 +1306,14 @@ h3.one-third-column {
 
 /*  Right sidebar ****************************************************/
 div.sidebar {
-    background: transparent url(/site_media/img/bg-sidebar-greybar.gif) no-repeat top;
+    background: transparent url(/site_media/sample_site/img/bg-sidebar-greybar.gif) no-repeat top;
     padding: 20px 0 0 0;
     margin: 15px 0 0 0;
     width: 336px;
 }
 
 div.sidebar div.sidebar-inner {
-    background: transparent url(/site_media/img/bg-sidebar-greybar.gif) no-repeat bottom;
+    background: transparent url(/site_media/sample_site/img/bg-sidebar-greybar.gif) no-repeat bottom;
     padding: 0 0 15px 0;
 }
 
@@ -1354,14 +1354,14 @@ div.sidebar  h3 {
 div.sidebar-block div.block-bg {
     list-style: none outside none;
     margin: 0;
-    background: transparent url(/site_media/img/bg_block_sidebar.gif) repeat-y right;
+    background: transparent url(/site_media/sample_site/img/bg_block_sidebar.gif) repeat-y right;
     padding: 5px 5px 5px 0px;
 }
 
 div.sidebar-block ul {
     list-style: none outside none;
     margin: 0;
-    background: transparent url(/site_media/img/bg_block_sidebar.gif) repeat-y right;
+    background: transparent url(/site_media/sample_site/img/bg_block_sidebar.gif) repeat-y right;
     padding: 5px;
 }
 
@@ -1393,7 +1393,7 @@ div.sidebar-block p.byline {
 
 .pullquote {
     padding: 0 10px 0 40px;
-    background: transparent url(/site_media/img/pullquote.gif) no-repeat top left;
+    background: transparent url(/site_media/sample_site/img/pullquote.gif) no-repeat top left;
     color: #5d5d5d;
 }
 
@@ -1438,28 +1438,28 @@ div.sidebar-block p.byline {
 }
 
 #mainContent.fifty-fifty div.boxes-list ul li.sticky {
-    background: transparent url(/site_media/img/bg-solutions-list-sticky2.gif) no-repeat left bottom;
+    background: transparent url(/site_media/sample_site/img/bg-solutions-list-sticky2.gif) no-repeat left bottom;
 }
 
 #mainContent.twothirds div.boxes-list ul li.sticky {
-	background: transparent url(/site_media/img/bg-solutions-list-sticky3.gif) no-repeat left bottom;
+	background: transparent url(/site_media/sample_site/img/bg-solutions-list-sticky3.gif) no-repeat left bottom;
 }
 
 #mainContent.fifty-fifty div.boxes-list ul li.selected,
 #mainContent.fifty-fifty div.boxes-list ul li.highlight {
-    background: transparent url(/site_media/img/bg-solutions-list-bottom2.gif) no-repeat left bottom;
+    background: transparent url(/site_media/sample_site/img/bg-solutions-list-bottom2.gif) no-repeat left bottom;
 }
 
 #mainContent.twothirds div.boxes-list ul li.selected,
 #mainContent.twothirds div.boxes-list ul li.highlight {
-	background: transparent url(/site_media/img/bg-solutions-list-bottom3.gif) no-repeat left bottom;
+	background: transparent url(/site_media/sample_site/img/bg-solutions-list-bottom3.gif) no-repeat left bottom;
 }
 
 #mainContent.fifty-fifty div.boxes-list ul li.selected div.entry,
 #mainContent.fifty-fifty div.boxes-list ul li.highlight div.entry,
 #mainContent.fifty-fifty div.boxes-list ul li.selected div.selected,
 #mainContent.fifty-fifty div.boxes-list ul li.highlight div.leaf {
-    background: transparent url(/site_media/img/bg-solutions-list-top2.gif) no-repeat left top;
+    background: transparent url(/site_media/sample_site/img/bg-solutions-list-top2.gif) no-repeat left top;
     list-style: none outside none;
 }
 
@@ -1467,7 +1467,7 @@ div.sidebar-block p.byline {
 #mainContent.twothirds div.boxes-list ul li.highlight div.entry,
 #mainContent.twothirds div.boxes-list ul li.selected div.selected,
 #mainContent.twothirds div.boxes-list ul li.highlight div.leaf {
-    background: transparent url(/site_media/img/bg-solutions-list-top3.gif) no-repeat left top;
+    background: transparent url(/site_media/sample_site/img/bg-solutions-list-top3.gif) no-repeat left top;
     list-style: none outside none;
 }
 
@@ -1553,23 +1553,23 @@ div#arrowMenu ul.menu li * {
 
 .fifty-fifty .content-left div#arrowMenu ul.menu li.selected,
 .fifty-fifty .content-left div#arrowMenu ul.menu li.selected.highlight {
-    background: transparent url(/site_media/img/bg-leadership-selected.gif) no-repeat left top;
+    background: transparent url(/site_media/sample_site/img/bg-leadership-selected.gif) no-repeat left top;
     color: #3399CC;/*#3184C8;*/
 }
 
 .fifty-fifty.people .content-left div#arrowMenu ul.menu li.selected,
 .fifty-fifty.people .content-left div#arrowMenu ul.menu li.selected.highlight {
-    background: transparent url(/site_media/img/bg-careers-selected.gif) no-repeat left top;
+    background: transparent url(/site_media/sample_site/img/bg-careers-selected.gif) no-repeat left top;
     color: #3399CC;/*#3184C8;*/
 }
 
 .fifty-fifty .content-left div#arrowMenu ul.menu li.highlight {
-    background:transparent url(/site_media/img/bg-leadership-hover.gif) no-repeat left top;
+    background:transparent url(/site_media/sample_site/img/bg-leadership-hover.gif) no-repeat left top;
     cursor:pointer;
 }
 
 .fifty-fifty.people .content-left div#arrowMenu ul.menu li.highlight {
-    background:transparent url(/site_media/img/bg-careers-hover.gif) no-repeat left top;
+    background:transparent url(/site_media/sample_site/img/bg-careers-hover.gif) no-repeat left top;
     cursor:pointer;
 }
 
@@ -1646,12 +1646,12 @@ div.featured-vertical-tabs ul.featured-vertical-tabs-ul li a {
 
 div.featured-vertical-tabs ul.featured-vertical-tabs-ul li.selected {
     position: relative;
-    background: transparent url(/site_media/img/bg-featured-vertical-tab.gif) no-repeat left;
+    background: transparent url(/site_media/sample_site/img/bg-featured-vertical-tab.gif) no-repeat left;
     left: 3px;
 }
 
 div.featured-vertical-tabs ul.featured-vertical-tabs-ul li.highlight {
-    background: transparent url(/site_media/img/bg-featured-vertical-tab.gif) no-repeat left;
+    background: transparent url(/site_media/sample_site/img/bg-featured-vertical-tab.gif) no-repeat left;
 }
 
 div.featured-vertical-tabs ul.featured-vertical-tabs-ul li a img {
@@ -1664,7 +1664,7 @@ div.featured-vertical-tabs ul.featured-vertical-tabs-ul li a img {
 div.featured-tab-content {
     float: left;
     width: 370px;
-    background: transparent url(/site_media/img/bg-featured-content.gif) no-repeat left;
+    background: transparent url(/site_media/sample_site/img/bg-featured-content.gif) no-repeat left;
     margin: 0px;
     padding: 0;
     height: 300px;
@@ -1778,7 +1778,7 @@ ul.client-list li {
 }
 
 #sidebar-left li {
-    background: url(/site_media/img/bg_block_middle.gif) repeat-y top;
+    background: url(/site_media/sample_site/img/bg_block_middle.gif) repeat-y top;
     margin: 0pt 0pt 0pt 10pt; 
     padding: 0;
 }
@@ -1793,11 +1793,11 @@ ul.client-list li {
 }
 
 #sidebar-left li.collapsed {
-    list-style: disc outside url(/site_media/img/menu-collapsed.gif);
+    list-style: disc outside url(/site_media/sample_site/img/menu-collapsed.gif);
 }
 
 #sidebar-left li.leaf {
-    list-style: square outside url(/site_media/img/menu-leaf.gif);
+    list-style: square outside url(/site_media/sample_site/img/menu-leaf.gif);
 }
 
 /* right sidebar - CONTENT CONTAINER */
@@ -1806,7 +1806,7 @@ div.sidebarContainerTop,
 div.sidebarContainerTop div,
 div.sidebarContainerBottom,
 div.sidebarContainerBottom div {
-    background: transparent url(/site_media/img/bg-sidebar-content-caps.gif) no-repeat;
+    background: transparent url(/site_media/sample_site/img/bg-sidebar-content-caps.gif) no-repeat;
     height:4px;
     overflow: hidden;
 }
@@ -1820,7 +1820,7 @@ div.sidebarContainerTop div {
 }
 
 div.sidebarContainerMiddle {
-    background: transparent url(/site_media/img/bg-sidebar-content-middle.gif) repeat-y;
+    background: transparent url(/site_media/sample_site/img/bg-sidebar-content-middle.gif) repeat-y;
     border: 1px solid #DFDFDF;
     border-width: 0 1px 0 1px;
 }
@@ -1830,7 +1830,7 @@ div.sidebarContainerMiddle div {
 }
 
 div.sidebarContainerMiddle h3 {
-    background: url(/site_media/img/bg-sidebar-h3-bot-border.gif) repeat-x bottom;
+    background: url(/site_media/sample_site/img/bg-sidebar-h3-bot-border.gif) repeat-x bottom;
     color: #1472BC;
     font: bold 11px Arial, Helvetica, sans-serif;
     padding: 0 0 5px 0;
@@ -1850,7 +1850,7 @@ div.sidebarContainerBottom div {
 /* elements *************************************************************/
 
 input#submitSearch {
-    background: transparent url(/site_media/img/bg-search-button.gif) no-repeat bottom;
+    background: transparent url(/site_media/sample_site/img/bg-search-button.gif) no-repeat bottom;
     border: none;
     color: #F06122;
     font: normal 10px Arial, Helvetica, sans-serif;
@@ -2538,7 +2538,7 @@ div#language a.selected {
 div#home_top_columns {
 	min-height: 280px;
 	margin: 0px 0px 10px 0px;	
-	background: transparent url(/site_media/img/optaros_homepage_greyTwill_small.png) repeat-x scroll top center ;
+	background: transparent url(/site_media/sample_site/img/optaros_homepage_greyTwill_small.png) repeat-x scroll top center ;
 	
 }
 
@@ -2776,18 +2776,18 @@ div.solutions_content_3box img {
 .jc_box .jc_frame_body {color:#FFF; text-align:right; margin: 20px 15px 0px 0px; height:30px; font-weight:bold; font-size:14px;}
 .jc_box .btn { cursor: pointer; width:46px; height:36px; border: 3px solid #FFF; margin:0px 3px 0px 3px; padding:0px; text-indent:9999px; float: left;}
 .jc_box #jc_b_1 { margin-left: 110px;}
-.jc_box #jc_b_1.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/manyroles_on.png) no-repeat scroll left top; border: 3px solid #dc651d; }
-.jc_box #jc_b_1.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/manyroles_off.png) no-repeat scroll left top; }
-.jc_box #jc_b_2.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/doless_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
-.jc_box #jc_b_2.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/doless_off.png) no-repeat scroll left top; }
-.jc_box #jc_b_3.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/solveProblems_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
-.jc_box #jc_b_3.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/solveProblems_off.png) no-repeat scroll left top; }
-.jc_box #jc_b_4.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/codeResort_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
-.jc_box #jc_b_4.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/codeResort_off.png) no-repeat scroll left top; }
-.jc_box #jc_b_5.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/bridgeGaps_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
-.jc_box #jc_b_5.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/bridgeGaps_off.png) no-repeat scroll left top; }
-.jc_box #jc_b_6.on { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/transparent_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
-.jc_box #jc_b_6.off { background: transparent url(/sites/all/themes/optaros//site_media/img/approach/thumbnails/transparent_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_1.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/manyroles_on.png) no-repeat scroll left top; border: 3px solid #dc651d; }
+.jc_box #jc_b_1.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/manyroles_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_2.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/doless_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
+.jc_box #jc_b_2.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/doless_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_3.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/solveProblems_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
+.jc_box #jc_b_3.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/solveProblems_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_4.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/codeResort_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
+.jc_box #jc_b_4.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/codeResort_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_5.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/bridgeGaps_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
+.jc_box #jc_b_5.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/bridgeGaps_off.png) no-repeat scroll left top; }
+.jc_box #jc_b_6.on { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/transparent_on.png) no-repeat scroll left top; border: 3px solid #dc651d;}
+.jc_box #jc_b_6.off { background: transparent url(/sites/all/themes/optaros//site_media/sample_site/img/approach/thumbnails/transparent_off.png) no-repeat scroll left top; }
 
 
 /** about-us section **/
@@ -2924,7 +2924,7 @@ div#blog-post #comment_headline {
 	border-bottom: 1px solid #555;
 }
 .preload {
-	background: transparent url(/site_media/img/loading_16.gif) no-repeat top right;
+	background: transparent url(/site_media/sample_site/img/loading_16.gif) no-repeat top right;
 }
 
 .comment_author {

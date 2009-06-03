@@ -11,7 +11,7 @@
 .panel {
     padding: 1em 10px;
     background: none; /* declare background color for container to avoid distorted fonts in IE while fading */
-	background: transparent url(/site_media/img/bg_tabs.gif) no-repeat left top;
+	background: transparent url(/site_media/sample_site/img/bg_tabs.gif) no-repeat left top;
 }
 
     #home_tabs {
@@ -20,7 +20,7 @@
       font-size:93%;
       line-height:normal;
 	  /*border-bottom:1px solid #BCD2E6; */
-	  background:transparent url(/site_media/img/tabs_bg.gif) no-repeat left bottom;
+	  background:transparent url(/site_media/sample_site/img/tabs_bg.gif) no-repeat left bottom;
 	  padding-top:12px;
 	  *padding-bottom:10px;
 	  

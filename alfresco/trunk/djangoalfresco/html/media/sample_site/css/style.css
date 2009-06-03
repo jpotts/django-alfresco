@@ -33,7 +33,7 @@ div#bd { background:none; padding-top:0;}
 }
 
 #sidebar-left li {
-  background: url(/site_media/img/bg_block_middle.gif) repeat-y top;
+  background: url(/site_media/sample_site/img/bg_block_middle.gif) repeat-y top;
   margin: 0pt 0pt 0pt 10pt; 
   padding: 0;
 }
@@ -48,12 +48,12 @@ div#bd { background:none; padding-top:0;}
 }
 
 #sidebar-left li.collapsed {
-	list-style-image:url(/site_media/img/menu-collapsed.gif);
+	list-style-image:url(/site_media/sample_site/img/menu-collapsed.gif);
 	list-style-type:disc;
 }
 
 #sidebar-left li.leaf {
-	list-style-image:url(/site_media/img/menu-leaf.gif);
+	list-style-image:url(/site_media/sample_site/img/menu-leaf.gif);
 	list-style-type:square;
 }
 
@@ -64,7 +64,7 @@ div.sidebarContainerTop,
 div.sidebarContainerTop div,
 div.sidebarContainerBottom,
 div.sidebarContainerBottom div {
-  background: transparent url(/site_media/img/bg-sidebar-content-caps.gif) no-repeat;
+  background: transparent url(/site_media/sample_site/img/bg-sidebar-content-caps.gif) no-repeat;
   height:4px;
   overflow:hidden;
 }
@@ -78,7 +78,7 @@ div.sidebarContainerTop div {
 }
 
 div.sidebarContainerMiddle {
-  background: transparent url(/site_media/img/bg-sidebar-content-middle.gif) repeat-y;
+  background: transparent url(/site_media/sample_site/img/bg-sidebar-content-middle.gif) repeat-y;
   border: 1px solid #DFDFDF;
   border-width: 0 1px 0 1px;
 }
@@ -88,7 +88,7 @@ div.sidebarContainerMiddle div{
 }
 
 div.sidebarContainerMiddle h3{
-  background: url(/site_media/img/bg-sidebar-h3-bot-border.gif) repeat-x bottom;
+  background: url(/site_media/sample_site/img/bg-sidebar-h3-bot-border.gif) repeat-x bottom;
   color: #1472BC;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
@@ -110,7 +110,7 @@ div.sidebarContainerBottom div {
 /* elements *************************************************************/
 
 input#submitSearch {
-  background: transparent url(/site_media/img/bg-search-button.gif) no-repeat bottom;
+  background: transparent url(/site_media/sample_site/img/bg-search-button.gif) no-repeat bottom;
   border: none;
   color: #F06122;
   font-family: Arial, Helvetica, sans-serif;
@@ -156,13 +156,13 @@ h2#officePrimaryContacts {
 #top_search #edit-search_theme_form_keys input{
   color: #7e7e7e; 
   width: 100px;
-  background:#fff url(/site_media/img/bg-search-bar.gif) repeat-x top left !important;
+  background:#fff url(/site_media/sample_site/img/bg-search-bar.gif) repeat-x top left !important;
   border: 1px solid #c6c6c6;
 }
 
 
 #top_search input{
-  background: transparent url(/site_media/img/bg-search-button-2.gif) no-repeat bottom right;
+  background: transparent url(/site_media/sample_site/img/bg-search-button-2.gif) no-repeat bottom right;
   border-style: none;
   padding:2px !important;
   height:29px;
