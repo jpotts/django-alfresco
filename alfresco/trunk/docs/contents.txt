@@ -12,6 +12,7 @@ Navigate around the Django Alfresco Documentation
     install
     setup
     tutorial
+    authentication
     
     code/index
     

@@ -1,0 +1,13 @@
+=========
+Authentication
+=========
+
+If you have NOT changed your Alfresco admin login, Django will use the default "admin/admin" credentials to establish a ticket. It will also create a corresponding user in Django with the same user and password, and will mark the account as Django Superuser and Staff.
+
+If you HAVE changed your password, or you have disabled the "admin" account, a login will be presented. Log in with a valid Alfresco username and password. A corresponding user entry in Django will be created. If the username is "admin" it will be marked as Superuser and Staff.
+
+You can log out at any time by browsing to:
+http://localhost:8000/alfresco/logout
+
+The login URL is:
+http://localhost:8000/alfresco/login

@@ -4,4 +4,10 @@
 Issues
 ======
 
-Everything that sucks about this piece of software.
+ * Hierarchy-specific feeds are not functional in this release
+ * Slug-based static content links have not been implemented yet
+ * Group sync between Alfresco and Django has not been implemented
+ * Site Map is broken
+ * CMIS is a work-in-progress
+ * The "Search" link next to the Doc ID field on the Static Content admin page is not functional
+ * Persisting Django form data to Alfresco. Right now the sample site is all one-way. Would be nice to show some form data being persisted to Alfresco.
