@@ -8,14 +8,35 @@ Originally Django Alfresco was built to serve the needs of a corporate retailer'
 They wanted the rich feature set of Alfresco's CMS with the flexibility and rapid development of
 a web framework. 
 
+The Django Alfresco integration project includes three packages:
+
+ * alfresco: This package contains the core integration code including
+   a backend, manager, service, some basic objects, and a minimal set
+   of URLs and views.
+ * hierarchies: This package is used to map a set of hierarchies and
+   associated categories to spaces in Alfresco. For example, you might
+   have a 'blog' hierarchy that contains a category for each of your
+   blog's channels. Each category can map to a "space" (folder) in
+   Alfresco.
+ * sample_site: This is a sample site showing crude blog
+   functionality, feeds, search, tags, and static content.
+ 
+The sample_site and hierarchies packages depend on the alfresco package.
+
 Webscripts
 ==========
 Django Alfresco comes packaged with a base set of webscripts needed to pull content and space information
-out of Alfresco.
+out of Alfresco. These can be deployed manually or by installing an
+Alfresco Module Package (AMP) into the Alfresco WAR.
+
+In the future we plan to try to reduce the need for custom webscripts
+and instead leverage the out-of-the-box webscripts as much as
+possible with the ideal goal being a 100% CMIS-based implementation.
 
 Authentication
 ==============
-All Authentication happens through Alfresco.
+All Authentication happens through Alfresco. Every valid Alfresco user
+is automatically a valid user of your Django Alfresco site.
 
 Caching
 =======
