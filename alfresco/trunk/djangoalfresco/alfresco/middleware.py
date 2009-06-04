@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from alfresco.service import AlfrescoException
 from alfresco.settings import  ALFRESCO_DEFAULT_USER, ALFRESCO_DEFAULT_USER_PASSWORD, ALFRESCO_AUTO_LOGIN_ATTEMPTS
 from django.contrib.auth import authenticate, login as auth_login

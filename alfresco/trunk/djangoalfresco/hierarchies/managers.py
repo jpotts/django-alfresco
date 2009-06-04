@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.db import models
 
 class CategoryManager(models.Manager):

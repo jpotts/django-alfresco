@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse

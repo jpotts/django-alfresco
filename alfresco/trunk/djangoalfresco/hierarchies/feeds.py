@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.contrib.syndication.feeds import Feed, FeedDoesNotExist
 from hierarchies.models import Category
 from alfresco import service

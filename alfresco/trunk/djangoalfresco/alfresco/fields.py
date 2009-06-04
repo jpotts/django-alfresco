@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.db.models import Field
 from django.forms.widgets import Input
 from django.utils.safestring import mark_safe

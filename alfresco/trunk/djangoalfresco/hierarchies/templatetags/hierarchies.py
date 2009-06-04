@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django import template
 from django.db import models
 from alfresco import service

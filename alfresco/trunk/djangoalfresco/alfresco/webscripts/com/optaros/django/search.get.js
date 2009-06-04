@@ -1,3 +1,7 @@
+//
+// Copyright 2008 Optaros, Inc.
+//
+
 // check that search term has been provided
 if (args.q == undefined || args.q.length == 0)
 {

@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django import forms
 from xml.dom import minidom 
 class Document(object):

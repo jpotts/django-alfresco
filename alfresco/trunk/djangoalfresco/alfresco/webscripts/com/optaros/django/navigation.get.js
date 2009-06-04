@@ -1,3 +1,6 @@
+//
+// Copyright 2008 Optaros, Inc.
+//
 var node_id = args.id;
 var path_node = search.findNode("workspace://SpacesStore/" + node_id );
 if (node_id == undefined){path_node = roothome;}

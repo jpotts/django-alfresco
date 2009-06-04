@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 """
 Need to save things locally to reduce load on alfresco. 
 This will happen with xml and images for the most part.

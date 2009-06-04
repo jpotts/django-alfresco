@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.http import HttpResponseRedirect
 from django.utils.http import urlquote
 from django.core.urlresolvers import reverse

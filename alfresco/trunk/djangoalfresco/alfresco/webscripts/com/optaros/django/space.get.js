@@ -1,3 +1,6 @@
+//
+// Copyright 2008 Optaros, Inc.
+//
 
 var num_entries = parseInt(args.num);
 

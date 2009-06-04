@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.conf import settings
 from django.utils.datastructures import SortedDict
 

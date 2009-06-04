@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.template import TemplateSyntaxError
 from alfresco import utils
 from alfresco.models import Content, StaticContent

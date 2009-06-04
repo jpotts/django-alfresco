@@ -1,3 +1,7 @@
+//
+// Copyright 2008 Optaros, Inc.
+//
+
 var page = parseInt(args.page);
 var page_size = parseInt(args.page_size);
 var limit = parseInt(args.limit);

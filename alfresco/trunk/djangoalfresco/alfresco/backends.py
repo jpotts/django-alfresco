@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from alfresco.models import AlfrescoUser
 from alfresco import service
 from log.loggers import logger

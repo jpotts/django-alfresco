@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 import urllib2
 from xml.dom import minidom
 from xml import sax

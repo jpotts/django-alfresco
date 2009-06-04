@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 import logging.config
 import logging
 import os

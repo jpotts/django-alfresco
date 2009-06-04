@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django import forms
 from alfresco import utils
 from django.contrib.auth import authenticate

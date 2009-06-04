@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Django Alfresco" default="" basedir=".">
+<project name="Django Alfresco" default="deploy-amp" basedir=".">
 	<property file="build.properties" />
 
 	<property name="project.dir" value="." />

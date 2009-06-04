@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 """
 The plan is for this to replace service.py
 

@@ -1,5 +1,6 @@
-
-
+//
+// Copyright 2008 Optaros, Inc.
+//
 var contentId = args.id;
 var doc = search.findNode("workspace://SpacesStore/" + contentId );
 

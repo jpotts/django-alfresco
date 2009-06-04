@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.db import models
 from django.core import serializers
 from django.core.urlresolvers import reverse

@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from xml.dom import minidom
 from alfresco.settings import ALFRESCO_DEFAULT_USER, ALFRESCO_DEFAULT_USER_PASSWORD, ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT
 from django.core.cache import cache

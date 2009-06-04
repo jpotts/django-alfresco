@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 import datetime
 
 from django.db import models

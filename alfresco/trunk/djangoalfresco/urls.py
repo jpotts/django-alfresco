@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.conf.urls.defaults import *
 from hierarchies.feeds import CategoryFeed
 from hierarchies.models import Category, Hierarchy

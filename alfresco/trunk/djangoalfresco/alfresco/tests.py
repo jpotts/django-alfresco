@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.test import TestCase
 from alfresco.models import Space
 from alfresco import settings

@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',

@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from alfresco.service import SearchWebScript
 
 class AlfrescoSearchPage(object):

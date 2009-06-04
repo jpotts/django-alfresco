@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from hierarchies.models import Hierarchy, Category
 from django.contrib import admin
 from django import forms

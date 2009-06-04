@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 def slugify(slug):
     import re
     slug = slug.strip().lower()

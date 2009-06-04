@@ -1,3 +1,6 @@
+#
+# Copyright 2009 Optaros, Inc.
+#
 from django.contrib import admin
 from alfresco.models import Space, StaticContent
 
