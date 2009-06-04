@@ -1,0 +1,7 @@
+.. code-settings:
+
+========
+Settings
+========
+
+Explain what all the settings mean.

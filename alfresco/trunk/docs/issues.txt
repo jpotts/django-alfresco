@@ -1,0 +1,7 @@
+.. issues:
+
+======
+Issues
+======
+
+Everything that sucks about this piece of software.

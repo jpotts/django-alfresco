@@ -1,0 +1,26 @@
+.. _overview:
+
+========
+Overview
+========
+
+Originally Django Alfresco was built to serve the needs of a corporate retailer's Intranet site.
+They wanted the rich feature set of Alfresco's CMS with the flexibility and rapid development of
+a web framework. 
+
+Webscripts
+==========
+Django Alfresco comes packaged with a base set of webscripts needed to pull content and space information
+out of Alfresco.
+
+Authentication
+==============
+All Authentication happens through Alfresco.
+
+Caching
+=======
+What are the proformance benifits you get from DA.
+
+Optaros
+=======
+Maybe a little about what Optaros has to do with the project.

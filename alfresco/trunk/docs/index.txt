@@ -1,0 +1,31 @@
+=============================
+Django Alfresco Documentation
+=============================
+An integration between Django and Alfresco. The idea here is to use the power of Alfresco as
+a content repository with the flexibility of Django as a web tier.
+
+Getting Started
+===============
+Read the overview to give you some background on the project, install Django Alfresco, and run through the tutorial.
+
+* :ref:`overview`
+* :ref:`install`
+* :ref:`tutorial`
+
+
+Contents
+========
+To view all of the contents of the documentation.
+
+.. toctree::
+   :maxdepth: 2
+   
+   contents
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

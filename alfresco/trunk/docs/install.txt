@@ -1,0 +1,75 @@
+.. _install:
+
+============
+Installation
+============
+
+Things You Need
+===============
+* Python::
+    
+    sudo apt-get install python
+    
+* BeautifulSoup::
+    
+    sudo easy_install BeautifulSoup
+    
+* Python Image Library::
+
+    sudo apt-get install python-imaging
+
+* [http://www.djangoproject.com/documentation/install/ Django]: Install from svn or get version 1.0
+* Code::
+
+    svn co https://projects.optaros.com/svn/django-practice/trunk/alfresco/
+
+
+Environment Variables
+=====================
+Make sure your Django paths are setup correctly
+
+UNIX::
+
+    export PYTHONPATH=$PYTHONPATH:/path/to/djangoalfresco:/path/to/django
+    export DJANGO_SETTINGS_MODULE=djangoalfresco.settings
+
+WINDOWS::
+
+    PYTHONPATH=%PYTHONPATH%;C:\path\to\djangoalfresco;C:\path\to\django
+    DJANGO_SETTINGS_MODULE=djangoalfresco.settings
+
+Database
+========
+You need a DB. See `Link text <http://docs.djangoproject.com/en/dev/topics/install/#database-installation>`_ for
+information on setting up a DB. Once that is complete you can run sync db::
+    
+    cd /path/to/djangoalfresco
+    ./manage.py syncdb
+
+
+Alfresco
+========
+To make this work you need a working version of alfresco on your localhost on port 8080. 
+This project needs a specific set of Webscripts install in the alfresco instance in order to work. 
+
+Install Scripts
+---------------
+Grab the webscripts from `svn <https://projects.optaros.com/svn/django-practice/trunk/alfresco/trunk/djangoalfresco/alfresco/webscripts/>`_ 
+and add them to your alfresco instance.::
+    
+    cd /path/to/alfresco-enterprise-tomcat-2.2.0/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/templates/webscripts
+    svn co https://projects.optaros.com/svn/django-practice/trunk/alfresco/trunk/djangoalfresco/alfresco/webscripts/django/
+
+Alternatively you can add the scripts to the repository under Data Dictionary/Web Scripts Extensions.
+
+You will have to restart alfresco after this or visit http://localhost:8080/alfresco/service/ and 
+click on the "Refresh Web Scripts" button.
+
+Users
+=====
+You do not need to have any users in your Django auth_users table. In fact, clear it out before you use Django Alfresco. 
+Django will leverage Alfresco for authentication so if you can log in to Alfresco you should be able to log into Django.
+
+The "admin" user in Alfresco will automatically get set as a superuser and as "staff" which means admin can log in to
+Django admin. If you want another user to log in to Django admin, have them attempt to log in first which will cause 
+an entry to be placed in auth_user, then edit their user object through the Django admin screen and set the staff flag to true.

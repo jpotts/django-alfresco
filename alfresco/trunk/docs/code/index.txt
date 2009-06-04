@@ -1,0 +1,12 @@
+.. code-index:
+
+====
+Code
+====
+
+.. toctree::
+    :maxdepth: 2
+    
+    cmis
+    settings
+
