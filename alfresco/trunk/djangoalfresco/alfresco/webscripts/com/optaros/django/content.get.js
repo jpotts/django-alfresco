@@ -10,6 +10,11 @@ if (doc == undefined)
    status.redirect = true;
 } 
 else {
-	model.doc = doc;
-	model.tags = doc.tags;
+	var result = new Result(doc, doc.tags);
+	model.result = result;
+}
+
+function Result(doc, tags) {
+	this.doc = doc;
+	this.tags = tags;
 }
