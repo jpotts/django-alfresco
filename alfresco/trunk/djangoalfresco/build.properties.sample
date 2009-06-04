@@ -1,0 +1,5 @@
+alfresco.web.dir=/opt/apache/tomcat/apache-tomcat-5.5.27/webapps/alfresco
+#alfresco.war.path=/opt/alfresco/3d-labs/war/alfresco.war
+#alfresco.mmt.jar=/opt/alfresco/3d-labs/alfresco-mmt-3Stable.jar
+alfresco.war.path=/opt/alfresco/3.1-enterprise/war/alfresco.war
+alfresco.mmt.jar=/opt/alfresco/3.1-enterprise/alfresco-mmt-3.1.jar

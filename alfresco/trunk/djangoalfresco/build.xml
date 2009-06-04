@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Django Alfresco" default="" basedir=".">
+	<property file="build.properties" />
+
+	<property name="project.dir" value="." />
+	<property name="build.dir" value="${project.dir}/build" />
+	<property name="project.name" value="django-alfresco" />
+	<property name="project.file.zip" value="${build.dir}/${project.name}-project.zip" />
+    <property name="package.file.amp" value="${build.dir}/${project.name}.amp" />
+    <property name="module.id" value="com.optaros.django" />
+    <property name="module.dir" value="/alfresco/module" />
+	<property name="config.dir" value="${project.dir}/alfresco/amp" />
+	<property name="data.dir" value="${project.dir}/sample-data" />
+	<property name="webscript.dir" value="${project.dir}/alfresco/webscripts" />
+	<property name="extension.dir" value="/alfresco/extension" />
+
+	<path id="classpath.mmt">
+		<pathelement location="${alfresco.mmt.jar}" />
+	</path>
+			
+	<target name="setup">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="package-amp" depends="setup" description="Packages the customizations as an Alfresco module in ${package.file.amp}">
+		<delete file="${package.file.amp}" />
+		<zip destfile="${package.file.amp}">
+			<zipfileset dir="${webscript.dir}" prefix="webscripts" />
+			<zipfileset file="${config.dir}${module.dir}/${module.id}/module.properties" />						
+			<zipfileset file="${config.dir}${module.dir}/${module.id}/file-mapping.properties" />
+			<zipfileset file="${config.dir}${module.dir}/${module.id}/module-context.xml" prefix="config${module.dir}/${module.id}" />
+			<zipfileset dir="${data.dir}" prefix="config${module.dir}/${module.id}/bootstrap" />
+		</zip>
+	</target>
+	
+	<target name="install-amp" depends="package-amp" description="Uses the Alfresco MMT to install the AMP into ${alfresco.war.path}">
+        <java dir="." fork="true" jar="${alfresco.mmt.jar}">
+            <arg line="install ${package.file.amp} ${alfresco.war.path} -force -verbose"/>
+        </java>
+    </target>
+    
+    <target name="deploy-amp" depends="install-amp" description="Unzips the AMP'd WAR file into ${alfresco.web.dir}">
+   		<unzip src="${alfresco.war.path}" dest="${alfresco.web.dir}" />
+    </target>
+
+	<target name="zip-project" depends="setup" description="Zips the entire Eclipse project as-is into ${project.file.zip}">
+		<delete file="${project.file.zip}" />
+		<zip destfile="${project.file.zip}">
+			<zipfileset dir="${project.dir}" excludes="build/** bin/**" prefix="${project.name}-${label}" />
+		</zip>
+	</target>	
+	
+</project>
