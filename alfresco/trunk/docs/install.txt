@@ -18,7 +18,7 @@ Things You Need
 
     sudo apt-get install python-imaging
 
-* [http://www.djangoproject.com/documentation/install/ Django]: Install from svn or get version 1.0
+* `Django <http://www.djangoproject.com/documentation/install/>`_: Install from svn or get version 1.0
 * Code::
 
     svn co https://projects.optaros.com/svn/django-practice/trunk/alfresco/
@@ -66,33 +66,34 @@ To make this work you need a working version of alfresco on your localhost on po
 Django communicates with Alfresco via REST. Django expects certain calls to be returned as Django-specific XML. That means this project needs a specific set of Webscripts installed in the Alfresco instance in order to work. You have two choices for how to prepare Alfresco: Use Ant to create and install an AMP file or Deploy Manually.
 
 Option 1: Use Ant to create and deploy an AMP file and sample data bootstrap
-------------------------------
+----------------------------------------------------------------------------
 This option is preferred because it will deploy the web scripts and bootstrap the sample site data when the web application is started.
 
- #. Obtain the Alfresco MMT JAR either by downloading a pre-built JAR or building it yourself.
- #. Create a file called build.properties using build.properties.sample as a guide. Edit the property values for your environment. The alfresco.war.path should point to a copy of your Alfresco WAR file.
- #. Run "ant deploy-amp". Ant will use the Alfresco MMT to update the WAR with the Django web scripts and a bootstrap data ACP file. A backup of your original Alfresco WAR file will be created.
- #. Start Tomcat. You should see a log entry similar to::
+#. Obtain the Alfresco MMT JAR either by downloading a pre-built JAR or building it yourself.
+#. Create a file called build.properties using build.properties.sample as a guide. Edit the property values for your environment. The alfresco.war.path should point to a copy of your Alfresco WAR file.
+#. Run "ant deploy-amp". Ant will use the Alfresco MMT to update the WAR with the Django web scripts and a bootstrap data ACP file. A backup of your original Alfresco WAR file will be created.
+#. Start Tomcat. You should see a log entry similar to::
 
     User:System INFO  [repo.module.ModuleServiceImpl] Installing module 'com.optaros.django' version 1.0.
 
 Option 2: Deploy web scripts and sample data manually
-------------------------------
+-----------------------------------------------------
 The biggest drawback to this option is that the UUIDs of the objects may change when you import the sample site data and will therefore not match up with the data in the Django fixtures. If you don't care about the sample site, that's not a problem. If you want to see a working sample site, it is strongly recommended to use option 1. Otherwise, you'll have to change all of the Django objects to match the new UUIDs.
 
- #. Deploy the web scripts in alfresco/webscripts. You can either copy the "com" directory and its children into the repository under Data Dictionary/Web Script Extensions or you can copy them to your deployed Alfresco web application under $TOMCAT_HOME/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts.
- #. Start Tomcat. If Tomcat was already running, and you deployed to the Data Dictionary, go to http://localhost:8080/alfresco/service/ and refresh the web script cache by clicking the "Refresh Web Scripts" button.
- #. Log in to Alfresco as an Administrator and navigate to Company Home.
- #. Go to the Admin Control Panel, click Import, and specify the ACP file in sample-data/sample_site.acp.
+#. Deploy the web scripts in alfresco/webscripts. You can either copy the "com" directory and its children into the repository under Data Dictionary/Web Script Extensions or you can copy them to your deployed Alfresco web application under $TOMCAT_HOME/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts.
+#. Start Tomcat. If Tomcat was already running, and you deployed to the Data Dictionary, go to http://localhost:8080/alfresco/service/ and refresh the web script cache by clicking the "Refresh Web Scripts" button.
+#. Log in to Alfresco as an Administrator and navigate to Company Home.
+#. Go to the Admin Control Panel, click Import, and specify the ACP file in sample-data/sample_site.acp.
 
 Validated Environments
-===============
+======================
 This project has been tested with:
- * Python 2.5
- * Django 1.0.2_1
- * Alfresco 3d Labs, Alfresco 3.0.1 Enterprise, and Alfresco 3.1 Enterprise
- * MySQL 5.0.77, PostgreSQL
- * Mac OS X, Ubuntu
+
+* Python 2.5
+* Django 1.0.2_1
+* Alfresco 3d Labs, Alfresco 3.0.1 Enterprise, and Alfresco 3.1 Enterprise
+* MySQL 5.0.77, PostgreSQL
+* Mac OS X, Ubuntu
 
 Users
 =====
