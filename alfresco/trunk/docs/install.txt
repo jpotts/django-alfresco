@@ -40,8 +40,10 @@ WINDOWS::
 
 Database
 ========
-You need a DB. See `Link text <http://docs.djangoproject.com/en/dev/topics/install/#database-installation>`_ for
-information on setting up a DB. At a minimum, you will need to create a local_settings.py file with the following values set appropriately for your environment::
+You need a DB. See `Link text <http://docs.djangoproject.com/en/dev/topics/install/#database-installation>`_ 
+for information on setting up a DB. At a minimum, you will need to create a 
+local_settings.py file with the following values set appropriately for your 
+environment::
 
     # Local Django settings for djangoalfresco project.
 
@@ -57,31 +59,54 @@ Once that is complete you can run sync db::
     cd /path/to/djangoalfresco
     ./manage.py syncdb
 
-When prompted to create a super user, answer No. Django Alfresco will create the super user when you first log in to the site with "admin".
+When prompted to create a super user, answer No. Django Alfresco will create 
+the super user when you first log in to the site with "admin".
 
 Alfresco
 ========
-To make this work you need a working version of alfresco on your localhost on port 8080. The Django application will read content chunks from Alfresco's "DM" repository.
+To make this work you need a working version of alfresco on your localhost on
+port 8080. The Django application will read content chunks from Alfresco's "DM"
+repository.
 
-Django communicates with Alfresco via REST. Django expects certain calls to be returned as Django-specific XML. That means this project needs a specific set of Webscripts installed in the Alfresco instance in order to work. You have two choices for how to prepare Alfresco: Use Ant to create and install an AMP file or Deploy Manually.
+Django communicates with Alfresco via REST. Django expects certain calls to be
+returned as Django-specific XML. That means this project needs a specific set
+of Webscripts installed in the Alfresco instance in order to work. You have two
+choices for how to prepare Alfresco: Use Ant to create and install an AMP file 
+or Deploy Manually.
 
 Option 1: Use Ant to create and deploy an AMP file and sample data bootstrap
 ----------------------------------------------------------------------------
-This option is preferred because it will deploy the web scripts and bootstrap the sample site data when the web application is started.
+This option is preferred because it will deploy the web scripts and bootstrap
+the sample site data when the web application is started.
 
-#. Obtain the Alfresco MMT JAR either by downloading a pre-built JAR or building it yourself.
-#. Create a file called build.properties using build.properties.sample as a guide. Edit the property values for your environment. The alfresco.war.path should point to a copy of your Alfresco WAR file.
-#. Run "ant deploy-amp". Ant will use the Alfresco MMT to update the WAR with the Django web scripts and a bootstrap data ACP file. A backup of your original Alfresco WAR file will be created.
+#. Obtain the Alfresco MMT JAR either by `downloading <http://process.alfresco.com/ccdl/?file=release/labs/build-1526/alfresco-mmt-3Stable.jar&a=y&s=n&t=y>`_
+   a pre-built JAR or building it yourself.
+#. Create a file called build.properties using build.properties.sample as a guide.
+   Edit the property values for your environment. The alfresco.war.path should 
+   point to a copy of your Alfresco WAR file.
+#. Run "ant deploy-amp". Ant will use the Alfresco MMT to update the WAR with the
+   Django web scripts and a bootstrap data ACP file. A backup of your original 
+   Alfresco WAR file will be created.
 #. Start Tomcat. You should see a log entry similar to::
 
     User:System INFO  [repo.module.ModuleServiceImpl] Installing module 'com.optaros.django' version 1.0.
 
 Option 2: Deploy web scripts and sample data manually
 -----------------------------------------------------
-The biggest drawback to this option is that the UUIDs of the objects may change when you import the sample site data and will therefore not match up with the data in the Django fixtures. If you don't care about the sample site, that's not a problem. If you want to see a working sample site, it is strongly recommended to use option 1. Otherwise, you'll have to change all of the Django objects to match the new UUIDs.
+The biggest drawback to this option is that the UUIDs of the objects may change
+when you import the sample site data and will therefore not match up with the
+data in the Django fixtures. If you don't care about the sample site, that's
+not a problem. If you want to see a working sample site, it is strongly
+recommended to use option 1. Otherwise, you'll have to change all of the Django
+objects to match the new UUIDs.
 
-#. Deploy the web scripts in alfresco/webscripts. You can either copy the "com" directory and its children into the repository under Data Dictionary/Web Script Extensions or you can copy them to your deployed Alfresco web application under $TOMCAT_HOME/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts.
-#. Start Tomcat. If Tomcat was already running, and you deployed to the Data Dictionary, go to http://localhost:8080/alfresco/service/ and refresh the web script cache by clicking the "Refresh Web Scripts" button.
+#. Deploy the web scripts in alfresco/webscripts. You can either copy the "com" 
+   directory and its children into the repository under Data Dictionary/Web 
+   Script Extensions or you can copy them to your deployed Alfresco web application
+   under $TOMCAT_HOME/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts.
+#. Start Tomcat. If Tomcat was already running, and you deployed to the Data 
+   Dictionary, go to http://localhost:8080/alfresco/service/ and refresh the web
+   script cache by clicking the "Refresh Web Scripts" button.
 #. Log in to Alfresco as an Administrator and navigate to Company Home.
 #. Go to the Admin Control Panel, click Import, and specify the ACP file in sample-data/sample_site.acp.
 
@@ -97,9 +122,13 @@ This project has been tested with:
 
 Users
 =====
-You do not need to have any users in your Django auth_users table. In fact, clear it out before you use Django Alfresco. 
-Django will leverage Alfresco for authentication so if you can log in to Alfresco you should be able to log into Django.
+You do not need to have any users in your Django auth_users table. In fact,
+clear it out before you use Django Alfresco. Django will leverage Alfresco for
+authentication so if you can log in to Alfresco you should be able to log into 
+Django.
 
-The "admin" user in Alfresco will automatically get set as a superuser and as "staff" which means admin can log in to
-Django admin. If you want another user to log in to Django admin, have them attempt to log in first which will cause 
-an entry to be placed in auth_user, then edit their user object through the Django admin screen and set the staff flag to true.
+The "admin" user in Alfresco will automatically get set as a superuser and as
+"staff" which means admin can log in to Django admin. If you want another user 
+to log in to Django admin, have them attempt to log in first which will cause 
+an entry to be placed in auth_user, then edit their user object through the 
+Django admin screen and set the staff flag to true.
