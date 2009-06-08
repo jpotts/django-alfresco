@@ -79,14 +79,23 @@ Option 1: Use Ant to create and deploy an AMP file and sample data bootstrap
 This option is preferred because it will deploy the web scripts and bootstrap
 the sample site data when the web application is started.
 
-#. Obtain the Alfresco MMT JAR either by `downloading <http://process.alfresco.com/ccdl/?file=release/labs/build-1526/alfresco-mmt-3Stable.jar&a=y&s=n&t=y>`_
+#. Obtain the `Alfresco MMT <http://wiki.alfresco.com/wiki/Module_Management_Tool>`_
+   JAR either by `downloading <http://process.alfresco.com/ccdl/?file=release/labs/build-1526/alfresco-mmt-3Stable.jar&a=y&s=n&t=y>`_
    a pre-built JAR or building it yourself.
-#. Create a file called build.properties using build.properties.sample as a guide.
-   Edit the property values for your environment. The alfresco.war.path should 
-   point to a copy of your Alfresco WAR file.
+#. Create a file called build.properties using `build.properties.sample <https://projects.optaros.com/svn/django-practice/trunk/alfresco/>`_ 
+   as a guide. Edit the property values for your environment. The alfresco.war.path should 
+   point to a copy of your Alfresco WAR file::
+   
+    cd /path/to/djangoalfresco
+    cp build.properties.sample build.properties
+    
 #. Run "ant deploy-amp". Ant will use the Alfresco MMT to update the WAR with the
    Django web scripts and a bootstrap data ACP file. A backup of your original 
-   Alfresco WAR file will be created.
+   Alfresco WAR file will be created::
+   
+    cd /path/to/djangoalfresco
+    ant deploy-amp
+   
 #. Start Tomcat. You should see a log entry similar to::
 
     User:System INFO  [repo.module.ModuleServiceImpl] Installing module 'com.optaros.django' version 1.0.
