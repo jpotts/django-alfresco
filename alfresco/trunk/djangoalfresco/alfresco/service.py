@@ -161,13 +161,11 @@ class WebScript(object):
         raw = kwargs.pop('raw', False)
         
         id = kwargs['id']
-        #xml = file_cache.get(id)
         xml = cache.get(id)
         if xml:
             self.response = xml
         else:
             self.execute(self, *args, **kwargs)
-            #file_cache.set(id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
             cache.set(id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
         if raw:
             return self.response
@@ -179,7 +177,6 @@ class WebScript(object):
         """
         space_id = kwargs.pop('space__id')
         id = kwargs['id']
-        #xml = file_cache.get(space_id)
         xml = cache.get(space_id)
         if xml:
             self.response = get_node_by_id(xml, id)
@@ -187,7 +184,6 @@ class WebScript(object):
             kwargs['id'] = space_id
             self.method = 'space'
             self.execute(self, *args, **kwargs)
-            #file_cache.set(space_id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
             cache.set(space_id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
             self.response = get_node_by_id(self.response, id)
         raw = kwargs.get('raw', False)
@@ -390,21 +386,17 @@ def get_navigation_ul(ticket):
     build the space tree navigation for django space admin
     """
     key = settings.ALFRESCO_SPACE_NAVIGATION_CACHE_KEY
-    #html = file_cache.get(key)
     html = cache.get(key)
     if not html:
         #TODO: Reconsider this, if force=True, it will NEVER update the cache if the file exists...
-        #html = file_cache.get(key, force=False)
         if not html:
             logger.debug('Started building navigation tree')
             json = {'root': {'id': settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, 'title': 'root',  'children': []}}
             _recurse_node(settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, json, ticket)
             html = '<ul id="tree" class="treeview">' + _recurse_ul(json['children']) + '</ul>'
-            #file_cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
             cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
             logger.debug('Finished building navigation tree')
         else:
-            #file_cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
             cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
     return html
         
