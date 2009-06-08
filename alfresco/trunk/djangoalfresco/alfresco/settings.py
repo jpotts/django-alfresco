@@ -36,3 +36,6 @@ ALFRESCO_AUTO_LOGIN_ATTEMPTS = getattr(settings, 'ALFRESCO_AUTO_LOGIN_ATTEMPTS',
 ALFRESCO_THUMBNAIL_SIZES = ('medium', 'imgpreview', 'avatar', 'doclib',)
 ALFRESCO_LOCAL_THUMBNAIL_URL = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_URL', settings.MEDIA_URL +'alfresco/images/thumbnails/')
 ALFRESCO_LOCAL_THUMBNAIL_ROOT = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_ROOT', settings.MEDIA_ROOT +'alfresco/images/thumbnails/')
+
+#Used to determine the maximum number of days to go back on recent item searches
+ALFRESCO_QUERY_LIMIT_RANGE = getattr(settings, "ALFRESCO_QUERY_LIMIT_RANGE", 30)
