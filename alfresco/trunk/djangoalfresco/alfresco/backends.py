@@ -34,6 +34,7 @@ class AlfrescoBackend(ModelBackend):
         
         if user:
             user.ticket = alf_ticket
+            user.save()
         else:
             try:
                 #Alfresco 3.0 Specific

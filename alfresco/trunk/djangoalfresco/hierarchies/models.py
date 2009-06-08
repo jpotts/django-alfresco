@@ -4,12 +4,12 @@
 from django.db import models
 from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 
 from hierarchies import utils
 from hierarchies.managers import CategoryManager
 
 from alfresco.models import Space
-from alfresco.cache import file_cache
 
 class Hierarchy(models.Model):
     name = models.CharField(max_length=255)
@@ -129,7 +129,7 @@ class Category(models.Model):
     def get_top_content(self):
         #key = '__'.join([self._meta.app_label, self._meta.module_name, str(self.id)])
         key = str(self.space_id)
-        xml = file_cache.get(key, True)
+        xml = cache.get(key)
         if not xml:
             return []
         return [d.object for d in serializers.deserialize('xml', xml)]

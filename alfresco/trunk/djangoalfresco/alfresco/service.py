@@ -2,6 +2,7 @@
 # Copyright 2009 Optaros, Inc.
 #
 import urllib2
+import datetime
 from xml.dom import minidom
 from xml import sax
 
@@ -10,8 +11,9 @@ from django.core import serializers
 from django.core.cache import cache
 
 from alfresco import settings
-from alfresco.cache import file_cache, image_cache
+from alfresco.cache import image_cache
 from alfresco.thumbnail import parse_html_for_images
+from django.core.cache import cache
 
 from log.loggers import logger
 
@@ -49,6 +51,7 @@ def get_node_by_id(xml, id_or_list):
     """
     if not isinstance(id_or_list, list):
         id_or_list = [id_or_list]
+    #TODO: Catch exceptions in parsing xml
     doc = minidom.parseString(xml)
     obj_list = doc.getElementsByTagName('object')
     obj_xml = ''
@@ -144,8 +147,8 @@ class WebScript(object):
             
             except (sax.SAXParseException, serializers.base.DeserializationError), e:
                 # Continue onto the next object.
-                # We will need to log this error.
-                logger.error('Exception in alfresco.service.deserializer: %s' % str(e))
+                #TODO: We will need to log this error.
+                #logger.error('Exception in alfresco.service.deserializer: %s' % str(e))                    
                 continue
         
         return object_list
@@ -158,12 +161,14 @@ class WebScript(object):
         raw = kwargs.pop('raw', False)
         
         id = kwargs['id']
-        xml = file_cache.get(id)
+        #xml = file_cache.get(id)
+        xml = cache.get(id)
         if xml:
             self.response = xml
         else:
             self.execute(self, *args, **kwargs)
-            file_cache.set(id, self.response, settings.ALFRESO_CACHE_FILE_TIMEOUT)
+            #file_cache.set(id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
+            cache.set(id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
         if raw:
             return self.response
         return self.deserializer(**kwargs)
@@ -174,14 +179,16 @@ class WebScript(object):
         """
         space_id = kwargs.pop('space__id')
         id = kwargs['id']
-        xml = file_cache.get(space_id)
+        #xml = file_cache.get(space_id)
+        xml = cache.get(space_id)
         if xml:
             self.response = get_node_by_id(xml, id)
         else:
             kwargs['id'] = space_id
             self.method = 'space'
             self.execute(self, *args, **kwargs)
-            file_cache.set(space_id, self.response, settings.ALFRESO_CACHE_FILE_TIMEOUT)
+            #file_cache.set(space_id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
+            cache.set(space_id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
             self.response = get_node_by_id(self.response, id)
         raw = kwargs.get('raw', False)
         if raw:
@@ -208,10 +215,10 @@ class SearchWebScript(WebScript):
     use: 
     >>> s = SearchWebScript()
      <alfresco.service.SearchWebScript object at 0x885076c>
-    >>> s.search(q='TEXT:image', sort_by='-modified', alf_ticket=ticket, limit=1)
+    >>> s.search(q='ALL:image', sort_by='-modified', alf_ticket=ticket, limit=1)
     [<Content: ae284cb4-4786-4dcd-90a6-895fd4a5db65 - RSS_2.0_recent_docs.ftl>]
     
-    >>> s.search(q='TEXT:image', sort_by='-modified', alf_ticket=ticket, page=1, page_size=2)
+    >>> s.search(q='ALL:image', sort_by='-modified', alf_ticket=ticket, page=1, page_size=2)
     ({u'num_pages': u'2', u'num_results': u'3', u'page': u'1', u'page_size': u'2',
        ...
     [<Content: e32ec162-9447-4878-b1e8-6cf8678bec2c - general_example.ftl>,
@@ -227,13 +234,15 @@ class SearchWebScript(WebScript):
         #We need to require a page and a page_size to paginate
         if not kwargs.has_key('page') and not kwargs.has_key('page_size'):
             raise KeyError('To paginate, we need both a page and a page_size')
-        kwargs['sort_by'] = kwargs.pop('order_by', '-modified')
+        if 'sort_by' not in kwargs:
+            kwargs['sort_by'] = kwargs.pop('order_by', '-modified')
         self.execute(self, *args, **kwargs)
         self.parse_search_results()
         return self.params, self.deserializer(**kwargs)
     
     def search(self,*args, **kwargs):
-        kwargs['sort_by'] = kwargs.pop('order_by', '-modified')
+        if 'sort_by' not in kwargs:
+            kwargs['sort_by'] = kwargs.pop('order_by', '-modified')
         raw = kwargs.pop('raw', False)
         self.execute(self, *args, **kwargs)
         if raw:
@@ -251,7 +260,7 @@ class SearchWebScript(WebScript):
         self.response = django_objects.toxml()
 
 
-def generic_search(q, sort_by, limit, ticket, cache_results=False):
+def generic_search(q, sort_by, limit, alf_ticket, cache_results=False, limit_range=False):
     """
     Wrapper for SearchWebScript
     """
@@ -261,9 +270,16 @@ def generic_search(q, sort_by, limit, ticket, cache_results=False):
         KEY = generate_hex_key(q,sort_by,limit)
         value = cache.get(KEY)
         if value:
+            logger.info("cached generic_search value: %s" % value)
             return value
     sws = SearchWebScript()
-    value = sws.search(q=q, sort_by=sort_by, limit=limit, alf_ticket=ticket)
+    
+    if limit_range:
+        max = datetime.date.today()
+        min = max - datetime.timedelta(days=settings.ALFRESCO_QUERY_LIMIT_RANGE)
+        q=q + 'AND @cm\:modified:[%sT00:00:00 TO %sT00:00:00]' % (min,max)
+        
+    value = sws.search(q=q, sort_by=sort_by, limit=limit, alf_ticket=alf_ticket)
     if cache_results:
         cache.set(KEY, value, settings.ALFRESCO_GENERIC_SEARCH_CACHE_TIMEOUT)
     return value
@@ -370,17 +386,26 @@ def get_navigation_ul(ticket):
     """
     UL Representation of the navigation
     
-    Using locmem cache to store for 24 hours
+    Writes a file to file_cache containining data used to
+    build the space tree navigation for django space admin
     """
-    key = 'alfresco.service.navigation'
+    key = settings.ALFRESCO_SPACE_NAVIGATION_CACHE_KEY
+    #html = file_cache.get(key)
     html = cache.get(key)
     if not html:
-        logger.debug('Started building navigation tree')
-        json = {'root': {'id': settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, 'title': 'root',  'children': []}}
-        _recurse_node(settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, json, ticket)
-        html = '<ul id="tree" class="treeview">' + _recurse_ul(json['children']) + '</ul>'
-        cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
-    logger.debug('Finished building navigation tree')
+        #TODO: Reconsider this, if force=True, it will NEVER update the cache if the file exists...
+        #html = file_cache.get(key, force=False)
+        if not html:
+            logger.debug('Started building navigation tree')
+            json = {'root': {'id': settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, 'title': 'root',  'children': []}}
+            _recurse_node(settings.ALFRESCO_SPACE_NAVIGATION_ROOT_ID, json, ticket)
+            html = '<ul id="tree" class="treeview">' + _recurse_ul(json['children']) + '</ul>'
+            #file_cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
+            cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
+            logger.debug('Finished building navigation tree')
+        else:
+            #file_cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
+            cache.set(key, html, settings.ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT)
     return html
         
 def _get_node(ticket, id):

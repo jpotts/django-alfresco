@@ -13,9 +13,13 @@ ALFRESCO_CONTENT_SUB_URL = ALFRESCO_URL + 'alfresco/service/news/upload'
 # Setting this to none will generate a tree based on the entire Alfresco spacestore
 ALFRESCO_SPACE_NAVIGATION_ROOT_ID =  getattr(settings, 'ALFRESCO_SPACE_NAVIGATION_ROOT_ID', None)
 ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT =  getattr(settings, 'ALFRESCO_SPACE_NAVIGATION_ROOT_CACHE_TIMEOUT', 86400)
+ALFRESCO_SPACE_NAVIGATION_CACHE_KEY = getattr(settings, 'ALFRESCO_SPACE_NAVIGATION_CACHE_KEY', 'alfresco.service.navigation')
 
 # CACHE
-ALFRESO_CACHE_FILE_TIMEOUT = getattr(settings, 'ALFRESO_CACHE_FILE_TIMEOUT', 1800)
+ALFRESCO_CACHE_FILE_TIMEOUT = getattr(settings, 'ALFRESCO_CACHE_FILE_TIMEOUT', 1800)
+ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT = getattr(settings, 'ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT', 21600) #6 hours
+ALFRESCO_GENERIC_SEARCH_CACHE_TIMEOUT = getattr(settings, 'ALFRESCO_GENERIC_SEARCH_CACHE_TIMEOUT', 3600) #1 hour
+
 
 ALFRESCO_EXCEPTION_CODES = {
     1: 'Your alfresco ticket has timed out or you have insufficient privileges to view this folder. Please login again.',
@@ -32,6 +36,3 @@ ALFRESCO_AUTO_LOGIN_ATTEMPTS = getattr(settings, 'ALFRESCO_AUTO_LOGIN_ATTEMPTS',
 ALFRESCO_THUMBNAIL_SIZES = ('medium', 'imgpreview', 'avatar', 'doclib',)
 ALFRESCO_LOCAL_THUMBNAIL_URL = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_URL', settings.MEDIA_URL +'alfresco/images/thumbnails/')
 ALFRESCO_LOCAL_THUMBNAIL_ROOT = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_ROOT', settings.MEDIA_ROOT +'alfresco/images/thumbnails/')
-
-ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT = getattr(settings, 'ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT', 21600) #6 hours
-ALFRESCO_GENERIC_SEARCH_CACHE_TIMEOUT = getattr(settings, 'ALFRESCO_GENERIC_SEARCH_CACHE_TIMEOUT', 3600) #1 hour
