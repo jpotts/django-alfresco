@@ -10,14 +10,19 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Uncomment the next line to enable admin documentation:
-    (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    # Uncomment the next line for to enable the admin:
-    (r'^admin/hierarchies/', include('hierarchies.urls.admin')),
+    #ADMIN
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')),    
+    (r'^admin/hierarchies/', include('hierarchies.urls')),
     url(r'^admin/alfresco/cache/', 'alfresco.views.cache', name='alfresco_cache'),
     url(r'^admin/(.*)', admin.site.root, name='admin_home'),
+
+    #ALFRESCO
     (r'^alfresco/', include('alfresco.urls')),
+    
+    #MEDIA
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    
+    #Sample Site
     (r'^sample_site/', include('sample_site.urls')),
     url(r'^$', 'sample_site.views.home', name='home')
 )
