@@ -1,0 +1,37 @@
+{% extends 'alfresco/search.html'%}
+
+{% block content%}
+<div class="box">
+    {% if pages %}
+    <h2 class="title">Tag search results for '{{ query }}'</h2>    <div class="content">
+    <div class="menuPaging"><span class="barSpaceTitle">Page:</span>
+		{% for p in pages %}
+		<span {% ifequal p page.number%}class="select"{% endifequal %}><a href="{{get_params.page}}page={{p}}">{{p}}</a></span>
+		{% endfor %}
+		{% if page.has_next %}<a href="{{get_params.page}}page={{page.next_page_number}}">&gt;&gt;</a>{% endif %}
+	  </div>
+    <dl class="search-results node-results">
+    
+    {% for object in page.object_list %}
+    <dt class="title">
+  		<a href="{{ object.get_absolute_url }}">{{object.title}}</a>
+	</dt>
+	<dd>
+      <p class="search-snippet">{{object.content|striptags|safe|truncatewords:10}}</p>
+	  <p class="search-info">{{object.mimetype}} - {% load alfresco_tags %}{% format_user_link object.author %} - {{object.modified|date:"m/d/Y"}}</p>
+    </dd>
+    {% endfor %}
+    
+    </dl>
+    <div class="menuPaging"><span class="barSpaceTitle">Page:</span>
+		{% for p in pages %}
+		<span {% ifequal p page.number%}class="select"{% endifequal %}><a href="{{get_params.page}}page={{p}}">{{p}}</a></span>
+		{% endfor %}
+		{% if page.has_next %}<a href="{{get_params.page}}page={{page.next_page_number}}">&gt;&gt;</a>{% endif %}
+	  </div>
+    </div><!-- .content -->
+    {% else %}
+        <h2 class="title">No results with that tag found</h2>
+    {% endif %}
+</div><!-- .box -->
+{% endblock %}

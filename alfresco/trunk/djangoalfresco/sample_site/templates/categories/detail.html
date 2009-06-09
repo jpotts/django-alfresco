@@ -1,0 +1,52 @@
+{% extends 'base.html'%}
+<!--
+    This template is used to show the contents of a specific category.
+    Example URL: /blog/open_source/
+-->
+{% block title%}Category Detail | {{category.name}}{% endblock%}
+
+{% block feature %}
+    <div id="featureContainer">
+      <div>
+  <h1>
+    {% for crumb in category.breadcrumbs %}
+  	<a href="{{crumb.url}}" class="active">{{crumb.name}}</a> <span> > </span>
+    {% endfor %}
+     All
+  </h1>
+  </div>
+  </div>
+{% endblock %}
+
+{% block sidebar-left %}
+<div id="title"> Blog Channels</div>
+<ul class="menu">
+<li><a href="{{category.get_absolute_url}}" class="active">All</a></li>
+{% for cat in category.child.all%}
+<li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+{% endfor %}
+</ul>
+ {% endblock %}
+
+{% block header %}
+    {% include 'nav.html' %}
+{% endblock %}
+
+{% block content-left %}
+{% for doc in recent_docs %}
+<div class="entry" {% if forloop.first %}id="sticky"{% endif %}><h3><a name="blog-info" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>
+<span class="posted_by">Posted {{doc.modified|date:"j N Y"}} by {% load alfresco_tags %}{% format_user_link doc.author %}</a>{% if doc.tags %} | Tags: {% load alfresco_tags %}{% format_tags doc.tags %}{% endif %}</span></h3>
+<p>
+{{doc.content|safe|striptags|truncatewords:40}}
+<a class="read_more" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">Read more</a>
+</p>
+</div>
+{% endfor %}
+
+{% endblock%}
+
+{% block rss-feed %}
+<a href="/categories/feeds/{{ category.get_rss }}">
+  <img title="Subscribe to Optaros RSS feed" alt="Subscribe to Optaros RSS feed" src="/site_media/sample_site/img/icon_rss.gif"/>
+                    Subscribe to {{ category.name }} RSS feed</a>
+{% endblock %}

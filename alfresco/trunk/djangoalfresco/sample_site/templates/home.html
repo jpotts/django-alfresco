@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+<!--
+    This template is used as the home page for the sample site.
+-->
+{% block title %}Django Alfresco Demo Home{% endblock %}
+{% block feature %}
+<div id="featureContainer">
+   <div>
+     <h1>Django Alfresco Sample Site Home</h1>
+   </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<p>
+Demo of Django Alfresco
+</p>
+<p>
+<h2>Things that work</h2>
+<ul>
+<li>Automatic Alfresco ticket management (SSO, essentially)</li>
+<li>Management of Hierarchies, Categories, Spaces, & Static Content in Django Admin</li>
+<li>Search</li>
+<li>Alfresco-managed tags & tag search</li>
+<li>Category-specific Feeds</li>
+<li>Automatic hot-linking of Alfresco user names</li>
+<li>Slug-based image references & static content includes</li>
+</ul>
+</p>
+
+<p>
+<h2>Things that need work</h2>
+<ul>
+<li>Hierarchy-specific Feeds</li>
+<li>Slug-based static content links</li>
+<li>Group sync</li>
+<li>Site Map</li>
+<li>CMIS</li>
+<li>Better/easier admin (less reliance on UID's</li>
+<li>Persisting Django form data to Alfresco</li>
+</ul>
+</p>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html'%}
+<!--
+    This template displays content detail when no category is provided as part of the URL.
+    Example URL: /alfresco/content/274e4c2f-b82b-44e8-a5a0-972b8f316b00/
+-->
+{% block title%}Content Detail | {{object.title}}{% endblock %}
+{%block extra-head%}
+<script type="text/javascript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+function doOpen(url, target){
+	var w = window.open(url, target, 'width=320, height=180, scrollbars=yes, resizable=yes');
+	w.focus();
+	return false;
+}
+//-->
+</script>
+{%endblock%}
+
+{% block header %}
+    {% include 'nav.html' %}
+{% endblock %}
+
+{% block content %}
+<div id="layoutContainer">
+  <div id="layoutFull">
+    <div id="bodyHeader">
+      <!-- TODO: Create Breadcrumb filter -->
+      <div class="print"><a href="{% url print_view object.id %}">Printable Version<img src="{{MEDIA_URL}}img/img_printer.gif" width="16" height="15" alt=""/></a></div>
+      
+      <div class="title">{{object.title}}<br />
+        <span class="mediumColor">Submitted by {% load alfresco_tags %}{% format_user_link object.author %}</span></div>
+      <div class="summary">
+        <b>Summary:</b> {{object.description}} <br />
+        <b>Published:</b> {{object.modified|date:"m/d/Y"}} by {% format_user_link object.author %}&nbsp;&nbsp;<br />
+        <b>File Type:</b> {{object.mimetype}}<br />
+        {% if object.tags %}<b>Tags:</b> {% load alfresco_tags %}{% format_tags object.tags %}{% endif %}
+      </div>
+    </div>
+         {% load alfresco_tags %}
+		{{object.content|mask_image_tags|safe}}  
+		<br class="clear" />
+  </div>
+</div>
+{% endblock %}

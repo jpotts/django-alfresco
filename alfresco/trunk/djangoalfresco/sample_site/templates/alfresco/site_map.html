@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content%}
+
+<div id="layoutContainer">
+  <div class="layout25x75">
+
+    <div class="left">
+    <div class="gearContainer">
+      <div style="font-size:14pt; font-weight:700; color:#666666; background-color:#e6e6e6; padding:0px 6px 0px 0px; border:1px solid #cccccc;"><a href="about_index.shtml"><img src="images/t_sitemap.gif" alt="Site Map" width="144" height="50" border="0" /></a><br />
+      </div>
+    </div>
+    </div>
+
+    <div class="right">
+    <div class="body">
+      <div class="gearContainer">
+            <div class="gearContainer">
+                <div class="gearContent">
+                  <div class="titlebar">
+                    <div class="pre"></div>
+                    <div class="titleModes"><a href="br_help.shtml"><img src="images/ico_help.gif" width="16" height="16" border="0" /></a><a class="modelink" href="br_main3_bold_hide.shtml"><img src="images/ico_hide.gif" width="16" height="16" border="0" /></a></div>
+                    <div class="title">Site Map</div>
+                    <div class="clear"></div>
+                    <div class="post"></div>
+                    <div class="clear"></div>
+                  </div>	
+
+                  <div style="border:1px solid #CCCCCC; padding:4px 2px 0px 6px;">
+                  <table width="720" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="232" valign="top"><div class="gearContent">
+
+					  {% load hierarchies %}
+
+					  {% get_hierarchies as hierarchies %}
+
+					  {% for h in hierarchies%}
+
+						  {% if forloop.counter|divisibleby:"4" %}
+
+					   	    </div></td><td width="232" valign="top"><div class="gearContent">
+
+					   	  {% endif%}	
+
+						  <div class="browseList">
+						  <p class="browseTitle"><a href='{{h.get_absolute_url}}'>{{h.name}}</a></p>
+
+							{% for cat in h.categories.rootChildren%}
+
+								<p class="browseLink"><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></p>
+
+							{% endfor %}
+
+					   	  </div>
+
+				   	  {% endfor %}	
+
+				  </td></tr></table></div>
+                </div>
+            </div>
+            
+      </div>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+</div>
+
+
+{% endblock %}
