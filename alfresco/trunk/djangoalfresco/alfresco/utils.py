@@ -7,8 +7,6 @@ from xml.dom import minidom
 from alfresco.settings import ALFRESCO_DEFAULT_USER, ALFRESCO_DEFAULT_USER_PASSWORD, ALFRESCO_EXTERNAL_USER_CACHE_TIME_OUT
 from django.core.cache import cache
 
-from alfresco.service import login, AlfrescoException
-
 def create_search_string(get={}):
     values = []
     for key, value in get.items():
@@ -94,6 +92,7 @@ def get_external_user_ticket():
     For external sites that use django to serve content we don't want to have them get
     a ticket everytime. let's keep one around for awhile.
     """
+    from alfresco.service import login, AlfrescoException
     KEY = 'alfresco.utils.get_external_user_ticket.ticket'
     ticket = cache.get(KEY)
     if not ticket:
@@ -115,3 +114,16 @@ def generate_hex_key(*args):
             return md5.new(string_key).hexdigest()
     else:
         return hashlib.md5(string_key).hexdigest()
+    
+#Taken from posixpath.py
+def join(a, *p):
+    """Join two or more pathname components, inserting '/' as needed"""
+    path = a
+    for b in p:
+        if b.startswith('/'):
+            path = b
+        elif path == '' or path.endswith('/'):
+            path +=  b
+        else:
+            path += '/' + b
+    return path

@@ -75,41 +75,38 @@ class AlfrescoContentManager(models.Manager):
         object_list = sws.search(*args, **kwargs)
         return object_list
 
-    """
-     I am commenting out all and recursive_all because they are preventing admin delete of a space object from working. The problem is that
-     kwargs does not contain alf_ticket like it does for some of these other methods.
-    """
+
     
-#    def all(self, *args, **kwargs):
-#        #handles the Related Manager case.
-#        kwargs.update(getattr(self, 'core_filters', {}))
-#        
-#        if not kwargs.has_key('space__id'):
-#            #raise NotImplementedError('Filter is not implemented for the Content Manager only the Space Related Manger')
-#            # Need to return empty for dumpdata to function properly
-#            logger.error('Filter is not implemented for the Content Manager only the Space Related Manger')
-#            return []
-#            
-#        ws = service.WebScript('django/', 'space')
-#        kwargs['id'] = kwargs.pop('space__id')
-#        web_script_list = ws.get(*args, **kwargs)
-#        return web_script_list
-    
-#    def recursive_all(self, *args, **kwargs):
-#        #handles the Related Manager case.
-#        kwargs.update(getattr(self, 'core_filters', {}))
-#        if not kwargs.has_key('space__id'):
-#            raise NotImplementedError('Filter is not implemented for the Content Manager only the Space Related Manger')
-#        
-#        #Cached model reference. Fast and helps with any potential import errors 
-#        Space = models.get_model('alfresco', 'space')
-#        space = Space.objects.get(pk=kwargs.pop('space__id'))
-#        q = space.q_path_any_below_include() + ' AND PATH:"//cm:Published//*"'
-#        
-#        #do the search and sort.
-#        sws = service.SearchWebScript()
-#        web_script_list = sws.search(q=q, *args, **kwargs)
-#        return web_script_list
+    def all(self, *args, **kwargs):
+        #handles the Related Manager case.
+        kwargs.update(getattr(self, 'core_filters', {}))
+        
+        if not kwargs.has_key('space__id'):
+            #raise NotImplementedError('Filter is not implemented for the Content Manager only the Space Related Manger')
+            # Need to return empty for dumpdata to function properly
+            logger.error('Filter is not implemented for the Content Manager only the Space Related Manger')
+            return []
+            
+        ws = service.WebScript('django/', 'space')
+        kwargs['id'] = kwargs.pop('space__id')
+        web_script_list = ws.get(*args, **kwargs)
+        return web_script_list
+
+    def recursive_all(self, *args, **kwargs):
+        #handles the Related Manager case.
+        kwargs.update(getattr(self, 'core_filters', {}))
+        if not kwargs.has_key('space__id'):
+            raise NotImplementedError('Filter is not implemented for the Content Manager only the Space Related Manger')
+        
+        #Cached model reference. Fast and helps with any potential import errors 
+        Space = models.get_model('alfresco', 'space')
+        space = Space.objects.get(pk=kwargs.pop('space__id'))
+        q = space.q_path_any_below_include() + ' AND PATH:"//cm:Published//*"'
+        
+        #do the search and sort.
+        sws = service.SearchWebScript()
+        web_script_list = sws.search(q=q, *args, **kwargs)
+        return web_script_list
     
     
     def paginate(self, *args, **kwargs):

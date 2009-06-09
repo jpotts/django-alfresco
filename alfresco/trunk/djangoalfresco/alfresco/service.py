@@ -3,6 +3,7 @@
 #
 import urllib2
 import datetime
+import base64
 from xml.dom import minidom
 from xml import sax
 
@@ -13,23 +14,14 @@ from django.core.cache import cache
 from alfresco import settings
 from alfresco.cache import image_cache
 from alfresco.thumbnail import parse_html_for_images
-from django.core.cache import cache
+from alfresco import utils
 
 from log.loggers import logger
 
 
-#Taken from posixpath.py
-def join(a, *p):
-    """Join two or more pathname components, inserting '/' as needed"""
-    path = a
-    for b in p:
-        if b.startswith('/'):
-            path = b
-        elif path == '' or path.endswith('/'):
-            path +=  b
-        else:
-            path += '/' + b
-    return path
+HEADER = '<?xml version="1.0" encoding="utf-8"?><django-objects version="1.0">'
+FOOTER = '</django-objects>'
+
 
 class AlfrescoException(Exception):
     """
@@ -42,8 +34,21 @@ class AlfrescoException(Exception):
     def __str__(self):
         return settings.ALFRESCO_EXCEPTION_CODES[self.code]
 
-HEADER = '<?xml version="1.0" encoding="utf-8"?><django-objects version="1.0">'
-FOOTER = '</django-objects>'
+
+class RESTRequest(urllib2.Request):
+    """
+    Overrides urllib's request default behavior
+    """
+    def __init__(self, *args, **kwargs):
+        self._method = kwargs.pop('method', 'GET')
+        self._auth = kwargs.pop('auth', None)
+        assert self._method in ['GET', 'POST', 'PUT', 'DELETE']
+        urllib2.Request.__init__(self, *args, **kwargs)
+        if self._auth:
+            self.add_header('Authorization', 'Basic %s' %  self._auth)
+
+    def get_method(self):
+        return self._method
 
 def get_node_by_id(xml, id_or_list):
     """
@@ -72,50 +77,48 @@ class WebScript(object):
         (self.package, self.method, self.format) = (package, method, format)
         self.url = None
         self.response = None
+        self.auth = None
 
-    def _build_url(self, *args, **kwargs):
+    def _authorize(self, **kwargs):
+        ticket = kwargs.pop('alf_ticket', None)
+        if ticket is None:
+            ticket = kwargs.pop('ticket', None)
+        
+        #honor the passed in information first
+        if ticket:
+            self.auth = base64.encodestring(ticket).strip()
+        else:
+            self.auth = base64.encodestring('%s:%s' % (settings.ALFRESCO_DEFAULT_USER, 
+                                    settings.ALFRESCO_DEFAULT_USER_PASSWORD)).strip()
+
+    def _build_request(self, *args, **kwargs):
         """
         Builds the query
-        """
+        """ 
+        #Pulls out the ticket or user/pass and sticks it in auth.
+        self._authorize(**kwargs)
+        print kwargs
+        #creates url
+        self.url = utils.join(settings.ALFRESCO_SERVICE_URL, self.package, self.method)
         
-        self.url = join(settings.ALFRESCO_SERVICE_URL, self.package, self.method)
         if self.format:
             kwargs['format'] = self.format
-        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items()])
+        #Adds the get params
+        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items() if key not in ['alf_ticket', 'ticket']])
+        
         #Don't work, but would be nice if it did.
         #query = urllib.urlencode(kwargs)
         if query:
             self.url += '?%s' % query.replace(' ', '%20')
+        
         logger.info('url: %s' % str(self.url))
+        return RESTRequest(self.url, method='GET', auth=self.auth)
         
     def element(self, attr):
         xml = minidom.parseString(self.response)
         element = xml.getElementsByTagName(attr)
         return element[0].firstChild.data
     
-    def _send(self):
-        """
-        Does the call to to Alfresco and handles the exceptions.
-            Sets the response 
-        """
-        request = urllib2.Request(self.url)
-        try:
-            request_response = urllib2.urlopen(request)
-        except urllib2.HTTPError, e:
-            if e.code == 401:
-                logger.error(settings.ALFRESCO_EXCEPTION_CODES[1]+ 'url :' + self.url )
-                raise AlfrescoException(str(e))
-            elif e.code == 400:
-                logger.error(settings.ALFRESCO_EXCEPTION_CODES[3]+ 'url :' + self.url)
-                raise AlfrescoException(str(e), code=3)
-            else:
-                logger.error(settings.ALFRESCO_EXCEPTION_CODES[4]+ 'url :' + self.url)
-                raise AlfrescoException(str(e), code=4)
-        except urllib2.URLError, e:
-            logger.critical(settings.ALFRESCO_EXCEPTION_CODES[2]+ 'url :' + self.url)
-            raise AlfrescoException(str(e),code=2)
-        self.response = request_response.read()
-
     def deserializer(self, **kwargs):
         object_list = []
         deserialized_iter = serializers.deserialize(self.format, self.response)
@@ -154,14 +157,32 @@ class WebScript(object):
         return object_list
 
     def execute(self, *args, **kwargs):
-        self._build_url(*args, **kwargs)
-        self._send()
+        # Builds the request.
+        request = self._build_request(*args, **kwargs)
+        try:
+            request_response = urllib2.urlopen(request)
+        except urllib2.HTTPError, e:
+            if e.code == 401:
+                logger.error(settings.ALFRESCO_EXCEPTION_CODES[1]+ 'url :' + self.url )
+                raise AlfrescoException(str(e))
+            elif e.code == 400:
+                logger.error(settings.ALFRESCO_EXCEPTION_CODES[3]+ 'url :' + self.url)
+                raise AlfrescoException(str(e), code=3)
+            else:
+                logger.error(settings.ALFRESCO_EXCEPTION_CODES[4]+ 'url :' + self.url)
+                raise AlfrescoException(str(e), code=4)
+        except urllib2.URLError, e:
+            logger.critical(settings.ALFRESCO_EXCEPTION_CODES[2]+ 'url :' + self.url)
+            raise AlfrescoException(str(e),code=2)
+        self.response = request_response.read()
+        
         
     def get(self, *args, **kwargs):
         raw = kwargs.pop('raw', False)
         
         id = kwargs['id']
         xml = cache.get(id)
+        
         if xml:
             self.response = xml
         else:
@@ -169,6 +190,7 @@ class WebScript(object):
             cache.set(id, self.response, settings.ALFRESCO_CACHE_FILE_TIMEOUT)
         if raw:
             return self.response
+        
         return self.deserializer(**kwargs)
     
     def get_by_space(self, *args, **kwargs):

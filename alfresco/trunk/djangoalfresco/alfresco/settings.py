@@ -33,6 +33,7 @@ ALFRESCO_DEFAULT_USER_PASSWORD = getattr(settings, 'ALFRESCO_DEFAULT_USER_PASSWO
 ALFRESCO_AUTO_LOGIN_ATTEMPTS = getattr(settings, 'ALFRESCO_AUTO_LOGIN_ATTEMPTS', 3)
 
 #Thumbnailing defaults from : /alfresco-trunk/HEAD/root/projects/repository/config/alfresco/thumbnail-service-context.xml
+ALFRESCO_CREATE_THUMBNAIL = False
 ALFRESCO_THUMBNAIL_SIZES = ('medium', 'imgpreview', 'avatar', 'doclib',)
 ALFRESCO_LOCAL_THUMBNAIL_URL = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_URL', settings.MEDIA_URL +'alfresco/images/thumbnails/')
 ALFRESCO_LOCAL_THUMBNAIL_ROOT = getattr(settings, 'ALFRESCO_LOCAL_THUMBNAIL_ROOT', settings.MEDIA_ROOT +'alfresco/images/thumbnails/')

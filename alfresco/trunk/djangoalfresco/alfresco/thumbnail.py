@@ -28,7 +28,8 @@ from BeautifulSoup import BeautifulSoup
 from django.utils.functional import curry
 from log.loggers import logger
 
-from alfresco.settings import ALFRESCO_SERVICE_URL, ALFRESCO_THUMBNAIL_SIZES, ALFRESCO_LOCAL_THUMBNAIL_URL, ALFRESCO_LOCAL_THUMBNAIL_ROOT
+from alfresco.settings import ALFRESCO_SERVICE_URL, ALFRESCO_THUMBNAIL_SIZES,\
+             ALFRESCO_LOCAL_THUMBNAIL_URL, ALFRESCO_LOCAL_THUMBNAIL_ROOT, ALFRESCO_CREATE_THUMBNAIL
 from django.conf import settings
 
 ALFRESCO_IMAGE_RE = re.compile('^/alfresco/d/d/workspace/SpacesStore/(?P<id>[-\w]+)/(?P<name>[-\w]+).(?P<extension>[-\w]+)$')
@@ -89,6 +90,7 @@ class ImageWrapper(object):
     
     def _get_images(self):
         from alfresco.service import SpaceStore
+        
         #Get full size
         try:
             ss = SpaceStore(self.ticket, '%s/%s.%s' %(self.id, self.name, self.extension))
@@ -96,12 +98,14 @@ class ImageWrapper(object):
         except Exception, e:
             logger.error('Failed to download image %s with an id of %s. Exception %s'
                           % (self.name, self.id, str(e)))
+        
         #Thumbnails
-        for size in ALFRESCO_THUMBNAIL_SIZES:
-            file_path = ALFRESCO_LOCAL_THUMBNAIL_ROOT + self.local_path(size)
-            if os.path.exists(file_path):
-                continue
-            self.create_thumbnail(size)
+        if ALFRESCO_CREATE_THUMBNAIL:
+            for size in ALFRESCO_THUMBNAIL_SIZES:
+                file_path = ALFRESCO_LOCAL_THUMBNAIL_ROOT + self.local_path(size)
+                if os.path.exists(file_path):
+                    continue
+                self.create_thumbnail(size)
             
 
 def parse_html_for_images(html, ticket=None):
