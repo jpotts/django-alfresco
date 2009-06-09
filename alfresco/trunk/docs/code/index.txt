@@ -1,4 +1,4 @@
-.. code-index:
+.. _code-index:
 
 ====
 Code
@@ -7,6 +7,7 @@ Code
 .. toctree::
     :maxdepth: 2
     
-    cmis
     settings
-
+    webscripts
+    
+    cmis

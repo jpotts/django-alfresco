@@ -1,4 +1,4 @@
-.. code-cmis
+.. _code-cmis:
 
 ====
 CMIS

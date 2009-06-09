@@ -1,4 +1,4 @@
-.. code-settings:
+.. _code-settings:
 
 ========
 Settings

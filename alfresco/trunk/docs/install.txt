@@ -4,6 +4,22 @@
 Installation
 ============
 
+These docs were written for the Enterprise version of Alfresco on Ubuntu 9.04.
+We will be expanding the documentation to include other systems, but this 
+should get you started. We tried to make the docs as informative as possible
+because we know that both Alfresco developers and Python developers will be
+reading them.
+
+Validated Environments
+======================
+This project has been tested with:
+
+* Python 2.5
+* Django 1.0.2_1
+* Alfresco 3d Labs, Alfresco 3.0.1 Enterprise, and Alfresco 3.1 Enterprise
+* MySQL 5.0.77, PostgreSQL, SQLite3
+* Mac OS X, Ubuntu
+
 Things You Need
 ===============
 * Python::
@@ -18,15 +34,17 @@ Things You Need
 
     sudo apt-get install python-imaging
 
-* `Django <http://www.djangoproject.com/documentation/install/>`_: Install from svn or get version 1.0
-* Code::
+* `Django <http://www.djangoproject.com/documentation/install/>`_: Install from
+  svn or get version 1.0
+* Django Alfresco Code::
 
     svn co https://projects.optaros.com/svn/django-practice/trunk/alfresco/
 
 
 Environment Variables
 =====================
-Make sure your Django paths are setup correctly
+Make sure your PYTHONPATH and DJANGO_SETTINGS_MODULE environment variables are
+setup correctly.
 
 UNIX::
 
@@ -40,7 +58,9 @@ WINDOWS::
 
 Database
 ========
-You need a DB. See `Link text <http://docs.djangoproject.com/en/dev/topics/install/#database-installation>`_ 
+To make the setup as painless as possible djangoalfresco is set up to run on 
+SQLite3 out of the box. Going forward you will need you need a DB. See 
+`Link text <http://docs.djangoproject.com/en/dev/topics/install/#database-installation>`_ 
 for information on setting up a DB. At a minimum, you will need to create a 
 local_settings.py file with the following values set appropriately for your 
 environment::
@@ -48,8 +68,8 @@ environment::
     # Local Django settings for djangoalfresco project.
 
     DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    DATABASE_NAME = 'django'             # Or path to database file if using sqlite3.
-    DATABASE_USER = 'django'             # Not used with sqlite3.
+    DATABASE_NAME = 'da_dev'             # Or path to database file if using sqlite3.
+    DATABASE_USER = 'da_user'             # Not used with sqlite3.
     DATABASE_PASSWORD = 'django'         # Not used with sqlite3.
     DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
     DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
@@ -59,20 +79,31 @@ Once that is complete you can run sync db::
     cd /path/to/djangoalfresco
     ./manage.py syncdb
 
-When prompted to create a super user, answer No. Django Alfresco will create 
+When prompted to create a super user, answer `no`. Django Alfresco will create 
 the super user when you first log in to the site with "admin".
 
 Alfresco
 ========
-To make this work you need a working version of alfresco on your localhost on
+To make this work you need a working version of Alfresco on your localhost on
 port 8080. The Django application will read content chunks from Alfresco's "DM"
 repository.
 
 Django communicates with Alfresco via REST. Django expects certain calls to be
 returned as Django-specific XML. That means this project needs a specific set
-of Webscripts installed in the Alfresco instance in order to work. You have two
-choices for how to prepare Alfresco: Use Ant to create and install an AMP file 
-or Deploy Manually.
+of Webscripts installed in the Alfresco instance in order to work. 
+
+Install
+-------
+For Alfreso install directions see the 
+`Labs 3 Install Guide <http://wiki.alfresco.com/wiki/Installing_Labs_3>`_. For
+Linux I would recommend running the 
+`Tomcat bundle <http://process.alfresco.com/ccdl/?file=build-1342/alfresco-labs-tomcat-3c.tar.gz&a=y&s=n&t=y>`_.
+Download the file and place it in `/opt/alfresco/`.
+
+Setup
+-----
+You have two choices for how to prepare Alfresco: Use Ant to create and install
+an AMP file or Deploy Manually.
 
 Option 1: Use Ant to create and deploy an AMP file and sample data bootstrap
 ----------------------------------------------------------------------------
@@ -119,15 +150,31 @@ objects to match the new UUIDs.
 #. Log in to Alfresco as an Administrator and navigate to Company Home.
 #. Go to the Admin Control Panel, click Import, and specify the ACP file in sample-data/sample_site.acp.
 
-Validated Environments
-======================
-This project has been tested with:
+Testing
+=======
+If you have properly executed Option 1 you will be able to do the following::
 
-* Python 2.5
-* Django 1.0.2_1
-* Alfresco 3d Labs, Alfresco 3.0.1 Enterprise, and Alfresco 3.1 Enterprise
-* MySQL 5.0.77, PostgreSQL
-* Mac OS X, Ubuntu
+    In [1]: from alfresco.models import Space
+    #Grab the first space
+    In [2]: space = Space.objects.all()[0]
+    #Get all the contents of that space. This is actually making a Webscript call
+    In [3]: space.contents.all()
+    #Log Output
+    #opt.alfresco.service:114 [INFO] url: http://localhost:8888/alfresco/service/django/space?id=b347b57c-9050-4f23-bfd6-975084ab5486&format=xml
+    #If it's successful you will see the contents of the space.
+    Out[3]: 
+    [<Content: 1e66b2b3-2dba-4a5f-9527-de754c3a983e - test-1.html>,
+     <Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>]
+
+If you haven't start up the server and go to the Django Admin.
+    
+    cd /path/to/djangoalfresco
+    ./manage.py runserver
+    
+    firefox http://localhost:8000/admin/
+
+If you are logged in automatically it means that Django can reach Alfresco and
+it successfully authenticated you as the default `admin` user. 
 
 Users
 =====
@@ -141,3 +188,21 @@ The "admin" user in Alfresco will automatically get set as a superuser and as
 to log in to Django admin, have them attempt to log in first which will cause 
 an entry to be placed in auth_user, then edit their user object through the 
 Django admin screen and set the staff flag to true.
+
+Sample Site
+===========
+Now that you have Django Alfresco running browse around the sample site and see
+how everything works. Try to browse `categories <http://localhost:8000/blog/>`_ 
+and `search <firefox http://localhost:8000/admin/>`_. You will notice that it 
+looks exactly like `www.optaros.com <http://www.optaros.com>`_ not as a
+marketing attempt, but because we didn't have to build html from scratch. It
+also proves the point nicely that Django Alfresco could be used to run a
+coporate blog.
+
+Going Forward
+=============
+For more information on how Django Alfresco works check out the following.
+
+* :ref:`tutorial` 
+* :ref:`code-settings` 
+* :ref:`code-webscripts` 

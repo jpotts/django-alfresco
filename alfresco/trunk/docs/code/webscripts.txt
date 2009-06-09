@@ -1,0 +1,8 @@
+.. _code-webscripts:
+
+==========
+Webscripts
+==========
+
+
+Write about webscripts
