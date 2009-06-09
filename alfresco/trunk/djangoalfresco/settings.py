@@ -76,7 +76,12 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    DIRNAME + "/html/templates/sample_site",
+    os.path.join(DIRNAME, "html/templates/sample_site"),
+)
+
+FIXTURE_DIRS = (
+    # Loads the sample data from sample-data/fixtures/initial_data.json
+    os.path.join(DIRNAME, "sample-data/fixtures/"),
 )
 
 INSTALLED_APPS = (
