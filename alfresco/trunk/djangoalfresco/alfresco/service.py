@@ -80,13 +80,20 @@ class WebScript(object):
         self.auth = None
 
     def _authorize(self, **kwargs):
+        
         ticket = kwargs.pop('alf_ticket', None)
         if ticket is None:
             ticket = kwargs.pop('ticket', None)
         
+        user = kwargs.pop('user', None)
+        password = kwargs.pop('password', None)
+        
         #honor the passed in information first
         if ticket:
             self.auth = base64.encodestring(ticket).strip()
+        
+        elif user is not None and password is not None:
+            self.auth = base64.encodestring('%s:%s' % (user, password)).strip()
         else:
             self.auth = base64.encodestring('%s:%s' % (settings.ALFRESCO_DEFAULT_USER, 
                                     settings.ALFRESCO_DEFAULT_USER_PASSWORD)).strip()
@@ -104,7 +111,7 @@ class WebScript(object):
         if self.format:
             kwargs['format'] = self.format
         #Adds the get params
-        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items() if key not in ['alf_ticket', 'ticket']])
+        query = '&'.join(['%s=%s' % (key, value) for key, value in kwargs.items() if key not in ['alf_ticket', 'ticket', 'user', 'password']])
         
         #Don't work, but would be nice if it did.
         #query = urllib.urlencode(kwargs)

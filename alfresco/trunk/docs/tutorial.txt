@@ -4,4 +4,104 @@
 Tutorial
 ========
 
-How to use it.
+This tutorial will go over the majority of features of the alfresco module and
+how we use them in hierarchies module to create the sample site. First lets 
+give a general flow of how we retrieve a piece of content from Alfresco and make
+a python object out of it.
+
+Let's take the simple example of retrieving a piece of content from Alfresco by
+ID. In for the Content model we overwrite the default manager to have it pull 
+from Alfresco instead of the DB. Here's an example::
+
+    In [1]: from alfresco.models import Content
+    
+    In [2]: content = Content.objects.get(id="0599e21d-d078-4911-a4a6-8ad5a7ae7f1d")
+    #logging you can see what URL was called.
+    #opt.alfresco.service:114 [INFO] url: http://localhost:8888/alfresco/service/django/archive?id=0599e21d-d078-4911-a4a6-8ad5a7ae7f1d&format=xml
+
+    In [3]: content
+    Out[3]: <Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>
+    
+    # What's the mimetype of this object?
+    In [4]: content.mimetype
+    Out[4]: u'text/html'
+ 
+    # Because of the text mimetype, Django Alfresco places the files content
+    # into the content attribute of the python object. 
+    In [5]: content.content
+    Out[5]: '<div id="lipsum"> <p> Lorem ipsum dolor sit amet, consectet ...
+   
+   
+Here's the image of what just happened and then we will break it into components.
+
+.. image:: images/django_alfresco_content.png
+
+#. AlfrescoContentManager overrides the `get` function and creates a WebScript
+   object.
+#. The WebScript object makes a REST request to the Alfresco REST service later.
+#. The content.get.js script calls `search.findNode()` that uses the DM apis to
+   retrieve the node.
+#. The content.get.json.ftl creates an JSON/XML formatted output of that node.
+#. The WebScript deserializer takes the response and creates Content modal 
+   objects.
+#. The AlfrescoContentManager passes that list back to the calling function.
+
+Webscript
+=========
+The Webscript class performs all the communication between Django and Alfresco.
+It takes 3 arguements when initialized. The package that the webscript is under
+, The method that is going to be called and the format that you want the 
+response in. For all the scripts installed by the ACP in the tutorial the
+packade is `django`. To do the same content retrieval as above in the webscript
+it would look like so::
+
+    In [14]: from alfresco.service import WebScript
+
+    In [15]: ws = WebScript('django/', 'archive')
+
+    In [16]: ws.get(id="0599e21d-d078-4911-a4a6-8ad5a7ae7f1d")
+    #opt.alfresco.service:114 [INFO] url: http://localhost:8888/alfresco/service/django/archive?id=0599e21d-d078-4911-a4a6-8ad5a7ae7f1d&format=xml
+    Out[16]: [<Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>]
+
+As you notice the ws automatically deserializes the response into a Content
+model. To get back the raw request pass in `raw=True` as a keyword argument::
+
+    In [17]: ws.get(id="0599e21d-d078-4911-a4a6-8ad5a7ae7f1d", raw=True)
+    Out[17]: '<?xml version="1.0" encoding="utf-8"?>\n<django-objects versio...
+
+All kwargs are passed directly into the get parameters of the REST request url.
+The `get` does no special checking to insure parameters are valid so be careful
+what you end up passing in.
+
+By default you need to authenticate against Alfresco and above we haven't been
+passing in credentials. We can authenticate in a couple of ways. By passing the
+Webscript an `alf_ticket`, a `user` and `password` combination or by default 
+the WebScript will use the default `user` `password` in the settings file::
+
+    In [3]: ws.get(id="0599e21d-d078-4911-a4a6-8ad5a7ae7f1d", user="admin", password="admin")
+
+    #opt.alfresco.service:121 [INFO] url: http://localhost:8888/alfresco/service/django/archive?format=xml&password=admin&id=0599e21d-d078-4911-a4a6-8ad5a7ae7f1d&user=admin
+    Out[3]: [<Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>]
+    
+    #### You can use the service.login function to get a ticket.
+    In [4]: from alfresco.service import login
+
+    In [5]: login('admin', 'admin')
+    #opt.alfresco.service:121 [INFO] url: http://localhost:8888/alfresco/service/api/login?u=admin&pw=admin&format=xml
+    Out[5]: u'TICKET_a4f3ee6bc2bb31ae65585f3e08ebade93f68dc25'
+    
+    In [6]: ws.get(id="0599e21d-d078-4911-a4a6-8ad5a7ae7f1d", alf_ticket="TICKET_a4f3ee6bc2bb31ae65585f3e08ebade93f68dc25")
+    #opt.alfresco.service:121 [INFO] url: http://localhost:8888/alfresco/service/django/archive?id=0599e21d-d078-4911-a4a6-8ad5a7ae7f1d&format=xml
+    Out[6]: [<Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>]
+    
+Due to permissions, Django Alfresco passes a ticket around with the user. It's
+a pain but it's the only way to show different content to different people. For
+search requests users with high permissions will see different content then
+those with lower.    
+
+Content
+=======
+The Content model is just a pass through to Alfresco. Nothing will ever be
+saved to this table, but it gives us a lot of niceties when retrieving content.
+
+
