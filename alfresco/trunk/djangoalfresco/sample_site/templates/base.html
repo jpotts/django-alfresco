@@ -29,7 +29,7 @@
         <div class="f-right">
             <ul>
             	<li><div id="language"><ul><li><a class="selected" href=http://optaros.com/blog-channel>English</a></li><li class="last"><a href=http://www.optaros.de/blog-channel>Deutsch</a></li></ul></div></li>
-                <li><a href="/blog-channel/all/feed" id="rss" onclick="pageTracker._trackPageview('/tracking/feed');">RSS</a></li>
+                <li><a href="/blog-channel/all/feed" id="rss" >RSS</a></li>
 
                 <li><div id="login"></div></li>
             </ul>    
@@ -70,7 +70,7 @@
             {% block expertise_menu %}
             <li><a href="/next-generation-internet">Next Generation Internet</a></li>
             <li><a href="/open-source/partners">Open Source/Partners</a></li>
-            <li><a href="/sample_site/blog" title="" class="active">More...</a></li>
+            <li><a href="/categories/blog" title="" class="active">More...</a></li>
             {% endblock %}
             </ul>
          </div>
@@ -86,7 +86,7 @@
         </div>
          <div class="navColumn five">
           <h2>Search</h2>
-          <div id="top_search"><form action="/sample_site/search"  accept-charset="UTF-8" method="get" id="search-theme-form">
+          <div id="top_search"><form action="/alfresco/search"  accept-charset="UTF-8" method="get" id="search-theme-form">
           <div><div class="form-item" id="edit-search-theme-form-1-wrapper">
           <input type="text" maxlength="128" name="q" id="edit-search-theme-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
           <input type="submit" id="edit-submit" value="Go" />
@@ -105,7 +105,7 @@
   {% block feature %}
     <div id="featureContainer">
       <div>
-        <h1><a href="/sample_site/blog" class="active">Blog</a><span> > </span>All</h1>
+        <h1><a href="/blog/" class="active">Blog</a><span> > </span>All</h1>
       </div>
     </div>
     {% endblock %}
@@ -118,7 +118,7 @@
           {% block sidebar-left %}
           <div id="title"> Blog Channels</div>
       	  	<ul class="menu">
- 			<li><a href="/sample_site/blog/" class="active">All</a></li>
+ 			<li><a href="/blog/" class="active">All</a></li>
 			</ul>
 		  {% endblock %}
 			<div class="clearfix"></div>
@@ -142,7 +142,7 @@
 			  	<div id="hr"></div>
 			  	<span class="box_title">Recent posts on</span>
 				  			  <ul id="box_splited">
-				  			  <li class="breadcrumb"><a href="/sample_site/blog/" class="active">Blog</a><span> > </span>All :
+				  			  <li class="breadcrumb"><a href="/blog/" class="active">Blog</a><span> > </span>All :
 							  {% load hierarchies %}
 							  {% get_recent_docs blog 5 as recent_docs %}
 							  {% for doc in recent_docs %}
@@ -151,7 +151,7 @@
 				  			  </ul>                
                 
                 <div id="hr"></div>
-                <a href="/sample_site/content/e990541c-49e9-4d4c-a82d-754d774abfad"><img border="0" title="Alfresco Developer Guide" alt="Alfresco Developer Guide Book Cover" src="/sample_site/image/book-cover" width="120"></a>
+                <a href="/alfresco/content/e990541c-49e9-4d4c-a82d-754d774abfad"><img border="0" title="Alfresco Developer Guide" alt="Alfresco Developer Guide Book Cover" src="/alfresco/image/book-cover" width="120"></a>
                 
 			    {% endblock %}
             </div>
