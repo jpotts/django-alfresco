@@ -1,0 +1,29 @@
+{% extends 'base.html'%}
+<!--
+    This template is used when a content object is loaded in the context
+    of a category.
+    Example URL: /blog/open-source/content/faf7f733-f1d2-42fc-aa84-c9a3f5b93b9a/
+-->
+{% block title%}Cateogry Content Detail | {{object.title}}{% endblock %}
+
+{% block sidebar-left %}{%endblock%}
+{% block page-class %}full{%endblock%}
+{% block feature %}
+<div id="featureContainer" class="full feature-container-permalink">
+  <h1>
+    {% for crumb in category.breadcrumbs %}
+	<a href="{{crumb.url}}">{{crumb.name}}</a><span> > </span>
+	{% endfor %}
+	<br/>
+	{{object.title}} 
+  </h1>
+ </div>
+{% endblock %}
+
+{% block content-left%}
+<span class="posted_by">Posted {{object.modified|date:"j N Y"}} by {% load alfresco_tags %}{% format_user_link object.author %}</span>
+                                                                                
+<div class="blog-permalink-entry show-url">
+{{object.content|safe}}
+</div>
+{% endblock %}

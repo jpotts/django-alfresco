@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>{% block title%}Django Alfresco{% endblock %}</title>
+ {% block extra-head %}
+ {% endblock %}
+</head>
+<body>
+<div id="header">
+{% block header %}
+<h1><a href="{% url home %}">Django Alfresco</a></h1>
+{% endblock %}
+</div>
+<div id="feature">
+{% block feature %}
+
+{% endblock %}
+</div>
+
+<div id="sidebar-left">
+{% block sidebar-left %}
+
+{% endblock %}
+ </div>
+
+<div class="content">
+{% block content%}
+  <div class="content-left">
+    {% block content-left %}
+    {% endblock %}
+  </div>
+
+  <div class="content-right">
+  {% block content-right %}
+
+  {% endblock %}
+    </div>
+{% endblock %}
+</div>
+
+<div id="footer">
+{% block footer %}
+
+{% endblock %}
+</div>
+</body>
+</html>

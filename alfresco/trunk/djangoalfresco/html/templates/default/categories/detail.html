@@ -1,0 +1,41 @@
+{% extends 'base.html'%}
+<!--
+    This template is used to show the contents of a specific category.
+    Example URL: /blog/open_source/
+-->
+{% block title%}Category Detail | {{category.name}}{% endblock%}
+
+{% load alfresco_tags %}
+
+{% block feature %}
+  <h1>
+    {% for crumb in category.breadcrumbs %}
+  	<a href="{{crumb.url}}">{{crumb.name}}</a> <span> > </span>
+    {% endfor %}
+     All
+  </h1>
+{% endblock %}
+
+{% block sidebar-left %}
+<div id="title"> Categories</div>
+<ul class="menu">
+<li><a href="{{category.get_absolute_url}}" class="active">All</a></li>
+{% for cat in category.child.all%}
+<li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+{% endfor %}
+</ul>
+ {% endblock %}
+
+{% block content-left %}
+{% for doc in recent_docs %}
+<div class="entry">
+<h3><a href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>
+Posted {{doc.modified|date:"j N Y"}} by {% format_user_link doc.author %}{% if doc.tags %} | Tags: {% format_tags doc.tags %}{% endif %}</h3>
+<p>
+{{doc.content|safe|striptags|truncatewords:40}}
+<a href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">Read more</a>
+</p>
+</div>
+{% endfor %}
+
+{% endblock%}

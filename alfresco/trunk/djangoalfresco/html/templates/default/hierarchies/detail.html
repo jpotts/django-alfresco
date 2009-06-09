@@ -1,0 +1,38 @@
+{% extends 'base.html'%}
+<!--
+    This template is used to produce the detail for a specific hierarchy.
+    Example url: /blog/
+-->
+
+{% load alfresco_tags %}
+
+{% block title%}Hierarchy Detail | {{hierarchy.name}}{% endblock%}
+
+{% block feature %}
+  <h1>
+  	<a href="{{hierarchy.get_absolute_url}}" class="active">{{hierarchy.name}}</a> <span> > </span> All
+  </h1>
+{% endblock %}
+
+{% block sidebar-left %}
+<div id="title">Categories</div>
+<ul class="menu">
+
+<li><a href="{{hierarchy.get_absolute_url}}" class="active">All</a></li>
+{% for cat in hierarchy.get_parent_categories%}
+<li><a href="{{cat.get_absolute_url}}">{{cat.name}}</a></li>
+{% endfor %}
+</ul>
+ {% endblock %}
+
+{% block content-left %}
+{% for doc in recent_docs %}
+<div class="entry" {% if forloop.first %}id="sticky"{% endif %}><h3><a name="blog-info" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">{{doc.title}}</a><br/>
+<span class="posted_by">Posted {{doc.modified|date:"j N Y"}} by {% format_user_link doc.author %}{% if doc.tags %} | Tags: {% format_tags doc.tags %}{% endif %}</span></h3>
+<p>
+{{doc.content|safe|striptags|truncatewords:50}}
+<a class="read_more" href="{{doc.get_absolute_url}}" title="Posted {{doc.modified|date:"j N Y"}} by {{doc.author}}">Read more </a>
+</p>
+</div>
+{% endfor %}
+{% endblock%}
