@@ -244,5 +244,118 @@
             "name": "Alfresco Developer Guide Cover Image",
             "slug": "book-cover"
         }
+    },
+    {
+        "pk": 7,
+        "model": "hierarchies.hierarchy",
+        "fields": {
+            "image": "",
+            "order": 0,
+            "space": "ec94af23-c1bf-465a-a8d9-5246cbde9a64",
+            "name": "Blog",
+            "slug": "blog"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "Open Source",
+            "parent": null,
+            "space": "a4d8104a-4434-414a-9e00-a98223fbbced",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 2,
+            "order": 0,
+            "slug_path": "blog/open-source",
+            "top_stories": 5,
+            "slug": "open-source"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "Media",
+            "parent": null,
+            "space": "adb9a505-a4d8-4614-9376-f828ac583d3a",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 2,
+            "order": 0,
+            "slug_path": "blog/media",
+            "top_stories": 5,
+            "slug": "media"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "Some Channel",
+            "parent": null,
+            "space": "b347b57c-9050-4f23-bfd6-975084ab5486",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 1,
+            "order": 0,
+            "slug_path": "blog/some-channel",
+            "top_stories": 5,
+            "slug": "some-channel"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "eCommerce Plugins",
+            "parent": 12,
+            "space": "f9432ed4-c8ab-4d0f-b463-1a33f0c7c169",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 2,
+            "order": 0,
+            "slug_path": "blog/ecommerce/ecommerce-plugins",
+            "top_stories": 5,
+            "slug": "ecommerce-plugins"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "eCommerce",
+            "parent": null,
+            "space": "c88f07d7-c594-4a62-a0f6-140df9d4f5a3",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 2,
+            "order": 0,
+            "slug_path": "blog/ecommerce",
+            "top_stories": 5,
+            "slug": "ecommerce"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "hierarchies.category",
+        "fields": {
+            "more_stories": 10,
+            "name": "Social eCommerce",
+            "parent": 12,
+            "space": "41fab7e1-0b67-4f04-bd90-6c4b57393d72",
+            "hierarchy": 7,
+            "image": "",
+            "cache": 2,
+            "order": 0,
+            "slug_path": "blog/ecommerce/social-ecommerce",
+            "top_stories": 5,
+            "slug": "social-ecommerce"
+        }
     }
 ]
