@@ -18,7 +18,7 @@ register = template.Library()
 #TODO: This is a problem because it depends on sample site
 def mask_image_tags(value):
     d = re.compile('alfresco[^}]*SpacesStore')
-    return d.sub('sample_site/image/id', value)
+    return d.sub('alfresco/image/id', value)
 
 register.filter(mask_image_tags)
 
@@ -92,7 +92,7 @@ class FormatTags(template.Node):
         #for tag in tag_list:
         #    markup += '<a href="/blog-term/%s" name="blogtag">%s</a>' % (tag, tag)
             # what is the "has next" syntax in an iterator in python
-        markup = ', '.join(['<a href="/sample_site/tag_search?q=%s" name="blogtag">%s</a>' % (tag, tag) for tag in tag_list])
+        markup = ', '.join(['<a href="/alfresco/tag_search?q=%s" name="blogtag">%s</a>' % (tag, tag) for tag in tag_list])
 
         return markup
     
