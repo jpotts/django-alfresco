@@ -11,9 +11,11 @@ Navigate around the Django Alfresco Documentation
     overview
     install
     setup
+    tests
     tutorial
     authentication
-    
+    docs
+
     code/index
     
     issues 

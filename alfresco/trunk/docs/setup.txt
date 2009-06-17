@@ -5,7 +5,7 @@ Setup
 =====
 
 Edit the Site Entry
----------------
+-------------------
 Edit the Site entry in Django admin. Go to:
 http://localhost:8000/admin. Log in as an administrator. Edit the
 example Site entry. Change the domain name to "localhost:8000". If you

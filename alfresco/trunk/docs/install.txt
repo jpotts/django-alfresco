@@ -82,6 +82,8 @@ Once that is complete you can run sync db::
 When prompted to create a super user, answer `no`. Django Alfresco will create 
 the super user when you first log in to the site with "admin".
 
+.. _install-alfresco:
+
 Alfresco
 ========
 To make this work you need a working version of Alfresco on your localhost on
@@ -152,7 +154,7 @@ objects to match the new UUIDs.
 
 Testing
 =======
-If you have properly executed Option 1 you will be able to do the following::
+If you have properly executed Option 1 you will be able to do the following quick smoke test::
 
     In [1]: from alfresco.models import Space
     #Grab the first space
@@ -166,7 +168,7 @@ If you have properly executed Option 1 you will be able to do the following::
     [<Content: 1e66b2b3-2dba-4a5f-9527-de754c3a983e - test-1.html>,
      <Content: 0599e21d-d078-4911-a4a6-8ad5a7ae7f1d - test-2.html>]
 
-If you haven't start up the server and go to the Django Admin.
+If you haven't start up the server and go to the Django Admin::
     
     cd /path/to/djangoalfresco
     ./manage.py runserver
@@ -175,6 +177,8 @@ If you haven't start up the server and go to the Django Admin.
 
 If you are logged in automatically it means that Django can reach Alfresco and
 it successfully authenticated you as the default `admin` user. 
+
+To run the automated unit tests, see :ref:`tests`.
 
 Users
 =====

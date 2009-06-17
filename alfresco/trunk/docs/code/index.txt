@@ -4,6 +4,12 @@
 Code
 ====
 
+Obtaining the Source
+--------------------
+The `source code for the django-alfresco project <http://code.google.com/p/django-alfresco/source/checkout>`_ is at Google Code in subversion.
+
+How the Code Works
+------------------
 .. toctree::
     :maxdepth: 2
     

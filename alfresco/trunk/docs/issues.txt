@@ -11,3 +11,7 @@ Issues
  * CMIS is a work-in-progress
  * The "Search" link next to the Doc ID field on the Static Content admin page is not functional
  * Persisting Django form data to Alfresco. Right now the sample site is all one-way. Would be nice to show some form data being persisted to Alfresco.
+ * In general, there is way too much reliance on doc ID's. We should have a goal to make it possible to assemble the sample site without cutting-and-pasting a single doc ID.
+ * Need to make content moves in Alfresco less impactful on the Django objects. (We shouldn't be storing paths and QNames, for example).
+
+If you find issues or have ideas for enhancements, we want to hear from you. Please log issues at the `Google Code site for django-alfresco <http://code.google.com/p/django-alfresco/issues/list>`_.

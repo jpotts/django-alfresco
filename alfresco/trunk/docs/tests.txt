@@ -1,0 +1,19 @@
+.. _tests:
+
+=====
+Tests
+=====
+
+This code includes unit tests. To run the tests::
+
+    cd /path/to/djangoalfresco
+    python manage.py test alfresco
+
+These tests assume you've already deployed the web scripts and sample data to Alfresco, see :ref:`Alfresco <install-alfresco>`. They won't affect your live Django database.
+
+If everything goes well, you should see::
+
+    Ran 6 tests in 3.607s
+
+    OK
+    Destroying test database...
